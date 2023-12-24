@@ -1,0 +1,96 @@
+{
+	"currentUser": {
+		"id": "user123",
+		"firstName": "Alice",
+		"lastName": "Johnson",
+		"email": "alice@example.com",
+		"password": "password123",
+		"currentLocation": "City Center",
+		"availableFunds": 1000,
+		"distanceTraveled": 150,
+		"reservationHistory": [
+			{
+				"id": 1,
+				"carId": 1,
+				"startDate": "2023-01-01",
+				"endDate": "2023-01-05",
+				"completed": false,
+				"location": "Airport"
+			}
+		],
+		"favoriteCars": [1, 2],
+		"payments": [
+			{
+				"date": "2023-01-03",
+				"amount": 60
+			}
+		]
+	},
+	"cars": [
+		{
+			"id": 1,
+			"owner": "John Doe",
+			"photo": "car1.jpg",
+			"brand": "Toyota",
+			"model": "Camry",
+			"year": 2022,
+			"description": "A comfortable sedan",
+			"dailyPrice": 50,
+			"reservations": [1],
+			"location": "Downtown"
+		},
+		{
+			"id": 2,
+			"owner": "Jane Smith",
+			"photo": "car2.jpg",
+			"brand": "Honda",
+			"model": "Civic",
+			"year": 2020,
+			"description": "Fuel-efficient compact car",
+			"dailyPrice": 40,
+			"reservations": [],
+			"location": "Suburb"
+		},
+		{
+			"id": 3,
+			"owner": "Bob Johnson",
+			"photo": "car3.jpg",
+			"brand": "Ford",
+			"model": "Mustang",
+			"year": 2021,
+			"description": "Muscle car with style",
+			"dailyPrice": 70,
+			"reservations": [],
+			"location": "City Center"
+		},
+		{
+			"id": 4,
+			"owner": "Emily Davis",
+			"photo": "car4.jpg",
+			"brand": "Chevrolet",
+			"model": "Equinox",
+			"year": 2019,
+			"description": "SUV for family trips",
+			"dailyPrice": 60,
+			"reservations": [],
+			"location": "Suburb"
+		}
+	],
+	"reservations": [
+		{
+			"id": 1,
+			"carId": 1,
+			"user": "user123",
+			"startDate": "2023-01-01",
+			"endDate": "2023-01-05",
+			"completed": false,
+			"location": "Airport"
+		}
+	],
+	"payments": [
+		{
+			"date": "2023-01-03",
+			"amount": 60
+		}
+	]
+}
