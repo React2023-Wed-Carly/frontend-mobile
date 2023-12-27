@@ -1,96 +1,207 @@
 {
-	"currentUser": {
-		"id": "user123",
-		"firstName": "Alice",
-		"lastName": "Johnson",
-		"email": "alice@example.com",
-		"password": "password123",
-		"currentLocation": "City Center",
-		"availableFunds": 1000,
-		"distanceTraveled": 150,
-		"reservationHistory": [
-			{
-				"id": 1,
-				"carId": 1,
-				"startDate": "2023-01-01",
-				"endDate": "2023-01-05",
-				"completed": false,
-				"location": "Airport"
-			}
-		],
-		"favoriteCars": [1, 2],
-		"payments": [
-			{
-				"date": "2023-01-03",
-				"amount": 60
-			}
-		]
-	},
-	"cars": [
-		{
-			"id": 1,
-			"owner": "John Doe",
-			"photo": "car1.jpg",
-			"brand": "Toyota",
-			"model": "Camry",
-			"year": 2022,
-			"description": "A comfortable sedan",
-			"dailyPrice": 50,
-			"reservations": [1],
-			"location": "Downtown"
-		},
-		{
-			"id": 2,
-			"owner": "Jane Smith",
-			"photo": "car2.jpg",
-			"brand": "Honda",
-			"model": "Civic",
-			"year": 2020,
-			"description": "Fuel-efficient compact car",
-			"dailyPrice": 40,
-			"reservations": [],
-			"location": "Suburb"
-		},
-		{
-			"id": 3,
-			"owner": "Bob Johnson",
-			"photo": "car3.jpg",
-			"brand": "Ford",
-			"model": "Mustang",
-			"year": 2021,
-			"description": "Muscle car with style",
-			"dailyPrice": 70,
-			"reservations": [],
-			"location": "City Center"
-		},
-		{
-			"id": 4,
-			"owner": "Emily Davis",
-			"photo": "car4.jpg",
-			"brand": "Chevrolet",
-			"model": "Equinox",
-			"year": 2019,
-			"description": "SUV for family trips",
-			"dailyPrice": 60,
-			"reservations": [],
-			"location": "Suburb"
-		}
-	],
-	"reservations": [
-		{
-			"id": 1,
-			"carId": 1,
-			"user": "user123",
-			"startDate": "2023-01-01",
-			"endDate": "2023-01-05",
-			"completed": false,
-			"location": "Airport"
-		}
-	],
-	"payments": [
-		{
-			"date": "2023-01-03",
-			"amount": 60
-		}
-	]
+  "currentUser": {
+    "id": "user123",
+    "firstName": "Alice",
+    "lastName": "Johnson",
+    "email": "alice@example.com",
+    "password": "password123",
+    "currentLocation": {
+      "latitude": 40.7128,
+      "longitude": -74.006
+    },
+    "availableFunds": 1000,
+    "distanceTraveled": 150,
+    "reservationHistory": [
+      {
+        "id": 1,
+        "carId": 1,
+        "startDate": "2023-01-01",
+        "endDate": "2023-01-05",
+        "completed": false,
+        "location": {
+          "latitude": 40.6413,
+          "longitude": -73.7781
+        }
+      }
+    ],
+    "favoriteCars": [1, 2],
+    "payments": [
+      {
+        "date": "2023-01-03",
+        "amount": 60
+      }
+    ]
+  },
+  "cars": [
+    {
+      "id": 1,
+      "owner": "John Doe",
+      "photo": "car1.jpg",
+      "brand": "Toyota",
+      "model": "Camry",
+      "year": 2022,
+      "description": "A comfortable sedan",
+      "dailyPrice": 50,
+      "reservations": [1],
+      "location": {
+        "latitude": 40.73061,
+        "longitude": -73.935242
+      }
+    },
+    {
+      "id": 2,
+      "owner": "Jane Smith",
+      "photo": "car2.jpg",
+      "brand": "Honda",
+      "model": "Civic",
+      "year": 2020,
+      "description": "Fuel-efficient compact car",
+      "dailyPrice": 40,
+      "reservations": [],
+      "location": {
+        "latitude": 34.0522,
+        "longitude": -118.2437
+      }
+    },
+    {
+      "id": 3,
+      "owner": "Bob Johnson",
+      "photo": "car3.jpg",
+      "brand": "Ford",
+      "model": "Mustang",
+      "year": 2021,
+      "description": "Muscle car with style",
+      "dailyPrice": 70,
+      "reservations": [],
+      "location": {
+        "latitude": 41.8781,
+        "longitude": -87.6298
+      }
+    },
+    {
+      "id": 4,
+      "owner": "Emily Davis",
+      "photo": "car4.jpg",
+      "brand": "Chevrolet",
+      "model": "Equinox",
+      "year": 2019,
+      "description": "SUV for family trips",
+      "dailyPrice": 60,
+      "reservations": [],
+      "location": {
+        "latitude": 37.7749,
+        "longitude": -122.4194
+      }
+    },
+    {
+      "id": 5,
+      "owner": "Chris Wilson",
+      "photo": "car5.jpg",
+      "brand": "Nissan",
+      "model": "Altima",
+      "year": 2023,
+      "description": "Modern and efficient",
+      "dailyPrice": 45,
+      "reservations": [],
+      "location": {
+        "latitude": 32.7767,
+        "longitude": -96.797
+      }
+    },
+    {
+      "id": 6,
+      "owner": "Eva Martinez",
+      "photo": "car6.jpg",
+      "brand": "BMW",
+      "model": "X5",
+      "year": 2020,
+      "description": "Luxurious SUV",
+      "dailyPrice": 80,
+      "reservations": [],
+      "location": {
+        "latitude": 34.0522,
+        "longitude": -118.2437
+      }
+    },
+    {
+      "id": 7,
+      "owner": "David White",
+      "photo": "car7.jpg",
+      "brand": "Mercedes-Benz",
+      "model": "C-Class",
+      "year": 2021,
+      "description": "Elegant and powerful",
+      "dailyPrice": 75,
+      "reservations": [],
+      "location": {
+        "latitude": 40.7128,
+        "longitude": -74.006
+      }
+    },
+    {
+      "id": 8,
+      "owner": "Fiona Brown",
+      "photo": "car8.jpg",
+      "brand": "Audi",
+      "model": "A3",
+      "year": 2018,
+      "description": "Compact luxury",
+      "dailyPrice": 65,
+      "reservations": [],
+      "location": {
+        "latitude": 41.8781,
+        "longitude": -87.6298
+      }
+    },
+    {
+      "id": 9,
+      "owner": "George Taylor",
+      "photo": "car9.jpg",
+      "brand": "Hyundai",
+      "model": "Santa Fe",
+      "year": 2022,
+      "description": "Versatile and spacious",
+      "dailyPrice": 55,
+      "reservations": [],
+      "location": {
+        "latitude": 32.7767,
+        "longitude": -96.797
+      }
+    },
+    {
+      "id": 10,
+      "owner": "Helen Clark",
+      "photo": "car10.jpg",
+      "brand": "Kia",
+      "model": "Sportage",
+      "year": 2019,
+      "description": "Compact SUV",
+      "dailyPrice": 60,
+      "reservations": [],
+      "location": {
+        "latitude": 34.0522,
+        "longitude": -118.2437
+      }
+    }
+  ],
+  "reservations": [
+    {
+      "id": 1,
+      "carId": 1,
+      "user": "user123",
+      "startDate": "2023-01-01",
+      "endDate": "2023-01-05",
+      "completed": false,
+      "location": {
+        "latitude": 40.6413,
+        "longitude": -73.7781
+      }
+    }
+  ],
+  "payments": [
+    {
+      "date": "2023-01-03",
+      "amount": 60
+    }
+  ]
 }
