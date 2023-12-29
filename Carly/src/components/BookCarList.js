@@ -1,6 +1,7 @@
 import BookCarItem from "./BookCarItem";
 import { useState, useEffect } from "react";
 import CarFilter from "./CarFilter";
+import { Button } from 'react-native';
 
 import jsonData from "../DummyData.json";
 
@@ -29,7 +30,7 @@ export default function BookCarList() {
   return (
     <>
       {isFilter && <CarFilter filter={filter} setFilter={setFilter} setIsFilter={setIsFilter}/>}
-      {!isFilter && <button onClick={filterClick}>Filters</button>}
+      {!isFilter && <Button title="Filters" onPress={filterClick}></Button>}
       {filteredCars.map((item) => (
         <BookCarItem key={item.id} car={item} />
       ))}

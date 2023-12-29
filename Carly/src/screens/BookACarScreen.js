@@ -1,4 +1,4 @@
-import { ScrollView, View, Text, StyleSheet } from 'react-native';
+import { ScrollView, View, Text } from 'react-native';
 import { styles } from '../styles';
 import BookCarList from '../components/BookCarList';
 

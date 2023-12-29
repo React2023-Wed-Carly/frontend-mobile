@@ -1,7 +1,13 @@
-export default function BookCarItem({car}) {
-    return <div>
-    <img src={car.photo} alt={car.name} style={{ width: '100px', height: '100px' }} />
-    <h3>{car.brand} {car.model}</h3>
-    <p>Cena: ${car.dailyPrice}</p>
-  </div>
-}
+import React from 'react';
+import { View, Image, Text } from 'react-native';
+import { styles } from '../styles';
+
+export default function BookCarItem({ car })  {
+  return (
+    <View style={styles.container}>
+      <Image source={{ uri: car.photo }}/>
+      <Text>{car.brand} {car.model}</Text>
+      <Text>Cena: ${car.dailyPrice}</Text>
+    </View>
+  );
+};
