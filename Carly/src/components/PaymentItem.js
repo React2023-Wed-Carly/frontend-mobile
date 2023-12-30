@@ -2,23 +2,19 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Card from './Card';
+import { formatPrice } from '../utils/textFormatting';
 
 const PaymentItem = ({ amount, date, type }) => {
   const isInternal = type === 'internal';
   const amountStyle = { fontSize: 18, color: isInternal ? 'green' : 'red' };
   const iconColor = 'grey';
 
-  const formattedAmount = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD', // You can change the currency as needed
-  }).format(amount);
-
   return (
     <Card>
       <View>
         <Text style={amountStyle}>
           {!isInternal && '-'}
-          {formattedAmount}
+          {formatPrice(amount)}
         </Text>
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
