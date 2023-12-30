@@ -22,14 +22,120 @@
         "location": {
           "latitude": 40.6413,
           "longitude": -73.7781
-        }
+        },
+        "price": 200
+      },
+      {
+        "id": 2,
+        "carId": 3,
+        "startDate": "2023-02-10",
+        "endDate": "2023-02-15",
+        "completed": true,
+        "location": {
+          "latitude": 41.8781,
+          "longitude": -87.6298
+        },
+        "price": 350
+      },
+      {
+        "id": 3,
+        "carId": 5,
+        "startDate": "2023-03-20",
+        "endDate": "2023-03-25",
+        "completed": false,
+        "location": {
+          "latitude": 32.7767,
+          "longitude": -96.797
+        },
+        "price": 225
+      },
+      {
+        "id": 4,
+        "carId": 8,
+        "startDate": "2023-04-05",
+        "endDate": "2023-04-10",
+        "completed": true,
+        "location": {
+          "latitude": 41.8781,
+          "longitude": -87.6298
+        },
+        "price": 325
+      },
+      {
+        "id": 5,
+        "carId": 2,
+        "startDate": "2023-05-15",
+        "endDate": "2023-05-20",
+        "completed": false,
+        "location": {
+          "latitude": 34.0522,
+          "longitude": -118.2437
+        },
+        "price": 200
       }
     ],
     "favoriteCars": [1, 2],
     "payments": [
       {
         "date": "2023-01-03",
-        "amount": 60
+        "amount": 60,
+        "type": "external",
+        "reservationId": 1
+      },
+      {
+        "date": "2023-02-01",
+        "amount": 150,
+        "type": "internal"
+      },
+      {
+        "date": "2023-03-25",
+        "amount": 100,
+        "type": "external",
+        "reservationId": 3
+      },
+      {
+        "date": "2023-04-10",
+        "amount": 120,
+        "type": "external",
+        "reservationId": 4
+      },
+      {
+        "date": "2023-05-01",
+        "amount": 80,
+        "type": "internal"
+      },
+      {
+        "date": "2023-05-18",
+        "amount": 120,
+        "type": "external",
+        "reservationId": 5
+      },
+      {
+        "date": "2023-06-05",
+        "amount": 90,
+        "type": "external",
+        "reservationId": 2
+      },
+      {
+        "date": "2023-06-20",
+        "amount": 110,
+        "type": "external",
+        "reservationId": 3
+      },
+      {
+        "date": "2023-07-01",
+        "amount": 70,
+        "type": "internal"
+      },
+      {
+        "date": "2023-07-01",
+        "amount": 70,
+        "type": "internal"
+      },
+      {
+        "date": "2023-07-01",
+        "amount": 70,
+        "type": "internal"
       }
     ]
   },
