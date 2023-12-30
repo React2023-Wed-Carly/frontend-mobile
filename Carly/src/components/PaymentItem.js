@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Card from './Card';
 
 const PaymentItem = ({ amount, date, type }) => {
   const isInternal = type === 'internal';
@@ -13,21 +14,7 @@ const PaymentItem = ({ amount, date, type }) => {
   }).format(amount);
 
   return (
-    <View
-      style={{
-        backgroundColor: 'white',
-        borderRadius: 10,
-        padding: 18,
-        marginBottom: 13,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 2,
-        elevation: 2,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-      }}
-    >
+    <Card>
       <View>
         <Text style={amountStyle}>
           {!isInternal && '-'}
@@ -38,7 +25,7 @@ const PaymentItem = ({ amount, date, type }) => {
         <Icon name='calendar-today' color={iconColor} size={12} />
         <Text style={{ color: iconColor, marginLeft: 5 }}>{date}</Text>
       </View>
-    </View>
+    </Card>
   );
 };
 
