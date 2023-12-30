@@ -4,6 +4,7 @@
     "firstName": "Alice",
     "lastName": "Johnson",
     "email": "alice@example.com",
+    "phoneNumber": "123456789",
     "password": "password123",
     "currentLocation": {
       "latitude": 40.7128,
