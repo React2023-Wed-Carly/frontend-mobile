@@ -21,9 +21,6 @@ export const styles = StyleSheet.create({
 });
 
 export const accountStyles = StyleSheet.create({
-	container: {
-	  padding: 20,
-	},
 	headerText: {
 	  fontSize: 24,
 	  fontWeight: 'bold',
@@ -58,4 +55,44 @@ export const accountStyles = StyleSheet.create({
 	  fontWeight: 'bold',
 	  marginBottom: 10,
 	},
+  });
+
+  export const carItemStyles = StyleSheet.create({
+	container: {
+	  flexDirection: 'row',
+	  alignItems: 'center',
+	  justifyContent: 'space-between',
+	  padding: 10,
+	  borderBottomWidth: 1,
+	  borderColor: '#ccc',
+	},
+	image: {
+	  width: 80,
+	  height: 80,
+	  marginRight: 10,
+	},
+	infoContainer: {
+	  flex: 1,
+	  marginRight: 10,
+	  marginLeft: 10,
+	  marginTop: 30,
+	},
+	infoRow: {
+	  flexDirection: 'row',
+	  alignItems: 'center',
+	  justifyContent: 'space-between',
+	  marginTop: 5,
+	},
+	info: {
+	  fontSize: 15,
+	  marginRight: 5,
+	  marginLeft: 5,
+	},
+	distanceContainer: {
+	  alignItems: 'flex-end',
+	},
+	title:{
+		fontSize: 20,
+		fontWeight: 'bold'
+	}
   });

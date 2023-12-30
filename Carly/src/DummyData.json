@@ -153,7 +153,8 @@
       "location": {
         "latitude": 40.73061,
         "longitude": -73.935242
-      }
+      },
+      "seats": 4
     },
     {
       "id": 2,
@@ -168,7 +169,8 @@
       "location": {
         "latitude": 34.0522,
         "longitude": -118.2437
-      }
+      },
+      "seats": 4
     },
     {
       "id": 3,
@@ -183,7 +185,8 @@
       "location": {
         "latitude": 41.8781,
         "longitude": -87.6298
-      }
+      },
+      "seats": 4
     },
     {
       "id": 4,
@@ -198,7 +201,8 @@
       "location": {
         "latitude": 37.7749,
         "longitude": -122.4194
-      }
+      },
+      "seats": 4
     },
     {
       "id": 5,
@@ -213,7 +217,8 @@
       "location": {
         "latitude": 32.7767,
         "longitude": -96.797
-      }
+      },
+      "seats": 4
     },
     {
       "id": 6,
@@ -228,7 +233,8 @@
       "location": {
         "latitude": 34.0522,
         "longitude": -118.2437
-      }
+      },
+      "seats": 4
     },
     {
       "id": 7,
@@ -243,7 +249,8 @@
       "location": {
         "latitude": 40.7128,
         "longitude": -74.006
-      }
+      },
+      "seats": 4
     },
     {
       "id": 8,
@@ -258,7 +265,8 @@
       "location": {
         "latitude": 41.8781,
         "longitude": -87.6298
-      }
+      },
+      "seats": 4
     },
     {
       "id": 9,
@@ -273,7 +281,8 @@
       "location": {
         "latitude": 32.7767,
         "longitude": -96.797
-      }
+      },
+      "seats": 4
     },
     {
       "id": 10,
@@ -288,7 +297,8 @@
       "location": {
         "latitude": 34.0522,
         "longitude": -118.2437
-      }
+      },
+      "seats": 4
     }
   ],
   "reservations": [

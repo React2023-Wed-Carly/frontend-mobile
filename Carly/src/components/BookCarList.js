@@ -31,7 +31,7 @@ export default function BookCarList() {
     <>
       {isFilter && <CarFilter filter={filter} setFilter={setFilter} setIsFilter={setIsFilter}/>}
       {!isFilter && <Button title="Filters" onPress={filterClick}></Button>}
-      {filteredCars.map((item) => (
+      {!isFilter && filteredCars.map((item) => (
         <BookCarItem key={item.id} car={item} />
       ))}
     </>
