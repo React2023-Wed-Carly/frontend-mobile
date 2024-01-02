@@ -143,7 +143,7 @@
     {
       "id": 1,
       "owner": "John Doe",
-      "photo": "car1.jpg",
+      "photo": "car.png",
       "brand": "Toyota",
       "model": "Camry",
       "year": 2022,
@@ -158,7 +158,7 @@
     {
       "id": 2,
       "owner": "Jane Smith",
-      "photo": "car2.jpg",
+      "photo": "car.png",
       "brand": "Honda",
       "model": "Civic",
       "year": 2020,
@@ -173,7 +173,7 @@
     {
       "id": 3,
       "owner": "Bob Johnson",
-      "photo": "car3.jpg",
+      "photo": "car.png",
       "brand": "Ford",
       "model": "Mustang",
       "year": 2021,
@@ -188,7 +188,7 @@
     {
       "id": 4,
       "owner": "Emily Davis",
-      "photo": "car4.jpg",
+      "photo": "car.png",
       "brand": "Chevrolet",
       "model": "Equinox",
       "year": 2019,
@@ -203,7 +203,7 @@
     {
       "id": 5,
       "owner": "Chris Wilson",
-      "photo": "car5.jpg",
+      "photo": "car.png",
       "brand": "Nissan",
       "model": "Altima",
       "year": 2023,
@@ -218,7 +218,7 @@
     {
       "id": 6,
       "owner": "Eva Martinez",
-      "photo": "car6.jpg",
+      "photo": "car.png",
       "brand": "BMW",
       "model": "X5",
       "year": 2020,
@@ -233,7 +233,7 @@
     {
       "id": 7,
       "owner": "David White",
-      "photo": "car7.jpg",
+      "photo": "car.png",
       "brand": "Mercedes-Benz",
       "model": "C-Class",
       "year": 2021,
@@ -248,7 +248,7 @@
     {
       "id": 8,
       "owner": "Fiona Brown",
-      "photo": "car8.jpg",
+      "photo": "car.png",
       "brand": "Audi",
       "model": "A3",
       "year": 2018,
@@ -263,7 +263,7 @@
     {
       "id": 9,
       "owner": "George Taylor",
-      "photo": "car9.jpg",
+      "photo": "car.png",
       "brand": "Hyundai",
       "model": "Santa Fe",
       "year": 2022,
