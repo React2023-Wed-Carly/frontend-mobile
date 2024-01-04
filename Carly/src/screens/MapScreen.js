@@ -2,7 +2,7 @@
 
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+//import MapView, { Marker } from "react-native-maps";
 
 const MapScreen = () => {
   // Replace with your initial region coordinates
@@ -15,14 +15,13 @@ const MapScreen = () => {
 
   return (
     <View style={styles.container}>
-      <MapView style={styles.map} initialRegion={initialRegion}>
-        {/* Marker at the initial region */}
+      {/* <MapView style={styles.map} initialRegion={initialRegion}>
         <Marker
           coordinate={initialRegion}
           title="Marker Title"
           description="Marker Description"
         />
-      </MapView>
+      </MapView> */}
     </View>
   );
 };

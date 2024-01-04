@@ -2,6 +2,7 @@ import 'react-native-gesture-handler';
 import * as React from 'react';
 import { registerRootComponent } from 'expo';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import HomeScreen from './screens/HomeScreen';
 import BookACarScreen from './screens/BookACarScreen';
@@ -13,8 +14,19 @@ import PaymentsScreen from './screens/PaymentsScreen';
 import SettingsScreen from './screens/SettinsScreen';
 import MapScreen from './screens/MapScreen';
 import { styles } from './styles';
+import SelectedCarScreen from './screens/SelectedCarScreen';
 
 const Drawer = createDrawerNavigator();
+const Stack = createStackNavigator();
+
+function AppStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Book a Car" component={BookACarScreen} />
+      <Stack.Screen name="Selected Car" component={SelectedCarScreen} />
+    </Stack.Navigator>
+  );
+}
 
 function App() {
 	return (
@@ -25,7 +37,7 @@ function App() {
 			>
 				<Drawer.Screen name="Home" component={HomeScreen} />
 				<Drawer.Screen name="Map" component={MapScreen} />
-				<Drawer.Screen name="Book a car" component={BookACarScreen} />
+				<Drawer.Screen name="Book a car" component={AppStack} />
 				<Drawer.Screen name="Book a flat" component={BookAFlatScreen} />
 				<Drawer.Screen name="Account" component={AccountScreen} />
 				<Drawer.Screen name="Rent history" component={RentHistoryScreen} />
