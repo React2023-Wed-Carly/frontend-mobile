@@ -152,8 +152,8 @@
       "dailyPrice": 50,
       "reservations": [1],
       "location": {
-        "latitude": 40.73061,
-        "longitude": -73.935242
+        "latitude": 52.2053,
+        "longitude":  20.9265
       }
     },
     {
@@ -168,8 +168,8 @@
       "dailyPrice": 40,
       "reservations": [],
       "location": {
-        "latitude": 34.0522,
-        "longitude": -118.2437
+        "latitude":  52.2052,
+        "longitude":  21.0574
       }
     },
     {
@@ -184,8 +184,8 @@
       "dailyPrice": 70,
       "reservations": [],
       "location": {
-        "latitude": 41.8781,
-        "longitude": -87.6298
+        "latitude": 52.28,
+        "longitude": 20.8756
       }
     },
     {
@@ -200,8 +200,8 @@
       "dailyPrice": 60,
       "reservations": [],
       "location": {
-        "latitude": 37.7749,
-        "longitude": -122.4194
+        "latitude": 52.2862,
+        "longitude": 20.9665
       }
     },
     {
@@ -216,8 +216,8 @@
       "dailyPrice": 45,
       "reservations": [],
       "location": {
-        "latitude": 32.7767,
-        "longitude": -96.797
+        "latitude": 52.1242,
+        "longitude": 20.9665
       }
     },
     {
@@ -233,7 +233,7 @@
       "reservations": [],
       "location": {
         "latitude": 34.0522,
-        "longitude": -118.2437
+        "longitude": 20.9065
       }
     },
     {
