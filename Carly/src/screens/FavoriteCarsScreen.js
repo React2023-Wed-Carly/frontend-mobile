@@ -1,10 +1,8 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { styles } from '../styles';
+import RentHistoryScreen from './RentHistoryScreen';
 
 export default function FavoriteCarsScreen() {
-	return (
-		<View style={styles.screenContainer}>
-			<Text>Book a Flat Screen</Text>
-		</View>
-	);
+  // dummy implementation is the same for these two - change when creating 'add to favorites' logic
+  return RentHistoryScreen();
 }

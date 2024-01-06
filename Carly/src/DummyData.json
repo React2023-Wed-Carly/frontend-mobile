@@ -143,100 +143,107 @@
     {
       "id": 1,
       "owner": "John Doe",
-      "photo": "car1.jpg",
+      "photo": "car.png",
       "brand": "Toyota",
       "model": "Camry",
       "year": 2022,
+      "seats": 4,
       "description": "A comfortable sedan",
       "dailyPrice": 50,
       "reservations": [1],
       "location": {
-        "latitude": 40.73061,
-        "longitude": -73.935242
+        "latitude": 52.2053,
+        "longitude":  20.9265
       }
     },
     {
       "id": 2,
       "owner": "Jane Smith",
-      "photo": "car2.jpg",
+      "photo": "car.png",
       "brand": "Honda",
       "model": "Civic",
       "year": 2020,
+      "seats": 3,
       "description": "Fuel-efficient compact car",
       "dailyPrice": 40,
       "reservations": [],
       "location": {
-        "latitude": 34.0522,
-        "longitude": -118.2437
+        "latitude":  52.2052,
+        "longitude":  21.0574
       }
     },
     {
       "id": 3,
       "owner": "Bob Johnson",
-      "photo": "car3.jpg",
+      "photo": "car.png",
       "brand": "Ford",
       "model": "Mustang",
       "year": 2021,
+      "seats": 4,
       "description": "Muscle car with style",
       "dailyPrice": 70,
       "reservations": [],
       "location": {
-        "latitude": 41.8781,
-        "longitude": -87.6298
+        "latitude": 52.28,
+        "longitude": 20.8756
       }
     },
     {
       "id": 4,
       "owner": "Emily Davis",
-      "photo": "car4.jpg",
+      "photo": "car.png",
       "brand": "Chevrolet",
       "model": "Equinox",
       "year": 2019,
+      "seats": 5,
       "description": "SUV for family trips",
       "dailyPrice": 60,
       "reservations": [],
       "location": {
-        "latitude": 37.7749,
-        "longitude": -122.4194
+        "latitude": 52.2862,
+        "longitude": 20.9665
       }
     },
     {
       "id": 5,
       "owner": "Chris Wilson",
-      "photo": "car5.jpg",
+      "photo": "car.png",
       "brand": "Nissan",
       "model": "Altima",
       "year": 2023,
+      "seats": 4,
       "description": "Modern and efficient",
       "dailyPrice": 45,
       "reservations": [],
       "location": {
-        "latitude": 32.7767,
-        "longitude": -96.797
+        "latitude": 52.1242,
+        "longitude": 20.9665
       }
     },
     {
       "id": 6,
       "owner": "Eva Martinez",
-      "photo": "car6.jpg",
+      "photo": "car.png",
       "brand": "BMW",
       "model": "X5",
       "year": 2020,
+      "seats": 5,
       "description": "Luxurious SUV",
       "dailyPrice": 80,
       "reservations": [],
       "location": {
         "latitude": 34.0522,
-        "longitude": -118.2437
+        "longitude": 20.9065
       }
     },
     {
       "id": 7,
       "owner": "David White",
-      "photo": "car7.jpg",
+      "photo": "car.png",
       "brand": "Mercedes-Benz",
       "model": "C-Class",
       "year": 2021,
+      "seats": 4,
       "description": "Elegant and powerful",
       "dailyPrice": 75,
       "reservations": [],
@@ -248,10 +255,11 @@
     {
       "id": 8,
       "owner": "Fiona Brown",
-      "photo": "car8.jpg",
+      "photo": "car.png",
       "brand": "Audi",
       "model": "A3",
       "year": 2018,
+      "seats": 3,
       "description": "Compact luxury",
       "dailyPrice": 65,
       "reservations": [],
@@ -263,10 +271,11 @@
     {
       "id": 9,
       "owner": "George Taylor",
-      "photo": "car9.jpg",
+      "photo": "car.png",
       "brand": "Hyundai",
       "model": "Santa Fe",
       "year": 2022,
+      "seats": 4,
       "description": "Versatile and spacious",
       "dailyPrice": 55,
       "reservations": [],
@@ -282,6 +291,7 @@
       "brand": "Kia",
       "model": "Sportage",
       "year": 2019,
+      "seats": 4,
       "description": "Compact SUV",
       "dailyPrice": 60,
       "reservations": [],
