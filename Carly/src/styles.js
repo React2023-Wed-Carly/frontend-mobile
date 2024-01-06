@@ -59,3 +59,59 @@ export const accountStyles = StyleSheet.create({
 	  marginBottom: 10,
 	},
   });
+
+  export const selectedCarStyles = StyleSheet.create({
+	container: {
+	  flex: 1,
+	  justifyContent: 'center',
+	  alignItems: 'center',
+	},
+	carImage: {
+	  width: 200,
+	  height: 200,
+	  resizeMode: 'cover',
+	  borderRadius: 10,
+	},
+	carName: {
+		fontSize: 18,
+		fontWeight: 'bold',
+		textAlign: 'center'
+	  },
+	carInfo: {
+	  marginTop: 10,
+	  alignItems: 'center',
+	},
+	carDetail: {
+	  fontSize: 16,
+	},
+	button: {
+	  marginTop: 10,
+	},
+  });
+  
+
+  export const carItemStyles = StyleSheet.create({
+	titleContainer: {
+	  marginTop: 'auto',
+	},
+	title: {
+	  fontSize: 18,
+	  fontWeight: 'bold',
+	  textAlign: 'center'
+	},
+	image: {
+	  width: 150,
+	  height: 150,
+	  resizeMode: 'cover',
+	  borderRadius: 10,
+	  marginRight: 20
+	},
+	infoContainer: {
+	  marginTop: 50,
+	},
+	infoRow: {
+	  flexDirection: 'row',
+	  alignItems: 'center',
+	  marginBottom: 5,
+	},
+  });

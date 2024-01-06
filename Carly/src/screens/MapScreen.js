@@ -16,7 +16,6 @@ const MapScreen = () => {
   return (
     <View style={styles.container}>
       <MapView style={styles.map} initialRegion={initialRegion}>
-        {/* Marker at the initial region */}
         <Marker
           coordinate={initialRegion}
           title="Marker Title"
