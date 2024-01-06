@@ -41,7 +41,7 @@ export default function BookACarScreen({ navigation }) {
         {!isFilter && <Button title="Filters" onPress={filterClick}></Button>}
         {!isFilter &&
           filteredCars.map((item) => (
-            <BookCarItem car={item} navigation={navigation} />
+            <BookCarItem key={item.id} car={item} navigation={navigation} />
           ))}
       </View>
     </ScrollView>
