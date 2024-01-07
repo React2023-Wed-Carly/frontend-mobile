@@ -1,58 +1,163 @@
 import React from 'react';
-import { View, Text, Button, Image } from 'react-native';
-import { selectedCarStyles } from '../styles';
+import {
+	View,
+	Text,
+	Button,
+	Image,
+	ScrollView,
+	TouchableOpacity,
+} from 'react-native';
+import { styles, selectedCarStyles } from '../styles';
 import carData from '../DummyData.json';
 import Card from '../components/Card';
 
-const SelectedCarScreen = () => {
-  const {
-    id,
-    owner,
-    photo,
-    brand,
-    model,
-    year,
-    description,
-    dailyPrice,
-    location,
-    seats,
-  } = carData.cars[0];
-  console.log(owner);
+const SelectedCarScreen = ({ navigation, route }) => {
+	const { car } = route.params;
 
-  const handleBookCar = () => {
-    // book a car logic
-  };
+	const {
+		brand,
+		model,
+		year,
+		description,
+		dailyPrice,
+		owner,
+		location,
+		seatingCapacity,
+		fuelType,
+		transmission,
+		mileage,
+		features,
+		licensePlateNumber,
+	} = car; // Use index 2 instead of 4 as there's no 'owner' in the example data.
 
-  return (
-    <View
-      style={{
-        padding: 20,
-        paddingHorizontal: 20,
-        backgroundColor: 'white',
-        flex: 1,
-      }}
-    >
-      <Card>
-        <View style={selectedCarStyles.container}>
-          <Image
-            source={require(`../../assets/dummy_cars/car.png`)} // Zastąp adresem URL faktycznym adresem obrazu samochodu
-            style={selectedCarStyles.carImage}
-          />
-          <View style={selectedCarStyles.carInfo}>
-            <Text style={selectedCarStyles.carName}>
-              {brand} {model}
-            </Text>
-            <Text style={selectedCarStyles.carYear}>{year}</Text>
-          </View>
-          <Button
-            style={selectedCarStyles.button}
-            title='Book a car'
-            onPress={handleBookCar}
-          ></Button>
-        </View>
-      </Card>
-    </View>
-  );
+	const featuresLength = car.features ? car.features.length : 0;
+
+	const textPairContainerStyle = {
+		flexDirection: 'row',
+		alignItems: 'center',
+		marginBottom: 5,
+		justifyContent: 'space-between',
+	};
+
+	const labelStyle = { fontWeight: 'bold', paddingRight: 10 };
+
+	const handleBookCar = () => {
+		// book a car logic
+	};
+
+	return (
+		<View style={{ padding: 15, flex: 1 }}>
+			<ScrollView>
+				<Card>
+					<View style={{ flex: 1 }}>
+						<View
+							style={{ flexDirection: 'column', alignItems: 'center', flex: 1 }}
+						>
+							<Image
+								source={require(`../../assets/dummy_cars/car.png`)}
+								style={selectedCarStyles.carImage}
+							/>
+						</View>
+
+						<View style={{ alignItems: 'center' }}>
+							<View style={{ padding: 20, alignItems: 'center' }}>
+								<Text
+									style={{ fontWeight: 'bold', fontSize: 20 }}
+								>{`${brand} ${model} ${year}`}</Text>
+								<Text>{description}</Text>
+							</View>
+
+							<View style={{ width: '85%' }}>
+								<View style={textPairContainerStyle}>
+									<Text style={labelStyle}>Owner</Text>
+									<Text>{owner}</Text>
+								</View>
+
+								<View style={textPairContainerStyle}>
+									<Text style={labelStyle}>Daily Price</Text>
+									<Text>{`$${dailyPrice}`}</Text>
+								</View>
+
+								<View style={textPairContainerStyle}>
+									<Text style={labelStyle}>Seating Capacity</Text>
+									<Text>{seatingCapacity}</Text>
+								</View>
+
+								<View style={textPairContainerStyle}>
+									<Text style={labelStyle}>Fuel Type</Text>
+									<Text>{fuelType}</Text>
+								</View>
+
+								<View style={textPairContainerStyle}>
+									<Text style={labelStyle}>Transmission</Text>
+									<Text>{transmission}</Text>
+								</View>
+
+								<View style={textPairContainerStyle}>
+									<Text style={labelStyle}>Mileage</Text>
+									<Text>{`${mileage} miles`}</Text>
+								</View>
+
+								<View style={textPairContainerStyle}>
+									<Text style={labelStyle}>License Plate</Text>
+									<Text>{licensePlateNumber}</Text>
+								</View>
+
+								{featuresLength > 0 && (
+									<View
+										style={{
+											marginTop: 10,
+											flexDirection: 'row',
+											flexWrap: 'wrap',
+											justifyContent: 'center',
+										}}
+									>
+										{features.map((feature, index) => (
+											<View
+												key={index}
+												style={{
+													borderColor: 'orange',
+													borderWidth: 1,
+													borderRadius: 15,
+													padding: 5,
+													paddingHorizontal: 10,
+													margin: 5,
+												}}
+											>
+												<Text style={{ fontSize: 12 }}>{feature}</Text>
+											</View>
+										))}
+									</View>
+								)}
+							</View>
+						</View>
+					</View>
+				</Card>
+			</ScrollView>
+			<View
+				style={{
+					marginBottom: -20,
+					paddingTop: 10,
+					flexDirection: 'row',
+					justifyContent: 'space-around',
+				}}
+			>
+				<View style={{ width: '45%' }}>
+					<TouchableOpacity
+						style={styles.button}
+						onPress={() => navigation.pop()}
+					>
+						<Text style={styles.buttonText}>Back</Text>
+					</TouchableOpacity>
+				</View>
+				<View style={{ width: '45%' }}>
+					<TouchableOpacity style={styles.activeButton} onPress={handleBookCar}>
+						<Text style={styles.buttonText}>Book</Text>
+					</TouchableOpacity>
+				</View>
+			</View>
+		</View>
+	);
 };
 
 export default SelectedCarScreen;
