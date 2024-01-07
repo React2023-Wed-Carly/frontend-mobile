@@ -1,49 +1,92 @@
-import BookCarItem from "../components/BookCarItem";
-import { useState, useEffect } from "react";
-import CarFilter from "../components/CarFilter";
-import { Button, ScrollView, View, Text } from "react-native";
-import jsonData from "../DummyData.json";
-import { styles } from "../styles";
-import SelectedCarScreen from "./SelectedCarScreen";
+import React, { useState } from 'react';
+import {
+  FlatList,
+  View,
+  TouchableOpacity,
+  Text,
+  Pressable,
+} from 'react-native';
+import jsonData from '../DummyData.json';
+import { styles } from '../styles';
+import BookCarItem from '../components/BookCarItem';
+import FilterScreen from './FilterScreen';
 
 export default function BookACarScreen({ navigation }) {
   const cars = jsonData.cars;
 
-  const [filter, setFilter] = useState({
-    brand: "",
-    model: "",
-    maxPrice: "",
-  });
   const [isFilter, setIsFilter] = useState(false);
 
-  const filterClick = (event) => {
+  const applyFilters = () => {
+    setIsFilter(false);
+  };
+
+  const openFilterScreen = () => {
     setIsFilter(true);
   };
 
-  const filteredCars = cars.filter((car) => {
-    return (
-      car.brand.toLowerCase().includes(filter.brand.toLowerCase()) &&
-      car.model.toLowerCase().includes(filter.model.toLowerCase()) &&
-      (filter.maxPrice === "" || car.dailyPrice <= parseInt(filter.maxPrice))
-    );
-  });
+  const handleCardPress = (car) => {
+    navigation.navigate('Selected Car', { car });
+  };
 
   return (
-    <ScrollView>
-      <View style={styles.screenContainer}>
-        {isFilter && (
-          <CarFilter
-            filter={filter}
-            setFilter={setFilter}
-            setIsFilter={setIsFilter}
+    <View
+      style={{
+        padding: 20,
+        paddingHorizontal: 20,
+        backgroundColor: 'white',
+        flex: 1,
+      }}
+    >
+      {isFilter && (
+        <FilterScreen applyFilters={applyFilters} setIsFilter={setIsFilter} />
+      )}
+      {!isFilter && (
+        <View style={{ marginBottom: 40 }}>
+          <TouchableOpacity
+            style={bookStyles.filterButton}
+            onPress={openFilterScreen}
+          >
+            <Text style={bookStyles.buttonText}>Filter</Text>
+          </TouchableOpacity>
+
+          <FlatList
+            data={cars}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <Pressable key={item.id} onPress={handleCardPress}>
+                <BookCarItem car={item} navigation={navigation} />
+              </Pressable>
+            )}
           />
-        )}
-        {!isFilter && <Button title="Filters" onPress={filterClick}></Button>}
-        {!isFilter &&
-          filteredCars.map((item) => (
-            <BookCarItem key={item.id} car={item} navigation={navigation} />
-          ))}
-      </View>
-    </ScrollView>
+        </View>
+      )}
+    </View>
   );
 }
+
+export const bookStyles = {
+  filterButton: {
+    backgroundColor: '#dcdcdc', // Light grey color
+    padding: 10,
+    borderRadius: 20, // More rounded edges
+    marginVertical: 10,
+    marginTop: 0,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  buttonText: {
+    color: '#000',
+    fontSize: 16,
+  },
+  cardContainer: {
+    backgroundColor: '#ecf0f1',
+    padding: 20,
+    marginVertical: 10,
+    borderRadius: 10,
+  },
+  // Add other styles as needed
+};

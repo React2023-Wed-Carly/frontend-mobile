@@ -14,7 +14,7 @@ const brands = ['Toyota', 'Honda', 'Ford', 'Chevrolet'];
 const fuelTypes = ['Gasoline', 'Electric', 'Hybrid'];
 const transmissionTypes = ['Automatic', 'Manual'];
 
-const FilterScreen = () => {
+const FilterScreen = (props) => {
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 100]);
   const [seatRange, setSeatRange] = useState([2, 9]);
@@ -31,6 +31,7 @@ const FilterScreen = () => {
       fuelTypes: selectedFuelTypes,
       transmissionTypes: selectedTransmissionTypes,
     });
+    props.applyFilters();
   };
 
   return (
