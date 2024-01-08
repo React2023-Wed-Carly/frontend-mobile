@@ -12,7 +12,6 @@ import RentHistoryScreen from './screens/RentHistoryScreen';
 import FavoriteCarsScreen from './screens/FavoriteCarsScreen';
 import PaymentsScreen from './screens/PaymentsScreen';
 import SettingsScreen from './screens/SettinsScreen';
-import MapScreen from './screens/MapScreen';
 import { styles } from './styles';
 import SelectedCarScreen from './screens/SelectedCarScreen';
 
@@ -36,7 +35,6 @@ function App() {
 				drawerStyle={styles.drawerStyle}
 			>
 				<Drawer.Screen name="Home" component={HomeScreen} />
-				<Drawer.Screen name="Map" component={MapScreen} />
 				<Drawer.Screen name="Book a car" component={AppStack} />
 				<Drawer.Screen name="Book a flat" component={BookAFlatScreen} />
 				<Drawer.Screen name="Account" component={AccountScreen} />
