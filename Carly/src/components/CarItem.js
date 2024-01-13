@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import { View, Image, Text, Pressable } from 'react-native';
-import Card from './Card'; // Assuming that Card component is in the same directory
+import {
+  View, Image, Text, Pressable,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Card from './Card'; // Assuming that Card component is in the same directory
 import { formatPrice } from '../utils/textFormatting';
 
-export default function CarItem({ name, photo, price, date }) {
+export default function CarItem({
+  name, photo, price, date,
+}) {
   const [isFavorite, setIsFavorite] = useState(false);
 
   const toggleFavorite = () => {
@@ -23,7 +27,7 @@ export default function CarItem({ name, photo, price, date }) {
       >
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Image
-            source={require(`../../assets/dummy_cars/car.png`)} // Assuming photo is a URL or local image path
+            source={require('../../assets/dummy_cars/car.png')} // Assuming photo is a URL or local image path
             style={{
               width: 80,
               height: 80,
@@ -37,7 +41,7 @@ export default function CarItem({ name, photo, price, date }) {
             <Text
               style={{ fontSize: 19, fontWeight: 'bold' }}
               numberOfLines={1}
-              ellipsizeMode='tail'
+              ellipsizeMode="tail"
             >
               {name}
             </Text>
@@ -50,7 +54,7 @@ export default function CarItem({ name, photo, price, date }) {
                   paddingTop: 6,
                 }}
               >
-                <Icon name='payments' color='gray' size={12} />
+                <Icon name="payments" color="gray" size={12} />
                 <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>
                   {formatPrice(price)}
                 </Text>
@@ -64,7 +68,7 @@ export default function CarItem({ name, photo, price, date }) {
                   padding: 2,
                 }}
               >
-                <Icon name='calendar-today' color='gray' size={12} />
+                <Icon name="calendar-today" color="gray" size={12} />
                 <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>
                   {date}
                 </Text>
@@ -75,9 +79,9 @@ export default function CarItem({ name, photo, price, date }) {
         <View>
           <Pressable onPress={toggleFavorite}>
             {isFavorite ? (
-              <Icon name='star' color='gold' size={30} />
+              <Icon name="star" color="gold" size={30} />
             ) : (
-              <Icon name='star-border' color='gray' size={30} />
+              <Icon name="star-border" color="gray" size={30} />
             )}
           </Pressable>
         </View>

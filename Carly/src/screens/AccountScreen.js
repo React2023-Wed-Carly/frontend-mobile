@@ -1,11 +1,11 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { accountStyles } from "../styles";
-import Icon from "react-native-vector-icons/MaterialIcons";
-import userData from "../DummyData.json";
-import { useSelector } from "react-redux";
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useSelector } from 'react-redux';
+import { accountStyles } from '../styles';
+import userData from '../DummyData.json';
 
-const AccountScreen = () => {
+function AccountScreen() {
   // const {
   //   firstName,
   //   lastName,
@@ -15,30 +15,22 @@ const AccountScreen = () => {
   //   distanceTraveled,
   // } = userData.currentUser;
 
-  const {
-    firstName,
-    lastName,
-    email,
-    phoneNumber,
-    availableFunds,
-    distanceTraveled,
-  } = useSelector((state) => 
-    state.userInfo);
+  const { firstName, lastName, email, phoneNumber, availableFunds, distanceTraveled } = useSelector(
+    (state) => state.userInfo
+  );
 
   const handleDeleteAccount = () => {
-    console.log("Delete account clicked");
+    console.log('Delete account clicked');
     // Add logic for deleting the account
   };
 
   const handleLogout = () => {
-    console.log("Log out clicked");
+    console.log('Log out clicked');
     // Add logic for logging out
   };
 
   return (
     <View style={accountStyles.container}>
-      <Text style={accountStyles.headerText}>Account</Text>
-
       <View style={accountStyles.userInfoContainer}>
         <Icon name="person" size={50} color="#000" />
         <View style={accountStyles.nameBalanceContainer}>
@@ -61,7 +53,7 @@ const AccountScreen = () => {
       </View>
 
       <Text style={accountStyles.distanceText}>
-        Distance travelled: {"\n"}
+        Distance travelled: {'\n'}
         {distanceTraveled} km
       </Text>
       <View style={accountStyles.divider} />
@@ -75,6 +67,6 @@ const AccountScreen = () => {
       </TouchableOpacity>
     </View>
   );
-};
+}
 
 export default AccountScreen;

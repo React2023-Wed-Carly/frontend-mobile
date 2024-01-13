@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Card from './Card';
 import { formatPrice } from '../utils/textFormatting';
 
-const PaymentItem = ({ amount, date, type }) => {
+function PaymentItem({ amount, date, type }) {
   const isInternal = type === 'internal';
   const amountStyle = { fontSize: 18, color: isInternal ? 'green' : 'red' };
   const iconColor = 'grey';
@@ -18,11 +18,11 @@ const PaymentItem = ({ amount, date, type }) => {
         </Text>
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Icon name='calendar-today' color={iconColor} size={12} />
+        <Icon name="calendar-today" color={iconColor} size={12} />
         <Text style={{ color: iconColor, marginLeft: 5 }}>{date}</Text>
       </View>
     </Card>
   );
-};
+}
 
 export default PaymentItem;

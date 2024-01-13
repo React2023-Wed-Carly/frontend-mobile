@@ -4,8 +4,8 @@ import { FlatList, View } from 'react-native';
 import PaymentItem from '../components/PaymentItem';
 import data from '../DummyData.json';
 
-const PaymentsScreen = () => {
-  const payments = data.currentUser.payments;
+function PaymentsScreen() {
+  const { payments } = data.currentUser;
   const renderItem = ({ item }) => (
     <PaymentItem amount={item.amount} date={item.date} type={item.type} />
   );
@@ -19,6 +19,6 @@ const PaymentsScreen = () => {
       />
     </View>
   );
-};
+}
 
 export default PaymentsScreen;

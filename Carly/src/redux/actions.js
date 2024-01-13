@@ -1,12 +1,12 @@
-export const GET_USER_DATA = "GET_USER_DATA";
-export const LIKE_CAR = "LIKE_CAR";
-export const GET_FAVOURITE_CARS = "GET_FAVOURITE_CARS";
-export const SET_FILTERS = "SET_FILTERS";
-export const GET_FILTERED_CARS = "GET_FILTERED_CARS";
-export const GET_PAYMENTS = "GET_PAYMENTS";
-export const GET_RENT_HISTORY = "GET_RENT_HISTORY";
-export const LOGOUT = "LOGOUT";
-export const DELETE_ACCOUNT = "DELETE_ACCOUNT";
+export const GET_USER_DATA = 'GET_USER_DATA';
+export const LIKE_CAR = 'LIKE_CAR';
+export const GET_FAVOURITE_CARS = 'GET_FAVOURITE_CARS';
+export const SET_FILTERS = 'SET_FILTERS';
+export const GET_FILTERED_CARS = 'GET_FILTERED_CARS';
+export const GET_PAYMENTS = 'GET_PAYMENTS';
+export const GET_RENT_HISTORY = 'GET_RENT_HISTORY';
+export const LOGOUT = 'LOGOUT';
+export const DELETE_ACCOUNT = 'DELETE_ACCOUNT';
 
 export const getUserData = (username) => ({
   type: GET_USER_DATA,

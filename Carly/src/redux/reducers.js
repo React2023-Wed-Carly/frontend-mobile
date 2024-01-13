@@ -7,26 +7,25 @@ import {
   GET_RENT_HISTORY,
   GET_USER_DATA,
   LOGOUT,
-  DELETE_ACCOUNT
-} from "./actions";
-import {
+  DELETE_ACCOUNT,
+
   likeCar,
   getFavouriteCars,
   setFilters,
   getFilteredCars,
   getPayments,
   getRentHistory,
-} from "./actions";
+} from './actions';
 
 const initialState = {
   userInfo: {
     id: 0,
-    username: "dummyUser",
-    firstName: "Alice",
-    lastName: "Johnson",
-    email: "alice@example.com",
-    phoneNumber: "123456789",
-    password: "password123",
+    username: 'dummyUser',
+    firstName: 'Alice',
+    lastName: 'Johnson',
+    email: 'alice@example.com',
+    phoneNumber: '123456789',
+    password: 'password123',
     currentLocation: {
       latitude: 40.7128,
       longitude: -74.006,
@@ -39,7 +38,7 @@ const initialState = {
     maxDistance: Number.MAX_VALUE,
     seatigCapacity: 0,
     dailyPrice: Number.MAX_VALUE,
-    transmission: ["Automatic", "Manual"],
+    transmission: ['Automatic', 'Manual'],
   },
   filteredCars: [],
   payments: [],
@@ -47,16 +46,16 @@ const initialState = {
 };
 
 const rootReducer = (state = initialState, action) => {
-    var username;
+  let username;
   switch (action.type) {
     case GET_USER_DATA:
       username = action.payload;
       // fetch user data
-      const userInfo = {}
-      return{
+      const userInfo = {};
+      return {
         ...state,
-        userInfo
-      }
+        userInfo,
+      };
     case LIKE_CAR:
       const carId = action.payload;
       const isLiked = state.likedProducts.includes(carId);
@@ -83,7 +82,7 @@ const rootReducer = (state = initialState, action) => {
       };
     case GET_FILTERED_CARS:
       const carFilters = action.payload.filters;
-      const location = action.payload.location;
+      const { location } = action.payload;
       // fetch filtered cars
       const filteredCars = [];
       return {
@@ -91,7 +90,7 @@ const rootReducer = (state = initialState, action) => {
         filteredCars,
       };
     case GET_PAYMENTS:
-        username = action.payload;
+      username = action.payload;
       // fetch payments
       const payments = [];
       return {
@@ -99,14 +98,14 @@ const rootReducer = (state = initialState, action) => {
         payments,
       };
     case GET_RENT_HISTORY:
-        const username = action.payload;
+      const username = action.payload;
       // fetch rent history
       const rentHistory = [];
       return {
         ...state,
         rentHistory,
       };
-    case LOGOUT: 
+    case LOGOUT:
       return state;
     case DELETE_ACCOUNT:
       return state;
