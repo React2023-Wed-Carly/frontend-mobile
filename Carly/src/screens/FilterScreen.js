@@ -146,10 +146,10 @@ const styles = StyleSheet.create({
   },
   applyButton: {
     backgroundColor: 'blue',
-    padding: 15,
-    borderRadius: 10,
+    padding: 10,
+    borderRadius: 20,
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: -20,
   },
   buttonText: {
     color: 'white',

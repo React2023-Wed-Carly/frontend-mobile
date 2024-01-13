@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
-import {
-  FlatList,
-  View,
-  TouchableOpacity,
-  Text,
-  Pressable,
-} from 'react-native';
+import { FlatList, View, TouchableOpacity, Text, Pressable, Button } from 'react-native';
 import jsonData from '../DummyData.json';
 import { styles } from '../styles';
 import BookCarItem from '../components/BookCarItem';
 import FilterScreen from './FilterScreen';
+import MapScreen from './MapScreen';
 
 export default function BookACarScreen({ navigation }) {
   const { cars } = jsonData;
 
   const [isFilter, setIsFilter] = useState(false);
+  const [currentLocation, setCurrentLocation] = useState(null);
+  const [showCarList, setShowCarList] = useState(false);
 
+  const toggleCarListView = () => {
+    setShowCarList((prev) => !prev);
+  };
   const applyFilters = () => {
     setIsFilter(false);
   };
@@ -26,40 +26,51 @@ export default function BookACarScreen({ navigation }) {
 
   const handleCardPress = (car) => {
     console.log(car);
-    navigation.navigate('Selected Car', { car });
+    navigation.push('Selected Car', { car });
   };
 
   return (
     <View
       style={{
-			  padding: 20,
-			  paddingHorizontal: 20,
-			  backgroundColor: 'white',
-			  flex: 1,
+        padding: 20,
+        paddingHorizontal: 20,
+        backgroundColor: 'white',
+        flex: 1,
       }}
     >
-      {isFilter && (
-      <FilterScreen applyFilters={applyFilters} setIsFilter={setIsFilter} />
-      )}
-      {!isFilter && (
-      <View style={{ marginBottom: 40 }}>
-        <TouchableOpacity
-          style={bookStyles.filterButton}
-          onPress={openFilterScreen}
-        >
-          <Text style={bookStyles.buttonText}>Filter</Text>
-        </TouchableOpacity>
+      {showCarList && (
+        <>
+          {isFilter && <FilterScreen applyFilters={applyFilters} setIsFilter={setIsFilter} />}
+          {!isFilter && (
+            <View style={{ paddingBottom: 90 }}>
+              <TouchableOpacity style={bookStyles.filterButton} onPress={openFilterScreen}>
+                <Text style={bookStyles.buttonText}>Filter</Text>
+              </TouchableOpacity>
 
-        <FlatList
-          data={cars}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <Pressable key={item.id} onPress={() => handleCardPress(item)}>
-              <BookCarItem car={item} navigation={navigation} />
-            </Pressable>
+              <FlatList
+                data={cars}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => (
+                  <Pressable key={item.id} onPress={() => handleCardPress(item)}>
+                    <BookCarItem car={item} navigation={navigation} />
+                  </Pressable>
+                )}
+              />
+              <View style={{ paddingTop: 10 }}>
+                <TouchableOpacity style={styles.activeButton} onPress={toggleCarListView}>
+                  <Text style={styles.buttonText}>
+                    {showCarList ? 'Show Map' : 'Show Car List'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           )}
-        />
-      </View>
+        </>
+      )}
+      {!showCarList && (
+        <TouchableOpacity style={styles.activeButton} onPress={toggleCarListView}>
+          <Text style={styles.buttonText}>{showCarList ? 'Show Map' : 'Show Car List'}</Text>
+        </TouchableOpacity>
       )}
     </View>
   );

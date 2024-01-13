@@ -25,7 +25,7 @@ function AppStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-			  headerShown: false,
+        headerShown: false,
       }}
     >
       <Stack.Screen name="Book a Car" component={BookACarScreen} />
@@ -38,10 +38,7 @@ function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Drawer.Navigator
-          initialRouteName="Home"
-          drawerStyle={styles.drawerStyle}
-        >
+        <Drawer.Navigator initialRouteName="Home" drawerStyle={styles.drawerStyle}>
           <Drawer.Screen name="Home" component={HomeScreen} />
           <Drawer.Screen name="Map" component={MapScreen} />
           <Drawer.Screen name="Book a car" component={AppStack} />
