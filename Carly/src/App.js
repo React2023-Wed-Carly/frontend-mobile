@@ -11,7 +11,7 @@ import AccountScreen from './screens/AccountScreen';
 import RentHistoryScreen from './screens/RentHistoryScreen';
 import FavoriteCarsScreen from './screens/FavoriteCarsScreen';
 import PaymentsScreen from './screens/PaymentsScreen';
-import SettingsScreen from './screens/SettinsScreen';
+import SettingsScreen from './screens/SettingsScreen';
 import MapScreen from './screens/MapScreen';
 import { styles } from './styles';
 import SelectedCarScreen from './screens/SelectedCarScreen';
