@@ -15,8 +15,24 @@ import MapScreen from "./screens/MapScreen";
 import { styles } from "./styles";
 import { Provider } from "react-redux";
 import store from "./redux/store";
+import SelectedCarScreen from './screens/SelectedCarScreen';
+
 
 const Drawer = createDrawerNavigator();
+const Stack = createStackNavigator();
+
+function AppStack() {
+	return (
+		<Stack.Navigator
+			screenOptions={{
+				headerShown: false,
+			}}
+		>
+			<Stack.Screen name="Book a Car" component={BookACarScreen} />
+			<Stack.Screen name="Selected Car" component={SelectedCarScreen} />
+		</Stack.Navigator>
+	);
+}
 
 function App() {
   return (
@@ -39,6 +55,7 @@ function App() {
       </NavigationContainer>
     </Provider>
   );
+
 }
 
 export default registerRootComponent(App);
