@@ -4,13 +4,13 @@ import { FlatList, View } from 'react-native';
 import CarItem from '../components/CarItem';
 import data from '../DummyData.json';
 
-const RentHistoryScreen = () => {
+function RentHistoryScreen() {
   const rentHistory = data.cars;
   const renderItem = ({ item }) => (
     <CarItem
       name={`${item.brand} ${item.model}`}
       price={item.dailyPrice}
-      date='02/02/2023'
+      date="02/02/2023"
       photo={item.photo}
     />
   );
@@ -31,6 +31,6 @@ const RentHistoryScreen = () => {
       />
     </View>
   );
-};
+}
 
 export default RentHistoryScreen;
