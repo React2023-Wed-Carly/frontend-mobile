@@ -1,7 +1,9 @@
 import React from 'react';
-import { View, Text, TextInput, Button } from 'react-native';
+import {
+  View, Text, TextInput, Button,
+} from 'react-native';
 
-const CarFilter = ({ filter, setFilter, setIsFilter }) => {
+function CarFilter({ filter, setFilter, setIsFilter }) {
   const handleFilterChange = (name, value) => {
     setFilter({
       ...filter,
@@ -43,6 +45,6 @@ const CarFilter = ({ filter, setFilter, setIsFilter }) => {
       <Button title="Close" onPress={submitClick} />
     </View>
   );
-};
+}
 
 export default CarFilter;

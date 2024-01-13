@@ -1,18 +1,23 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { accountStyles } from '../styles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useSelector } from 'react-redux';
+import { accountStyles } from '../styles';
 import userData from '../DummyData.json';
 
-const AccountScreen = () => {
-  const {
-    firstName,
-    lastName,
-    email,
-    phoneNumber,
-    availableFunds,
-    distanceTraveled,
-  } = userData.currentUser;
+function AccountScreen() {
+  // const {
+  //   firstName,
+  //   lastName,
+  //   email,
+  //   phoneNumber,
+  //   availableFunds,
+  //   distanceTraveled,
+  // } = userData.currentUser;
+
+  const { firstName, lastName, email, phoneNumber, availableFunds, distanceTraveled } = useSelector(
+    (state) => state.userInfo
+  );
 
   const handleDeleteAccount = () => {
     console.log('Delete account clicked');
@@ -26,10 +31,8 @@ const AccountScreen = () => {
 
   return (
     <View style={accountStyles.container}>
-      <Text style={accountStyles.headerText}>Account</Text>
-
       <View style={accountStyles.userInfoContainer}>
-        <Icon name='person' size={50} color='#000' />
+        <Icon name="person" size={50} color="#000" />
         <View style={accountStyles.nameBalanceContainer}>
           <Text style={accountStyles.nameText}>
             {firstName} {lastName}
@@ -40,12 +43,12 @@ const AccountScreen = () => {
       <View style={accountStyles.divider} />
 
       <View style={accountStyles.userInfoContainer}>
-        <Icon name='email' size={30} color='#000' />
+        <Icon name="email" size={30} color="#000" />
         <Text style={accountStyles.userInfoText}>{email}</Text>
       </View>
 
       <View style={accountStyles.userInfoContainer}>
-        <Icon name='phone' size={30} color='#000' />
+        <Icon name="phone" size={30} color="#000" />
         <Text style={accountStyles.userInfoText}>{phoneNumber}</Text>
       </View>
 
@@ -64,6 +67,6 @@ const AccountScreen = () => {
       </TouchableOpacity>
     </View>
   );
-};
+}
 
 export default AccountScreen;

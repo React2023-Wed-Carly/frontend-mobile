@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, View, TextInput, Button } from "react-native";
-import MapView, { Marker } from "react-native-maps";
-import * as Location from "expo-location";
-import jsonData from "../DummyData.json";
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, TextInput, Button } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
+import * as Location from 'expo-location';
+import jsonData from '../DummyData.json';
 
 const MapScreen = ({ location, setLocation }) => {
   const cars = jsonData.cars;
@@ -14,8 +14,8 @@ const MapScreen = ({ location, setLocation }) => {
   useEffect(() => {
     const getLocation = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.log("Permission to access location was denied");
+      if (status !== 'granted') {
+        console.log('Permission to access location was denied');
         return;
       }
       let location = await Location.getCurrentPositionAsync({});
@@ -43,11 +43,7 @@ const MapScreen = ({ location, setLocation }) => {
 
   return (
     <View style={styles.container}>
-      <MapView
-        style={styles.map}
-        initialRegion={initialRegion}
-        onPress={handleMapPress}
-      >
+      <MapView style={styles.map} initialRegion={initialRegion} onPress={handleMapPress}>
         {currentLocation && (
           <Marker
             coordinate={{

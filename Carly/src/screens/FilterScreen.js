@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import MultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -14,16 +8,14 @@ const brands = ['Toyota', 'Honda', 'Ford', 'Chevrolet'];
 const fuelTypes = ['Gasoline', 'Electric', 'Hybrid'];
 const transmissionTypes = ['Automatic', 'Manual'];
 
-const FilterScreen = (props) => {
+function FilterScreen({ applyFilters }) {
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 100]);
   const [seatRange, setSeatRange] = useState([2, 9]);
   const [selectedFuelTypes, setSelectedFuelTypes] = useState([]);
-  const [selectedTransmissionTypes, setSelectedTransmissionTypes] = useState(
-    []
-  );
+  const [selectedTransmissionTypes, setSelectedTransmissionTypes] = useState([]);
 
-  const applyFilters = () => {
+  const handleApplyFilters = () => {
     console.log('Filters Applied:', {
       brands: selectedBrands,
       priceRange,
@@ -31,7 +23,7 @@ const FilterScreen = (props) => {
       fuelTypes: selectedFuelTypes,
       transmissionTypes: selectedTransmissionTypes,
     });
-    props.applyFilters();
+    applyFilters();
   };
 
   return (
@@ -41,12 +33,12 @@ const FilterScreen = (props) => {
           <Text style={styles.label}>Brand</Text>
           <MultiSelect
             items={brands.map((brand) => ({ name: brand }))}
-            uniqueKey='name'
+            uniqueKey="name"
             selectedItems={selectedBrands}
             onSelectedItemsChange={(items) => setSelectedBrands(items)}
-            selectText='Select Brands'
-            searchInputPlaceholderText='Search Brands...'
-            displayKey='name'
+            selectText="Select Brands"
+            searchInputPlaceholderText="Search Brands..."
+            displayKey="name"
             styleDropdownMenu={styles.multiSelectDropdown}
             styleListContainer={styles.multiSelectList}
             IconRenderer={Icon}
@@ -91,12 +83,12 @@ const FilterScreen = (props) => {
           <Text style={styles.label}>Fuel Type</Text>
           <MultiSelect
             items={fuelTypes.map((fuelType) => ({ name: fuelType }))}
-            uniqueKey='name'
+            uniqueKey="name"
             selectedItems={selectedFuelTypes}
             onSelectedItemsChange={(items) => setSelectedFuelTypes(items)}
-            selectText='Select Fuel Types'
-            searchInputPlaceholderText='Search Fuel Types...'
-            displayKey='name'
+            selectText="Select Fuel Types"
+            searchInputPlaceholderText="Search Fuel Types..."
+            displayKey="name"
             styleDropdownMenu={styles.multiSelectDropdown}
             styleListContainer={styles.multiSelectList}
             IconRenderer={Icon}
@@ -109,14 +101,12 @@ const FilterScreen = (props) => {
             items={transmissionTypes.map((transmissionType) => ({
               name: transmissionType,
             }))}
-            uniqueKey='name'
+            uniqueKey="name"
             selectedItems={selectedTransmissionTypes}
-            onSelectedItemsChange={(items) =>
-              setSelectedTransmissionTypes(items)
-            }
-            selectText='Select Transmission Types'
-            searchInputPlaceholderText='Search Transmission Types...'
-            displayKey='name'
+            onSelectedItemsChange={(items) => setSelectedTransmissionTypes(items)}
+            selectText="Select Transmission Types"
+            searchInputPlaceholderText="Search Transmission Types..."
+            displayKey="name"
             styleDropdownMenu={styles.multiSelectDropdown}
             styleListContainer={styles.multiSelectList}
             IconRenderer={Icon}
@@ -124,12 +114,12 @@ const FilterScreen = (props) => {
         </View>
       </ScrollView>
 
-      <TouchableOpacity style={styles.applyButton} onPress={applyFilters}>
+      <TouchableOpacity style={styles.applyButton} onPress={handleApplyFilters}>
         <Text style={styles.buttonText}>Apply Filters</Text>
       </TouchableOpacity>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -156,10 +146,10 @@ const styles = StyleSheet.create({
   },
   applyButton: {
     backgroundColor: 'blue',
-    padding: 15,
-    borderRadius: 10,
+    padding: 10,
+    borderRadius: 20,
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: -20,
   },
   buttonText: {
     color: 'white',
