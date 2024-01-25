@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FlatList, View, TouchableOpacity, Text, Pressable, Button } from 'react-native';
+import { FlatList, View, TouchableOpacity, Text, Pressable } from 'react-native';
 import jsonData from '../DummyData.json';
 import { styles } from '../styles';
 import BookCarItem from '../components/BookCarItem';
@@ -68,10 +68,11 @@ export default function BookACarScreen({ navigation }) {
         </>
       )}
       {!showCarList && (
-        <TouchableOpacity style={styles.activeButton} onPress={toggleCarListView}>
+        <MapScreen/>
+      )}
+      <TouchableOpacity style={styles.activeButton} onPress={toggleCarListView}>
           <Text style={styles.buttonText}>{showCarList ? 'Show Map' : 'Show Car List'}</Text>
         </TouchableOpacity>
-      )}
     </View>
   );
 }

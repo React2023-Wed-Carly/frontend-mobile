@@ -3,26 +3,44 @@ import { StyleSheet, View, TextInput, Button } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import jsonData from '../DummyData.json';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+
+const defaultLocation = {
+  latitude: 52.2297,
+  longitude: 21.0122,
+};
 
 const MapScreen = ({ location, setLocation }) => {
   const cars = jsonData.cars;
 
   const [initialRegion, setInitialRegion] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
-  const [currentLocation, setCurrentLocation] = useState(null);
+  const [autocompleteLocation, setAutocompleteLocation] = useState(null);
+
+  const setDefaultLocation = () => {
+    setInitialRegion({
+      ...defaultLocation,
+      latitudeDelta: 0.1,
+      longitudeDelta: 0.1,
+    });
+    setSelectedLocation(defaultLocation);
+    setAutocompleteLocation(defaultLocation);
+  };
 
   useEffect(() => {
     const getLocation = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         console.log('Permission to access location was denied');
+        setDefaultLocation();
         return;
       }
+
       let location = await Location.getCurrentPositionAsync({});
-      setCurrentLocation(location.coords);
+      setSelectedLocation(location.coords);
+      setAutocompleteLocation(location.coords);
       setInitialRegion({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
+        ...location.coords,
         latitudeDelta: 0.005,
         longitudeDelta: 0.005,
       });
@@ -30,11 +48,25 @@ const MapScreen = ({ location, setLocation }) => {
     getLocation();
   }, []);
 
+  useEffect(() => {
+    if (autocompleteLocation) {
+      setInitialRegion({
+        ...autocompleteLocation,
+        latitudeDelta: 0.005,
+        longitudeDelta: 0.005,
+      });
+    }
+  }, [autocompleteLocation]);
+
   const handleMapPress = (event) => {
     setSelectedLocation(event.nativeEvent.coordinate);
   };
 
   const handleAddressSelect = (data, details) => {
+    setAutocompleteLocation({
+      latitude: details.geometry.location.lat,
+      longitude: details.geometry.location.lng,
+    });
     setSelectedLocation({
       latitude: details.geometry.location.lat,
       longitude: details.geometry.location.lng,
@@ -43,16 +75,29 @@ const MapScreen = ({ location, setLocation }) => {
 
   return (
     <View style={styles.container}>
-      <MapView style={styles.map} initialRegion={initialRegion} onPress={handleMapPress}>
-        {currentLocation && (
-          <Marker
-            coordinate={{
-              latitude: currentLocation.latitude,
-              longitude: currentLocation.longitude,
-            }}
-            title="Your Location"
-          />
-        )}
+      <GooglePlacesAutocomplete
+        placeholder="Search"
+        autoFocus={false}
+        fetchDetails={true}
+        onPress={handleAddressSelect}
+        query={{
+          key: 'AIzaSyASp262HP3AQD96RZEWL8nMdbfcZ-YHoV4',
+          language: 'en',
+        }}
+        styles={{
+          container: {
+            flex: 0,
+          },
+          description: {
+            color: '#000',
+            fontSize: 16,
+          },
+          predefinedPlacesDescription: {
+            color: '#3caf50',
+          },
+        }}
+      />
+      <MapView style={styles.map} region={initialRegion} onPress={handleMapPress}>
         {selectedLocation && (
           <Marker
             coordinate={selectedLocation}
