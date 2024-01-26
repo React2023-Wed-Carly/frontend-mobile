@@ -23,6 +23,10 @@
     // ignore errors for the react-navigation package
     "no-unused-vars": "warn",
     "react/react-in-jsx-scope": "off",
-    "react/prop-types": "off"
+    "react/prop-types": "off",
+    "no-case-declarations": "off",
+    "default-param-last": "off",
+    "react/no-children-prop": "off",
+    "react/jsx-props-no-spreading": "off"
   }
 }

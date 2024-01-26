@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
-import {
-  View, Text, Switch, TouchableOpacity,
-} from 'react-native';
+import { View, Text, Switch, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-function SettingsScreen() {
+function SettingsScreen({ navigation, onLogout }) {
   const [rememberFilters, setRememberFilters] = useState(false);
   const [theme, setTheme] = useState('light');
   const [autoSetLocation, setAutoSetLocation] = useState(true);
   const [defaultUnits, setDefaultUnits] = useState('kilometers');
 
   const handleResetData = async () => {
-    // Perform actions to reset data (e.g., log out and clear AsyncStorage)
     try {
       // Perform logout actions here (if any)
 
@@ -20,6 +17,9 @@ function SettingsScreen() {
       await AsyncStorage.clear();
 
       // Additional actions after data reset
+      // ...
+
+      // Navigate to the login screen or any other appropriate screen
     } catch (error) {
       console.error('Error resetting data:', error);
     }
@@ -28,10 +28,10 @@ function SettingsScreen() {
   const renderSettingRow = (label, element) => (
     <View
       style={{
-			  flexDirection: 'row',
-			  justifyContent: 'space-between',
-			  alignItems: 'center',
-			  marginBottom: 20,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 20,
       }}
     >
       <Text style={{ fontSize: 15 }}>{label}</Text>
@@ -42,11 +42,8 @@ function SettingsScreen() {
   return (
     <View style={{ padding: 20 }}>
       {renderSettingRow(
-			  'Remember my filters',
-        <Switch
-          value={rememberFilters}
-          onValueChange={(value) => setRememberFilters(value)}
-        />,
+        'Remember my filters',
+        <Switch value={rememberFilters} onValueChange={(value) => setRememberFilters(value)} />
       )}
 
       {renderSettingRow(
@@ -59,15 +56,12 @@ function SettingsScreen() {
           <Picker.Item label="Light" value="light" />
           <Picker.Item label="Dark" value="dark" />
           <Picker.Item label="Another" value="another" />
-        </Picker>,
+        </Picker>
       )}
 
       {renderSettingRow(
         'Set my location automatically',
-        <Switch
-          value={autoSetLocation}
-          onValueChange={(value) => setAutoSetLocation(value)}
-        />,
+        <Switch value={autoSetLocation} onValueChange={(value) => setAutoSetLocation(value)} />
       )}
 
       {renderSettingRow(
@@ -79,13 +73,17 @@ function SettingsScreen() {
         >
           <Picker.Item label="Kilometers" value="kilometers" />
           <Picker.Item label="Miles" value="miles" />
-        </Picker>,
+        </Picker>
       )}
 
       <TouchableOpacity onPress={handleResetData}>
-        <Text style={{ color: 'red', fontWeight: 'bold', fontSize: 15 }}>
+        <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 15, marginBottom: 30 }}>
           Reset my data
         </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={onLogout}>
+        <Text style={{ color: 'red', fontWeight: 'bold', fontSize: 15 }}>Logout</Text>
       </TouchableOpacity>
     </View>
   );

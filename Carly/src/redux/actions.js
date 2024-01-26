@@ -8,6 +8,25 @@ export const GET_RENT_HISTORY = 'GET_RENT_HISTORY';
 export const LOGOUT = 'LOGOUT';
 export const DELETE_ACCOUNT = 'DELETE_ACCOUNT';
 
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+export const LOGIN_FAILURE = 'LOGIN_FAILURE';
+export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
+
+export const loginSuccess = (userData) => ({
+  type: LOGIN_SUCCESS,
+  payload: userData,
+});
+
+export const loginFailure = (error) => ({
+  type: LOGIN_FAILURE,
+  payload: error,
+});
+
+export const registerSuccess = (userData) => ({
+  type: REGISTER_SUCCESS,
+  payload: userData,
+});
+
 export const getUserData = (username) => ({
   type: GET_USER_DATA,
   payload: username,

@@ -8,13 +8,8 @@ import {
   GET_USER_DATA,
   LOGOUT,
   DELETE_ACCOUNT,
-
-  likeCar,
-  getFavouriteCars,
-  setFilters,
-  getFilteredCars,
-  getPayments,
-  getRentHistory,
+  REGISTER_SUCCESS,
+  LOGIN_SUCCESS,
 } from './actions';
 
 const initialState = {
@@ -24,7 +19,6 @@ const initialState = {
     firstName: 'Alice',
     lastName: 'Johnson',
     email: 'alice@example.com',
-    phoneNumber: '123456789',
     password: 'password123',
     currentLocation: {
       latitude: 40.7128,
@@ -36,7 +30,7 @@ const initialState = {
   likedCars: [],
   filters: {
     maxDistance: Number.MAX_VALUE,
-    seatigCapacity: 0,
+    seatingCapacity: 0,
     dailyPrice: Number.MAX_VALUE,
     transmission: ['Automatic', 'Manual'],
   },
@@ -46,69 +40,91 @@ const initialState = {
 };
 
 const rootReducer = (state = initialState, action) => {
-  let username;
   switch (action.type) {
     case GET_USER_DATA:
-      username = action.payload;
-      // fetch user data
-      const userInfo = {};
+      const { payload: username } = action;
+      // Fetch user data here and update userInfo
+      const updatedUserInfo = {}; // Fetch the actual user data
       return {
         ...state,
-        userInfo,
+        userInfo: updatedUserInfo,
       };
+
     case LIKE_CAR:
-      const carId = action.payload;
-      const isLiked = state.likedProducts.includes(carId);
+      const { payload: carId } = action;
+      const isLiked = state.likedCars.includes(carId);
       const likedCars = isLiked
-        ? state.likedCars.filter((id) => id !== carId) // remember - filter creates a new array
+        ? state.likedCars.filter((id) => id !== carId)
         : [...state.likedCars, carId];
       return {
         ...state,
         likedCars,
       };
+
     case GET_FAVOURITE_CARS:
-      username = action.payload;
-      // fetch favourite cars
-      const favouriteCars = [];
+      const { payload: favoriteUsername } = action;
+      // Fetch favorite cars here and update favouriteCars
+      const favoriteCars = []; // Fetch the actual favorite cars
       return {
         ...state,
-        favouriteCars,
+        favoriteCars,
       };
+
     case SET_FILTERS:
-      const filters = action.payload;
+      const { payload: filters } = action;
       return {
         ...state,
         filters,
       };
+
     case GET_FILTERED_CARS:
-      const carFilters = action.payload.filters;
-      const { location } = action.payload;
-      // fetch filtered cars
-      const filteredCars = [];
+      const {
+        payload: { filters: carFilters, location },
+      } = action;
+      // Fetch filtered cars here and update filteredCars
+      const updatedFilteredCars = []; // Fetch the actual filtered cars
       return {
         ...state,
-        filteredCars,
+        filteredCars: updatedFilteredCars,
       };
+
     case GET_PAYMENTS:
-      username = action.payload;
-      // fetch payments
-      const payments = [];
+      const { payload: paymentUsername } = action;
+      // Fetch payments here and update payments
+      const updatedPayments = []; // Fetch the actual payments
       return {
         ...state,
-        payments,
+        payments: updatedPayments,
       };
+
     case GET_RENT_HISTORY:
-      const username = action.payload;
-      // fetch rent history
-      const rentHistory = [];
+      const { payload: rentHistoryUsername } = action;
+      // Fetch rent history here and update rentHistory
+      const updatedRentHistory = []; // Fetch the actual rent history
       return {
         ...state,
-        rentHistory,
+        rentHistory: updatedRentHistory,
       };
+
     case LOGOUT:
-      return state;
     case DELETE_ACCOUNT:
-      return state;
+      return initialState; // Reset state to initial values upon logout or account deletion
+    case LOGIN_SUCCESS:
+      const { payload: userLoginData } = action;
+      console.log('INFO', userLoginData);
+      // Handle registration success, update state with user data
+      return {
+        ...state,
+        userInfo: userLoginData,
+      };
+
+    case REGISTER_SUCCESS:
+      const { payload: userRegisterData } = action;
+      // Handle registration success, update state with user data
+      return {
+        ...state,
+        userInfo: userRegisterData,
+      };
     default:
       return state;
   }
