@@ -27,6 +27,7 @@
     "no-case-declarations": "off",
     "default-param-last": "off",
     "react/no-children-prop": "off",
-    "react/jsx-props-no-spreading": "off"
+    "react/jsx-props-no-spreading": "off",
+    "no-nested-ternary": "off"
   }
 }

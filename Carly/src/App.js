@@ -1,11 +1,11 @@
 // App.js
 import 'react-native-gesture-handler';
 import { useEffect, useState } from 'react';
-
+import { ActivityIndicator, View } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import { Provider, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeScreen from './screens/HomeScreen';
 import BookACarScreen from './screens/BookACarScreen';
@@ -80,10 +80,10 @@ function AuthenticatedApp({ handleLogout }) {
 
 function App() {
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true); // New loading state
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // Check if the user is logged in on app startup
     const checkLoginStatus = async () => {
       try {
         const value = await AsyncStorage.getItem('isLoggedIn');
@@ -94,16 +94,13 @@ function App() {
         console.error('Error checking login status:', error);
       }
     };
+
     const checkStoredUserInfo = async () => {
       try {
-        // Check if userInfo is stored in AsyncStorage
         const storedUserInfoString = await AsyncStorage.getItem('userInfo');
 
         if (storedUserInfoString) {
-          // Parse the stored JSON string to an object
           const storedUserInfo = JSON.parse(storedUserInfoString);
-
-          // Dispatch an action to set the user data in Redux state
           dispatch(loginSuccess(storedUserInfo));
         }
       } catch (error) {
@@ -111,8 +108,13 @@ function App() {
       }
     };
 
-    checkLoginStatus();
-    checkStoredUserInfo();
+    const fetchData = async () => {
+      // Use Promise.all to run both checks concurrently
+      await Promise.all([checkLoginStatus(), checkStoredUserInfo()]);
+      setLoading(false); // Set loading to false once both checks are completed
+    };
+
+    fetchData();
   }, [dispatch]);
 
   const updateLoginStatus = (status) => {
@@ -121,15 +123,7 @@ function App() {
 
   const handleLogout = async () => {
     try {
-      // Perform logout actions here (if any)
-
-      // Clear AsyncStorage
       await AsyncStorage.clear();
-
-      // Additional actions after logout
-      // ...
-
-      // Update the login status
       updateLoginStatus(false);
     } catch (error) {
       console.error('Error logging out:', error);
@@ -138,7 +132,12 @@ function App() {
 
   return (
     <NavigationContainer>
-      {isLoggedIn ? (
+      {loading ? (
+        // Show a loading indicator here
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      ) : isLoggedIn ? (
         <AuthenticatedApp updateLoginStatus={handleLogout} handleLogout={handleLogout} />
       ) : (
         <AuthStack updateLoginStatus={updateLoginStatus} />
