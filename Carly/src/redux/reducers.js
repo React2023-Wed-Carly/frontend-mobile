@@ -11,6 +11,7 @@ import {
   REGISTER_SUCCESS,
   LOGIN_SUCCESS,
   TOP_UP_SUCCESS,
+  GET_PAYMENTS_SUCCESS,
 } from './actions';
 
 const initialState = {
@@ -89,15 +90,6 @@ const rootReducer = (state = initialState, action) => {
         filteredCars: updatedFilteredCars,
       };
 
-    case GET_PAYMENTS:
-      const { payload: paymentUsername } = action;
-      // Fetch payments here and update payments
-      const updatedPayments = []; // Fetch the actual payments
-      return {
-        ...state,
-        payments: updatedPayments,
-      };
-
     case GET_RENT_HISTORY:
       const { payload: rentHistoryUsername } = action;
       // Fetch rent history here and update rentHistory
@@ -124,6 +116,12 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         userInfo: userRegisterData,
+      };
+    case GET_PAYMENTS_SUCCESS:
+      const { payload: payments } = action;
+      return {
+        ...state,
+        payments: payments.reverse(),
       };
     case TOP_UP_SUCCESS:
       const { payload: amount } = action;

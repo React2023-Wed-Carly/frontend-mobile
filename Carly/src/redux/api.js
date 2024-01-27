@@ -1,8 +1,8 @@
 import axios, { AxiosError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { loginSuccess, registerSuccess, topUpSuccess } from './actions';
+import { getPaymentsSuccess, loginSuccess, registerSuccess, topUpSuccess } from './actions';
 
-const URL = 'https://wedcarly.azurewebsites.net/';
+const URL = 'https://wedcarly.azurewebsites.net';
 
 const fetchUserDetails = async (jwtToken) => {
   try {
@@ -146,6 +146,35 @@ export const topUpAccount = (amount) => async (dispatch) => {
     }
   } catch (error) {
     console.error('Error during top-up:', error);
+    throw error;
+  }
+};
+
+export const getPayments = () => async (dispatch) => {
+  try {
+    // Retrieve JWT token from AsyncStorage
+    const userInfo = await AsyncStorage.getItem('userInfo');
+    const { jwtToken } = JSON.parse(userInfo);
+
+    if (!jwtToken) {
+      throw new Error('JWT token not found. User must be logged in.');
+    }
+
+    // Make a request to the top-up endpoint with the provided amount
+    const response = await axios.get(`${URL}/payments`, {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    });
+
+    if (response.status === 200) {
+      // Dispatch action for successful top-up
+      dispatch(getPaymentsSuccess(response.data));
+    } else {
+      throw new Error('Payments fetching failed');
+    }
+  } catch (error) {
+    console.error('Error during receiving payments:', error);
     throw error;
   }
 };
