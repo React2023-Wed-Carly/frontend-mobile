@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { loginSuccess, registerSuccess } from './actions';
+import { loginSuccess, registerSuccess, topUpSuccess } from './actions';
 
 const URL = 'https://wedcarly.azurewebsites.net/';
 
@@ -60,6 +60,8 @@ export const register =
         lastName,
         email,
         password,
+        DistanceTravelled: 0,
+        balance: 0,
       });
 
       if (response.status === 201) {
@@ -81,6 +83,72 @@ export const register =
       throw error;
     }
   };
+
+const updateUserData = async (field, value) => {
+  try {
+    // Retrieve existing user data from AsyncStorage
+    const storedUserData = await AsyncStorage.getItem('userInfo');
+
+    if (storedUserData) {
+      // Parse the stored user data
+      const parsedUserData = JSON.parse(storedUserData);
+
+      // Update the specified field with the new value
+      parsedUserData[field] = value;
+
+      // Save the updated user information back to AsyncStorage
+      await AsyncStorage.setItem('userInfo', JSON.stringify(parsedUserData));
+
+      console.log(`User data field '${field}' updated successfully.`);
+    } else {
+      console.error('Error updating user data: User data not found in AsyncStorage.');
+    }
+  } catch (error) {
+    console.error('Error updating user data:', error);
+    throw error;
+  }
+};
+
+export const topUpAccount = (amount) => async (dispatch) => {
+  try {
+    // Retrieve JWT token from AsyncStorage
+    const userInfo = await AsyncStorage.getItem('userInfo');
+    const { jwtToken } = JSON.parse(userInfo);
+
+    if (!jwtToken) {
+      throw new Error('JWT token not found. User must be logged in.');
+    }
+
+    // Make a request to the top-up endpoint with the provided amount
+    const response = await axios.post(`${URL}/users/details/Topup`, null, {
+      params: {
+        amount,
+      },
+
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    });
+
+    if (response.status === 200) {
+      // Dispatch action for successful top-up
+      dispatch(topUpSuccess(amount));
+
+      const storedUserData = await AsyncStorage.getItem('userInfo');
+      const parsedUserData = JSON.parse(storedUserData);
+
+      // Save the updated user information to AsyncStorage
+      await updateUserData('balance', parsedUserData.balance + amount);
+
+      console.log('Top-up successful');
+    } else {
+      throw new Error('Top-up failed');
+    }
+  } catch (error) {
+    console.error('Error during top-up:', error);
+    throw error;
+  }
+};
 
 export const sendLikedCar = (id) => {};
 
