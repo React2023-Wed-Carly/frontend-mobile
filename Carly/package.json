@@ -1,7 +1,7 @@
 {
   "name": "carly",
   "version": "1.0.0",
-  "main": "src/App.js",
+  "main": "src/Main.js",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -20,7 +20,8 @@
     "@react-navigation/drawer": "^7.0.0-alpha.7",
     "@react-navigation/native": "^7.0.0-alpha.6",
     "@react-navigation/stack": "^7.0.0-alpha.7",
-    "@reduxjs/toolkit": "^2.0.1",
+    "@reduxjs/toolkit": "^2.1.0",
+    "axios": "^1.6.7",
     "expo": "~49.0.15",
     "expo-location": "~16.1.0",
     "expo-status-bar": "~1.6.0",
@@ -37,7 +38,7 @@
     "react-native-sectioned-multi-select": "^0.10.0",
     "react-native-vector-icons": "^10.0.3",
     "react-native-web": "~0.19.6",
-    "react-redux": "^9.0.4"
+    "react-redux": "^9.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
