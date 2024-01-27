@@ -13,6 +13,7 @@ export default function CarItem({
 
   const toggleFavorite = () => {
     setIsFavorite((prev) => !prev);
+    
   };
 
   return (

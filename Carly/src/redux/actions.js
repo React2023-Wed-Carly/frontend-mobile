@@ -1,6 +1,7 @@
 export const GET_USER_DATA = 'GET_USER_DATA';
 export const LIKE_CAR = 'LIKE_CAR';
-export const GET_FAVOURITE_CARS = 'GET_FAVOURITE_CARS';
+export const UNLIKE_CAR = 'UNLIKE_CAR';
+export const GET_FAVORITE_CARS = 'GET_FAVORITE_CARS';
 export const SET_FILTERS = 'SET_FILTERS';
 export const GET_FILTERED_CARS = 'GET_FILTERED_CARS';
 export const GET_PAYMENTS = 'GET_PAYMENTS';
@@ -37,14 +38,19 @@ export const likeCar = (carId) => ({
   payload: carId,
 });
 
+export const unlikeCar = (carId) => ({
+  type: UNLIKE_CAR,
+  payload: carId,
+});
+
 export const setFilters = (filters) => ({
   type: SET_FILTERS,
   payload: filters,
 });
 
-export const getFavouriteCars = (username) => ({
-  type: GET_FAVOURITE_CARS,
-  payload: username,
+export const getFavoriteCars = (favoriteCars) => ({
+  type: GET_FAVORITE_CARS,
+  payload: favoriteCars,
 });
 
 export const getFilteredCars = (location, filters) => ({
@@ -57,9 +63,9 @@ export const getPayments = (username) => ({
   payload: username,
 });
 
-export const getRentHistory = (username) => ({
+export const getRentHistory = (rentHistory) => ({
   type: GET_RENT_HISTORY,
-  payload: username,
+  payload: rentHistory,
 });
 
 export const logout = (username) => ({
