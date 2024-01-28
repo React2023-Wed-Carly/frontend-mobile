@@ -13,6 +13,8 @@ export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_FAILURE = 'LOGIN_FAILURE';
 export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 
+export const TOP_UP_SUCCESS = 'TOP_UP_SUCCESS';
+
 export const loginSuccess = (userData) => ({
   type: LOGIN_SUCCESS,
   payload: userData,
@@ -76,4 +78,9 @@ export const logout = (username) => ({
 export const deleteAccount = (username) => ({
   type: LOGOUT,
   payload: username,
+});
+
+export const topUpSuccess = (userData) => ({
+  type: TOP_UP_SUCCESS,
+  payload: userData,
 });

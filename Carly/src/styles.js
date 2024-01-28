@@ -65,7 +65,8 @@ export const accountStyles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 10,
   },
-  logoutText: {
+  buttonText: {
+    color: 'green',
     fontSize: 16,
     marginBottom: 10,
     fontWeight: 'bold',

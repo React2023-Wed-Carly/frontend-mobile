@@ -10,6 +10,7 @@ import {
   DELETE_ACCOUNT,
   REGISTER_SUCCESS,
   LOGIN_SUCCESS,
+  TOP_UP_SUCCESS,
 } from './actions';
 
 const initialState = {
@@ -24,8 +25,8 @@ const initialState = {
       latitude: 40.7128,
       longitude: -74.006,
     },
-    availableFunds: 1000,
-    distanceTraveled: 150,
+    balance: 1000,
+    distanceTravelled: 150,
   },
   likedCars: [],
   filters: {
@@ -107,7 +108,6 @@ const rootReducer = (state = initialState, action) => {
       return initialState; // Reset state to initial values upon logout or account deletion
     case LOGIN_SUCCESS:
       const { payload: userLoginData } = action;
-      console.log('INFO', userLoginData);
       // Handle registration success, update state with user data
       return {
         ...state,
@@ -120,6 +120,16 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         userInfo: userRegisterData,
+      };
+    case TOP_UP_SUCCESS:
+      const { payload: amount } = action;
+      // Update the relevant part of your state with the new user data
+      return {
+        ...state,
+        userInfo: {
+          ...state.userInfo,
+          balance: state.userInfo.balance + amount,
+        },
       };
     default:
       return state;
