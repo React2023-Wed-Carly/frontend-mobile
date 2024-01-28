@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { loginSuccess, registerSuccess, topUpSuccess } from './actions';
+import { useSelector } from 'react-redux';
+import { getFavoriteCars, loginSuccess, registerSuccess, getRentHistory, topUpSuccess } from './actions';
 
 const URL = 'https://wedcarly.azurewebsites.net/';
 
@@ -152,13 +153,56 @@ export const topUpAccount = (amount) => async (dispatch) => {
 
 export const sendLikedCar = (id) => {};
 
-export const fetchFavouriteCars = (username) => {};
+export const sendUnlikedCar = (id) => {};
+
+export const fetchFavoriteCars = () => async (dispatch) => {
+  const jwtToken = useSelector(state=>state.userInfo.jwtToken);
+  try {
+    const response = await axios.get(`${URL}/users/favorites?page=0`, {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const favoriteCars = response.data;
+      dispatch(getFavoriteCars(favoriteCars));
+
+    } else {
+      throw new Error('Fetching favorite cars failed.');
+    }
+  } catch (error) {
+    console.error('Error during fetching favorite cars:', error);
+    throw error;
+  }
+};
 
 export const fetchFilteredCars = (location, filters) => {};
 
 export const fetchPayments = (username) => {};
 
-export const fetchRentHistory = (username) => {};
+export const fetchRentHistory = () => async (dispatch) => {
+  const jwtToken = useSelector(state=>state.userInfo.jwtToken);
+  try {
+    const response = await axios.get(`${URL}/users/bookings?page=0`, {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const rentHistory = response.data;
+      console.log(rentHistory);
+      dispatch(getRentHistory(rentHistory));
+
+    } else {
+      throw new Error('Fetching rent history failed.');
+    }
+  } catch (error) {
+    console.error('Error during fetching rent history:', error);
+    throw error;
+  }
+};
 
 export const handleLogout = (username) => {};
 
