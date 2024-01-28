@@ -1,6 +1,6 @@
 import {
   LIKE_CAR,
-  GET_FAVOURITE_CARS,
+  GET_FAVORITE_CARS,
   SET_FILTERS,
   GET_FILTERED_CARS,
   GET_RENT_HISTORY,
@@ -62,10 +62,8 @@ const rootReducer = (state = initialState, action) => {
         likedCars,
       };
 
-    case GET_FAVOURITE_CARS:
-      const { payload: favoriteUsername } = action;
-      // Fetch favorite cars here and update favouriteCars
-      const favoriteCars = []; // Fetch the actual favorite cars
+    case GET_FAVORITE_CARS:
+      const { payload: favoriteCars } = action;
       return {
         ...state,
         favoriteCars,
@@ -90,12 +88,10 @@ const rootReducer = (state = initialState, action) => {
       };
 
     case GET_RENT_HISTORY:
-      const { payload: rentHistoryUsername } = action;
-      // Fetch rent history here and update rentHistory
-      const updatedRentHistory = []; // Fetch the actual rent history
+      const { payload: rentHistory } = action;
       return {
         ...state,
-        rentHistory: updatedRentHistory,
+        rentHistory
       };
 
     case LOGOUT:
