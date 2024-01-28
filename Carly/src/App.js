@@ -21,6 +21,7 @@ import SelectedCarScreen from './screens/SelectedCarScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import { loginSuccess } from './redux/actions';
+import { getPayments } from './redux/api';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -106,6 +107,10 @@ function App() {
       } catch (error) {
         console.error('Error checking stored user info:', error);
       }
+    };
+
+    const getData = async () => {
+      dispatch(getPayments);
     };
 
     const fetchData = async () => {
