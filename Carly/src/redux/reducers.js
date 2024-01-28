@@ -1,4 +1,5 @@
 import {
+  UNLIKE_CAR,
   LIKE_CAR,
   GET_FAVORITE_CARS,
   SET_FILTERS,
@@ -12,6 +13,7 @@ import {
   TOP_UP_SUCCESS,
   GET_PAYMENTS_SUCCESS,
 } from './actions';
+import { fetchFavoriteCars } from './api';
 
 const initialState = {
   userInfo: {
@@ -52,14 +54,18 @@ const rootReducer = (state = initialState, action) => {
       };
 
     case LIKE_CAR:
-      const { payload: carId } = action;
-      const isLiked = state.likedCars.includes(carId);
-      const likedCars = isLiked
-        ? state.likedCars.filter((id) => id !== carId)
-        : [...state.likedCars, carId];
+      const { payload: likedId } = action;
+      fetchFavoriteCars();
+      return {
+        ...state
+      };
+
+    case UNLIKE_CAR:
+      const { payload: unlikedId } = action;
+      const unlikeFavoriteCars = state.favoriteCars.filter((car) => car.info.id !== unlikedId);
       return {
         ...state,
-        likedCars,
+        favoriteCars: unlikeFavoriteCars,
       };
 
     case GET_FAVORITE_CARS:
@@ -91,7 +97,7 @@ const rootReducer = (state = initialState, action) => {
       const { payload: rentHistory } = action;
       return {
         ...state,
-        rentHistory
+        rentHistory,
       };
 
     case LOGOUT:

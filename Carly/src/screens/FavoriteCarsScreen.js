@@ -26,6 +26,7 @@ export default function FavoriteCarsScreen() {
 
   const renderItem = ({ item }) => (
       <CarItem
+        id = {item.info.id}
         name={`${item.info.brand} ${item.info.model}`}
         price={item.info.dailyPrice}
         photo={item.img}

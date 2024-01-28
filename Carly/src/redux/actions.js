@@ -60,11 +60,6 @@ export const getFilteredCars = (location, filters) => ({
   payload: { location, filters },
 });
 
-export const getPayments = (username) => ({
-  type: GET_PAYMENTS,
-  payload: username,
-});
-
 export const getRentHistory = (rentHistory) => ({
   type: GET_RENT_HISTORY,
   payload: rentHistory,

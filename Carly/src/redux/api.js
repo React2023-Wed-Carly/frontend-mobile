@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
-import { getPaymentsSuccess, getFavoriteCars, loginSuccess, registerSuccess, getRentHistory, topUpSuccess } from './actions';
+import { getPaymentsSuccess, getFavoriteCars, loginSuccess, registerSuccess, getRentHistory, topUpSuccess, likeCar, unlikeCar } from './actions';
 
 const URL = 'https://wedcarly.azurewebsites.net';
 
@@ -180,9 +180,47 @@ export const getPayments = () => async (dispatch) => {
   }
 };
 
-export const sendLikedCar = (id) => {};
+export const sendLikedCar = (id) => async (dispatch) => {
+  const jwtToken = useSelector(state=>state.userInfo.jwtToken);
+  try {
+    const response = await axios.post(`${URL}/users/favorites/${id}`, {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    });
 
-export const sendUnlikedCar = (id) => {};
+    if (response.status === 200) {
+      dispatch(likeCar(id));
+
+    } else {
+      throw new Error('Adding car to favorites failed.');
+    }
+  } catch (error) {
+    console.error('Error during adding car to favorites:', error);
+    throw error;
+  }
+};
+
+export const sendUnlikedCar = (id) => async (dispatch) => {
+  const jwtToken = useSelector(state=>state.userInfo.jwtToken);
+  try {
+    const response = await axios.delete(`${URL}/users/favorites/${id}`, {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    });
+
+    if (response.status === 200) {
+      dispatch(unlikeCar(id));
+
+    } else {
+      throw new Error('Deleting car from favorites failed.');
+    }
+  } catch (error) {
+    console.error('Error during deleting car from favorites:', error);
+    throw error;
+  }
+};
 
 export const fetchFavoriteCars = () => async (dispatch) => {
   const jwtToken = useSelector(state=>state.userInfo.jwtToken);
