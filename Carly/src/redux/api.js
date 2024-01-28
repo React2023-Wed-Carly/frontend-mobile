@@ -1,7 +1,16 @@
 import axios, { AxiosError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector } from 'react-redux';
-import { getPaymentsSuccess, getFavoriteCars, loginSuccess, registerSuccess, getRentHistory, topUpSuccess, likeCar, unlikeCar } from './actions';
+import {
+  getPaymentsSuccess,
+  getFavoriteCars,
+  loginSuccess,
+  registerSuccess,
+  getRentHistory,
+  topUpSuccess,
+  likeCar,
+  unlikeCar,
+} from './actions';
 
 const URL = 'https://wedcarly.azurewebsites.net';
 
@@ -181,7 +190,7 @@ export const getPayments = () => async (dispatch) => {
 };
 
 export const sendLikedCar = (id) => async (dispatch) => {
-  const jwtToken = useSelector(state=>state.userInfo.jwtToken);
+  const jwtToken = useSelector((state) => state.userInfo.jwtToken);
   try {
     const response = await axios.post(`${URL}/users/favorites/${id}`, {
       headers: {
@@ -191,7 +200,6 @@ export const sendLikedCar = (id) => async (dispatch) => {
 
     if (response.status === 200) {
       dispatch(likeCar(id));
-
     } else {
       throw new Error('Adding car to favorites failed.');
     }
@@ -202,7 +210,7 @@ export const sendLikedCar = (id) => async (dispatch) => {
 };
 
 export const sendUnlikedCar = (id) => async (dispatch) => {
-  const jwtToken = useSelector(state=>state.userInfo.jwtToken);
+  const jwtToken = useSelector((state) => state.userInfo.jwtToken);
   try {
     const response = await axios.delete(`${URL}/users/favorites/${id}`, {
       headers: {
@@ -212,7 +220,6 @@ export const sendUnlikedCar = (id) => async (dispatch) => {
 
     if (response.status === 200) {
       dispatch(unlikeCar(id));
-
     } else {
       throw new Error('Deleting car from favorites failed.');
     }
@@ -223,7 +230,7 @@ export const sendUnlikedCar = (id) => async (dispatch) => {
 };
 
 export const fetchFavoriteCars = () => async (dispatch) => {
-  const jwtToken = useSelector(state=>state.userInfo.jwtToken);
+  const jwtToken = useSelector((state) => state.userInfo.jwtToken);
   try {
     const response = await axios.get(`${URL}/users/favorites?page=0`, {
       headers: {
@@ -234,7 +241,6 @@ export const fetchFavoriteCars = () => async (dispatch) => {
     if (response.status === 200) {
       const favoriteCars = response.data;
       dispatch(getFavoriteCars(favoriteCars));
-
     } else {
       throw new Error('Fetching favorite cars failed.');
     }
@@ -249,19 +255,16 @@ export const fetchFilteredCars = (location, filters) => {};
 export const fetchPayments = (username) => {};
 
 export const fetchRentHistory = () => async (dispatch) => {
-  const jwtToken = useSelector(state=>state.userInfo.jwtToken);
+  const jwtToken = useSelector((state) => state.userInfo.jwtToken);
   try {
-    const response = await axios.get(`${URL}/users/bookings?page=0`, {
+    const response = await axios.get(`${URL}/users/details/bookings?page=0`, {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
       },
     });
-
     if (response.status === 200) {
       const rentHistory = response.data;
-      console.log(rentHistory);
       dispatch(getRentHistory(rentHistory));
-
     } else {
       throw new Error('Fetching rent history failed.');
     }

@@ -1,14 +1,12 @@
 // PaymentsScreen.js
 import React from 'react';
 import {useState} from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, View, Text } from 'react-native';
 import CarItem from '../components/CarItem';
-import data from '../DummyData.json';
 import { fetchRentHistory } from '../redux/api';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 function RentHistoryScreen() {
-  const rentHistory = data.cars;
 
   const dispatch = useDispatch();
   const [error, setError] = useState('');
@@ -26,7 +24,12 @@ function RentHistoryScreen() {
     }
   };
 
+  handleGetRentHistory();
+  const rentHistory = useSelector(state=>state.rentHistory);
+ // console.log(rentHistory.map(item=>item.crDetails))
+
   const renderItem = ({ item }) => {
+    return <Text>{item.carId}</Text>
     return (
       <CarItem
         id={item.info.id}
@@ -46,11 +49,11 @@ function RentHistoryScreen() {
         flex: 1,
       }}
     >
-      {/* <FlatList
+      <FlatList
         data={rentHistory}
         keyExtractor={(item, index) => index.toString()}
         renderItem={renderItem}
-      /> */}
+      />
     </View>
   );
 }
