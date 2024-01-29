@@ -1,41 +1,32 @@
 // PaymentsScreen.js
 import React from 'react';
-import {useState} from 'react';
+import { useEffect} from 'react';
 import { FlatList, View, Text } from 'react-native';
 import CarItem from '../components/CarItem';
-import { fetchRentHistory } from '../redux/api';
+import { fetchFavoriteCars, fetchRentHistory} from '../redux/api';
 import { useDispatch, useSelector } from 'react-redux';
 
 function RentHistoryScreen() {
 
   const dispatch = useDispatch();
-  const [error, setError] = useState('');
 
-  const handleGetRentHistory = async () => {
-    try {
-      await dispatch(fetchRentHistory());
-    } catch (err) {
-      if (err.response && err.response.status === 401) {
-        setError('Please try again.');
-      } else {
-        console.log('Error during fetching rent history:', error);
-        setError('An error occurred. Please try again later.');
-      }
-    }
-  };
+  useEffect(() => {
+    dispatch(fetchRentHistory());
+    dispatch(fetchFavoriteCars());
+  }, [dispatch]);
 
-  handleGetRentHistory();
   const rentHistory = useSelector(state=>state.rentHistory);
- // console.log(rentHistory.map(item=>item.crDetails))
 
   const renderItem = ({ item }) => {
-    return <Text>{item.carId}</Text>
+    if(!item.car) return;
+
     return (
       <CarItem
-        id={item.info.id}
-        name={`${item.info.brand} ${item.info.model}`}
-        price={item.info.dailyPrice}
-        photo={item.img}
+        id={item.car.info.id}
+        name={`${item.car.info.brand} ${item.car.info.model}`}
+        price={item.car.info.dailyPrice}
+        photo={item.car.info.img}
+        date={item.startDate}
       />
     );
   };

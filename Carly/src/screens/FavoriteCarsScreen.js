@@ -1,27 +1,16 @@
 import { FlatList, View, Text } from 'react-native';
 import { fetchFavoriteCars } from '../redux/api';
 import { useDispatch, useSelector } from 'react-redux';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CarItem from '../components/CarItem';
 
 export default function FavoriteCarsScreen() {
   const dispatch = useDispatch();
-  const [error, setError] = useState('');
 
-  const handleGetFavoriteCars = async () => {
-    try {
-      await dispatch(fetchFavoriteCars());
-    } catch (err) {
-      if (err.response && err.response.status === 401) {
-        setError('Please try again.');
-      } else {
-        console.log('Error during fetching favorite cars:', error);
-        setError('An error occurred. Please try again later.');
-      }
-    }
-  };
+  useEffect(() => {
+    dispatch(fetchFavoriteCars());
+  }, [dispatch]);
 
-  handleGetFavoriteCars();
   const favoriteCars = useSelector(state=>state.favoriteCars);
 
   const renderItem = ({ item }) => (
