@@ -5,15 +5,22 @@ export const GET_FAVORITE_CARS = 'GET_FAVORITE_CARS';
 export const SET_FILTERS = 'SET_FILTERS';
 export const GET_FILTERED_CARS = 'GET_FILTERED_CARS';
 export const GET_RENT_HISTORY = 'GET_RENT_HISTORY';
+export const GET_RENT_HISTORY_CARS = 'GET_RENT_HISTORY_CARS';
 export const LOGOUT = 'LOGOUT';
 export const DELETE_ACCOUNT = 'DELETE_ACCOUNT';
 
+export const LOGIN_AGAIN = 'LOGIN_AGAIN';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_FAILURE = 'LOGIN_FAILURE';
 export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 
 export const TOP_UP_SUCCESS = 'TOP_UP_SUCCESS';
 export const GET_PAYMENTS_SUCCESS = 'GET_PAYMENTS_SUCCESS';
+
+export const loginAgain = (userData) => ({
+  type: LOGIN_AGAIN,
+  payload: userData,
+});
 
 export const loginSuccess = (userData) => ({
   type: LOGIN_SUCCESS,
@@ -60,13 +67,13 @@ export const getFilteredCars = (location, filters) => ({
   payload: { location, filters },
 });
 
-export const getPayments = (username) => ({
-  type: GET_PAYMENTS,
-  payload: username,
-});
-
 export const getRentHistory = (rentHistory) => ({
   type: GET_RENT_HISTORY,
+  payload: rentHistory,
+});
+
+export const getRentHistoryCars = (rentHistory) => ({
+  type: GET_RENT_HISTORY_CARS,
   payload: rentHistory,
 });
 

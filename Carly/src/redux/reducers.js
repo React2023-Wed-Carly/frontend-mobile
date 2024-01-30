@@ -1,17 +1,21 @@
 import {
+  UNLIKE_CAR,
   LIKE_CAR,
   GET_FAVORITE_CARS,
   SET_FILTERS,
   GET_FILTERED_CARS,
   GET_RENT_HISTORY,
+  GET_RENT_HISTORY_CARS,
   GET_USER_DATA,
   LOGOUT,
   DELETE_ACCOUNT,
   REGISTER_SUCCESS,
+  LOGIN_AGAIN,
   LOGIN_SUCCESS,
   TOP_UP_SUCCESS,
   GET_PAYMENTS_SUCCESS,
 } from './actions';
+import { fetchFavoriteCars } from './api';
 
 const initialState = {
   userInfo: {
@@ -28,7 +32,7 @@ const initialState = {
     balance: 1000,
     distanceTravelled: 150,
   },
-  likedCars: [],
+  favoriteCars: [],
   filters: {
     maxDistance: Number.MAX_VALUE,
     seatingCapacity: 0,
@@ -52,14 +56,20 @@ const rootReducer = (state = initialState, action) => {
       };
 
     case LIKE_CAR:
-      const { payload: carId } = action;
-      const isLiked = state.likedCars.includes(carId);
-      const likedCars = isLiked
-        ? state.likedCars.filter((id) => id !== carId)
-        : [...state.likedCars, carId];
+      const { payload: likedId } = action;
+      const car = state.carsDetails.find((item) => item.info.id === likedId);
+      const newFavoriteCars = [...state.favoriteCars, car];
       return {
         ...state,
-        likedCars,
+        favoriteCars: newFavoriteCars,
+      };
+
+    case UNLIKE_CAR:
+      const { payload: unlikedId } = action;
+      newFavoriteCars = state.favoriteCars.filter((item) => item.info.id !== unlikedId);
+      return {
+        ...state,
+        favoriteCars: newFavoriteCars,
       };
 
     case GET_FAVORITE_CARS:
@@ -91,7 +101,24 @@ const rootReducer = (state = initialState, action) => {
       const { payload: rentHistory } = action;
       return {
         ...state,
-        rentHistory
+        rentHistory,
+      };
+    case GET_RENT_HISTORY_CARS:
+      const { payload: carsDetails } = action;
+
+      const oldRentHistory = state.rentHistory;
+      const carsDetailsMap = new Map(carsDetails.map((car) => [car.info.id, car]));
+
+      // Update each element in rentHistory with car information
+      const updatedRentHistory = oldRentHistory.map((historyItem) => ({
+        ...historyItem,
+        car: carsDetailsMap.get(historyItem.carId),
+      }));
+
+      return {
+        ...state,
+        rentHistoryCars: carsDetails,
+        rentHistory: updatedRentHistory,
       };
 
     case LOGOUT:
@@ -103,6 +130,11 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         userInfo: userLoginData,
+      };
+    case LOGIN_AGAIN:
+      // Handle registration success, update state with user data
+      return {
+        ...state,
       };
 
     case REGISTER_SUCCESS:

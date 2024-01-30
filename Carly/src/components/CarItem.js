@@ -1,19 +1,25 @@
-import React, { useState } from 'react';
-import {
-  View, Image, Text, Pressable,
-} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Image, Text, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Card from './Card'; // Assuming that Card component is in the same directory
 import { formatPrice } from '../utils/textFormatting';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchFavoriteCars, sendLikedCar, sendUnlikedCar } from '../redux/api';
 
-export default function CarItem({
-  name, photo, price, date,
-}) {
-  const [isFavorite, setIsFavorite] = useState(false);
+export default function CarItem({ id, name, photo, price, date }) {
+  const dispatch = useDispatch();
 
-  const toggleFavorite = () => {
+  const favoriteCars = useSelector((state) => state.favoriteCars);
+  const isLiked = favoriteCars.find((item) => item.info.id === id) ? true : false;
+  const [isFavorite, setIsFavorite] = useState(isLiked);
+
+  const toggleFavorite = async () => {
+    if (isFavorite) {
+      dispatch(sendUnlikedCar(id));
+    } else {
+      dispatch(sendLikedCar(id));
+    }
     setIsFavorite((prev) => !prev);
-    
   };
 
   return (
@@ -70,9 +76,7 @@ export default function CarItem({
                 }}
               >
                 <Icon name="calendar-today" color="gray" size={12} />
-                <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>
-                  {date}
-                </Text>
+                <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>{date}</Text>
               </View>
             )}
           </View>

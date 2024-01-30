@@ -1,19 +1,35 @@
 // PaymentsScreen.js
 import React from 'react';
-import { FlatList, View } from 'react-native';
+import { useEffect} from 'react';
+import { FlatList, View, Text } from 'react-native';
 import CarItem from '../components/CarItem';
-import data from '../DummyData.json';
+import { fetchFavoriteCars, fetchRentHistory} from '../redux/api';
+import { useDispatch, useSelector } from 'react-redux';
 
 function RentHistoryScreen() {
-  const rentHistory = data.cars;
-  const renderItem = ({ item }) => (
-    <CarItem
-      name={`${item.brand} ${item.model}`}
-      price={item.dailyPrice}
-      date="02/02/2023"
-      photo={item.photo}
-    />
-  );
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchRentHistory());
+    dispatch(fetchFavoriteCars());
+  }, [dispatch]);
+
+  const rentHistory = useSelector(state=>state.rentHistory);
+
+  const renderItem = ({ item }) => {
+    if(!item.car) return;
+
+    return (
+      <CarItem
+        id={item.car.info.id}
+        name={`${item.car.info.brand} ${item.car.info.model}`}
+        price={item.car.info.dailyPrice}
+        photo={item.car.info.img}
+        date={item.startDate}
+      />
+    );
+  };
 
   return (
     <View
