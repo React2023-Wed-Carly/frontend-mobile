@@ -370,5 +370,51 @@
 			"date": "2023-01-03",
 			"amount": 60
 		}
-	]
+	],
+	"flat": {
+		"title": "Cozy Apartment in the Center",
+		"thumbnail": "https://example.com/thumbnail.jpg",
+		"gallery": [
+		  "https://example.com/photo1.jpg",
+		  "https://example.com/photo2.jpg",
+		  "https://example.com/photo3.jpg"
+		],
+		"rating": 4.5,
+		"numberOfReviews": 15,
+		"topReviews": [
+		  {
+			"rating": 5,
+			"review": "Very pleasant place, clean and tidy.",
+			"reviewerName": "Anna Kowalska",
+			"date": "2024-01-30"
+		  },
+		  {
+			"rating": 4,
+			"review": "Good location, close to shops and restaurants.",
+			"reviewerName": "Jan Nowak",
+			"date": "2024-01-28"
+		  }
+		],
+		"area": 80,
+		"beds": 2,
+		"bedrooms": 1,
+		"bathrooms": 1,
+		"capacity": 4,
+		"description": "Spacious apartment with a city view. Ideal for families or a group of friends.",
+		"facilities": [
+		  "WiFi",
+		  "TV",
+		  "Fully equipped kitchen",
+		  "Washing machine",
+		  "Balcony"
+		],
+		"address": {
+		  "street": "Flower Street 10",
+		  "postalCode": "00-001",
+		  "city": "Warsaw",
+		  "country": "Poland"
+		},
+		"price": 100,
+		"startDate": "2023-01-01"
+	  }
 }

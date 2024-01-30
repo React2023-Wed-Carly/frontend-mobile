@@ -25,8 +25,7 @@ export default function BookACarScreen({ navigation }) {
   };
 
   const handleCardPress = (car) => {
-    console.log(car);
-    navigation.push('Selected Car', { car });
+    navigation.push('Selected Car', { car, bookCar: true });
   };
 
   return (

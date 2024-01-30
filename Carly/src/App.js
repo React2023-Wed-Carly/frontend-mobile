@@ -22,6 +22,7 @@ import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import { loginSuccess } from './redux/actions';
 import { getPayments } from './redux/api';
+import FlatScreen from './screens/FlatScreen';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -61,10 +62,25 @@ function AuthStack({ updateLoginStatus }) {
   );
 }
 
+function HomeStack() {
+  return (
+    <Stack.Navigator
+      initialRouteName="Home"
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="Home Screen" component={HomeScreen} />
+      <Stack.Screen name="Selected Car" component={SelectedCarScreen} />
+      <Stack.Screen name="Flat" component={FlatScreen} />
+    </Stack.Navigator>
+  );
+}
+
 function AuthenticatedApp({ handleLogout }) {
   return (
     <Drawer.Navigator drawerStyle={styles.drawerStyle}>
-      <Drawer.Screen name="Home" component={HomeScreen} />
+      <Drawer.Screen name="Home" component={HomeStack} />
       <Drawer.Screen name="Map" component={MapScreen} />
       <Drawer.Screen name="Book a car" component={AppStack} />
       <Drawer.Screen name="Book a flat" component={BookAFlatScreen} />

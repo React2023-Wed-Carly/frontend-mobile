@@ -4,7 +4,7 @@ import { styles, selectedCarStyles } from '../styles';
 import Card from '../components/Card';
 
 function SelectedCarScreen({ navigation, route }) {
-  const { car } = route.params;
+  const { car, bookCar, reservation } = route.params;
 
   const {
     brand,
@@ -58,6 +58,20 @@ function SelectedCarScreen({ navigation, route }) {
               </View>
 
               <View style={{ width: '85%' }}>
+              {reservation && (
+                <>
+                  <View style={textPairContainerStyle}>
+                    <Text style={labelStyle}>Start date:</Text>
+                    <Text>{reservation.startDate}</Text>
+                  </View>
+
+                  <View style={textPairContainerStyle}>
+                    <Text style={labelStyle}>End date:</Text>
+                    <Text>{reservation.endDate}</Text>
+                  </View>
+                </>
+              )}
+
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>Owner</Text>
                   <Text>{owner}</Text>
@@ -138,11 +152,13 @@ function SelectedCarScreen({ navigation, route }) {
             <Text style={styles.buttonText}>Back</Text>
           </TouchableOpacity>
         </View>
-        <View style={{ width: '45%' }}>
-          <TouchableOpacity style={styles.activeButton} onPress={handleBookCar}>
-            <Text style={styles.buttonText}>Book</Text>
-          </TouchableOpacity>
-        </View>
+        {bookCar && (
+          <View style={{ width: '45%' }}>
+            <TouchableOpacity style={styles.activeButton} onPress={handleBookCar}>
+              <Text style={styles.buttonText}>Book</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </View>
   );
