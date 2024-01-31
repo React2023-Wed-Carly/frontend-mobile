@@ -2,12 +2,18 @@ import React, { useState } from 'react';
 import { View, Text, Switch, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useSelector, useDispatch } from 'react-redux';
+import { changeTheme } from '../redux/actions';
 
 function SettingsScreen({ navigation, onLogout }) {
+  const theme = useSelector(state=>state.theme);
+  const dispatch = useDispatch();
+
   const [rememberFilters, setRememberFilters] = useState(false);
-  const [theme, setTheme] = useState('light');
   const [autoSetLocation, setAutoSetLocation] = useState(true);
   const [defaultUnits, setDefaultUnits] = useState('kilometers');
+
+  const pickerStyles = { fontSize: 15, color:theme === 'light' ? '#222' : '#fff' };
 
   const handleResetData = async () => {
     try {
@@ -25,6 +31,10 @@ function SettingsScreen({ navigation, onLogout }) {
     }
   };
 
+  const toggleTheme = (value) => {
+    dispatch(changeTheme(value));
+  }
+
   const renderSettingRow = (label, element) => (
     <View
       style={{
@@ -34,13 +44,13 @@ function SettingsScreen({ navigation, onLogout }) {
         marginBottom: 20,
       }}
     >
-      <Text style={{ fontSize: 15 }}>{label}</Text>
+      <Text style={{ fontSize: 15, color:theme === 'light' ? '#222' : '#fff' }}>{label}</Text>
       <View>{element}</View>
     </View>
   );
 
   return (
-    <View style={{ padding: 20 }}>
+    <View style={{ padding: 20}}>
       {renderSettingRow(
         'Remember my filters',
         <Switch value={rememberFilters} onValueChange={(value) => setRememberFilters(value)} />
@@ -50,8 +60,8 @@ function SettingsScreen({ navigation, onLogout }) {
         'Theme',
         <Picker
           selectedValue={theme}
-          onValueChange={(value) => setTheme(value)}
-          style={{ width: 150 }}
+          onValueChange={(value) => toggleTheme(value)}
+          style={{ width: 150, color:theme === 'light' ? '#222' : '#fff' }}
         >
           <Picker.Item label="Light" value="light" />
           <Picker.Item label="Dark" value="dark" />
@@ -69,7 +79,7 @@ function SettingsScreen({ navigation, onLogout }) {
         <Picker
           selectedValue={defaultUnits}
           onValueChange={(value) => setDefaultUnits(value)}
-          style={{ width: 200 }}
+          style={{ width: 200, color:theme === 'light' ? '#222' : '#fff' }}
         >
           <Picker.Item label="Kilometers" value="kilometers" />
           <Picker.Item label="Miles" value="miles" />
@@ -77,7 +87,7 @@ function SettingsScreen({ navigation, onLogout }) {
       )}
 
       <TouchableOpacity onPress={handleResetData}>
-        <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 15, marginBottom: 30 }}>
+        <Text style={{ color: theme === 'light' ? '#222' : '#fff', fontWeight: 'bold', fontSize: 15, marginBottom: 30 }}>
           Reset my data
         </Text>
       </TouchableOpacity>

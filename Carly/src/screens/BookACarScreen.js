@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import { FlatList, View, TouchableOpacity, Text, Pressable } from 'react-native';
 import jsonData from '../DummyData.json';
 import { styles } from '../styles';
-import BookCarItem from '../components/BookCarItem';
+import CarItem from '../components/CarItem';
 import FilterScreen from './FilterScreen';
 import MapScreen from './MapScreen';
+import { useSelector } from 'react-redux';
 
 export default function BookACarScreen({ navigation }) {
   const { cars } = jsonData;
+  const theme = useSelector(state=>state.theme);
 
   const [isFilter, setIsFilter] = useState(false);
-  const [currentLocation, setCurrentLocation] = useState(null);
   const [showCarList, setShowCarList] = useState(false);
 
   const toggleCarListView = () => {
@@ -33,7 +34,7 @@ export default function BookACarScreen({ navigation }) {
       style={{
         padding: 20,
         paddingHorizontal: 20,
-        backgroundColor: 'white',
+        color: theme === 'light' ? '#222' : '#fff',
         flex: 1,
       }}
     >
@@ -41,7 +42,7 @@ export default function BookACarScreen({ navigation }) {
         <>
           {isFilter && <FilterScreen applyFilters={applyFilters} setIsFilter={setIsFilter} />}
           {!isFilter && (
-            <View style={{ paddingBottom: 90 }}>
+            <View style={{ paddingBottom: 90, color: theme === 'light' ? '#222' : '#fff', }}>
               <TouchableOpacity style={bookStyles.filterButton} onPress={openFilterScreen}>
                 <Text style={bookStyles.buttonText}>Filter</Text>
               </TouchableOpacity>
@@ -51,11 +52,11 @@ export default function BookACarScreen({ navigation }) {
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
                   <Pressable key={item.id} onPress={() => handleCardPress(item)}>
-                    <BookCarItem car={item} navigation={navigation} />
+                    <CarItem car={item} navigation={navigation} distance={5}/>
                   </Pressable>
                 )}
               />
-              <View style={{ paddingTop: 10 }}>
+              <View style={{ paddingTop: 10,  backgroundColor: theme === 'light' ? '#222' : '#fff', }}>
                 <TouchableOpacity style={styles.activeButton} onPress={toggleCarListView}>
                   <Text style={styles.buttonText}>
                     {showCarList ? 'Show Map' : 'Show Car List'}
@@ -71,7 +72,7 @@ export default function BookACarScreen({ navigation }) {
       )}
       <TouchableOpacity style={styles.activeButton} onPress={toggleCarListView}>
           <Text style={styles.buttonText}>{showCarList ? 'Show Map' : 'Show Car List'}</Text>
-        </TouchableOpacity>
+      </TouchableOpacity>
     </View>
   );
 }

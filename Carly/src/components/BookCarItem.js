@@ -38,9 +38,9 @@ export default function BookCarItem({ car, navigation }) {
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              {car.brand}
+              {car.info.brand}
               {' '}
-              {car.model}
+              {car.info.model}
             </Text>
 
             <View

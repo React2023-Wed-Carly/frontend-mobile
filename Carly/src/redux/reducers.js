@@ -14,6 +14,7 @@ import {
   LOGIN_SUCCESS,
   TOP_UP_SUCCESS,
   GET_PAYMENTS_SUCCESS,
+  CHANGE_THEME,
 } from './actions';
 import { fetchFavoriteCars } from './api';
 
@@ -32,6 +33,8 @@ const initialState = {
     balance: 1000,
     distanceTravelled: 150,
   },
+  unit: 'km',
+  theme: 'light',
   favoriteCars: [],
   filters: {
     maxDistance: Number.MAX_VALUE,
@@ -53,6 +56,12 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         userInfo: updatedUserInfo,
+      };
+    case CHANGE_THEME:
+      const { payload: theme } = action;
+      return {
+        ...state,
+        theme,
       };
 
     case LIKE_CAR:
