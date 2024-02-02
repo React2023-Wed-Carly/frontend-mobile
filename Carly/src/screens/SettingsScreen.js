@@ -3,15 +3,15 @@ import { View, Text, Switch, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector, useDispatch } from 'react-redux';
-import { changeTheme } from '../redux/actions';
+import { changeTheme, changeUnit } from '../redux/actions';
 
 function SettingsScreen({ navigation, onLogout }) {
   const theme = useSelector(state=>state.theme);
+  const unit = useSelector(state=>state.unit);
   const dispatch = useDispatch();
 
   const [rememberFilters, setRememberFilters] = useState(false);
   const [autoSetLocation, setAutoSetLocation] = useState(true);
-  const [defaultUnits, setDefaultUnits] = useState('kilometers');
 
   const pickerStyles = { fontSize: 15, color:theme === 'light' ? '#222' : '#fff' };
 
@@ -77,8 +77,8 @@ function SettingsScreen({ navigation, onLogout }) {
       {renderSettingRow(
         'Default units',
         <Picker
-          selectedValue={defaultUnits}
-          onValueChange={(value) => setDefaultUnits(value)}
+          selectedValue={unit}
+          onValueChange={(value) => dispatch(changeUnit(value))}
           style={{ width: 200, color:theme === 'light' ? '#222' : '#fff' }}
         >
           <Picker.Item label="Kilometers" value="kilometers" />

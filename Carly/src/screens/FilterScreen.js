@@ -3,28 +3,42 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import MultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useSelector } from 'react-redux';
+import { setFilters } from '../redux/actions';
 
 const brands = ['Toyota', 'Honda', 'Ford', 'Chevrolet'];
 const fuelTypes = ['Gasoline', 'Electric', 'Hybrid'];
 const transmissionTypes = ['Automatic', 'Manual'];
 
 function FilterScreen({ applyFilters }) {
-  const [selectedBrands, setSelectedBrands] = useState([]);
-  const [priceRange, setPriceRange] = useState([0, 100]);
-  const [seatRange, setSeatRange] = useState([2, 9]);
-  const [selectedFuelTypes, setSelectedFuelTypes] = useState([]);
-  const [selectedTransmissionTypes, setSelectedTransmissionTypes] = useState([]);
+  const filters = useSelector(state=>state.filters);
+  const theme = useSelector(state=>state.theme);
+
+  const [priceRange, setPriceRange] = useState([filters.minPrice, filters.maxPrice]);
+  const [seatRange, setSeatRange] = useState([filters.minSeat, filters.maxSeat]);
+  const [selectedTransmissionTypes, setSelectedTransmissionTypes] = useState(filters.trans);
 
   const handleApplyFilters = () => {
+
     console.log('Filters Applied:', {
-      brands: selectedBrands,
       priceRange,
       seatRange,
-      fuelTypes: selectedFuelTypes,
       transmissionTypes: selectedTransmissionTypes,
     });
-    applyFilters();
+
+    setFilters({
+      minPrice: priceRange[0],
+      maxPrice:priceRange[1],
+      minSeat:seatRange[0],
+      maxSeat:seatRange[1],
+      trans: selectedTransmissionTypes
+    })
   };
+
+  const labelStyle = {fontSize: 18,
+    marginBottom: 5,
+    color: theme === 'light' ? "#222" : '#fff'
+  }
 
   return (
     <View style={styles.container}>
@@ -34,19 +48,18 @@ function FilterScreen({ applyFilters }) {
           <MultiSelect
             items={brands.map((brand) => ({ name: brand }))}
             uniqueKey="name"
-            selectedItems={selectedBrands}
-            onSelectedItemsChange={(items) => setSelectedBrands(items)}
             selectText="Select Brands"
             searchInputPlaceholderText="Search Brands..."
             displayKey="name"
             styleDropdownMenu={styles.multiSelectDropdown}
             styleListContainer={styles.multiSelectList}
             IconRenderer={Icon}
+            onSelectedItemsChange={()=>{}}
           />
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.label}>
+          <Text style={labelStyle}>
             Price per day: {priceRange[0]} - {priceRange[1]}
           </Text>
           <View style={styles.sliderSection}>
@@ -63,7 +76,7 @@ function FilterScreen({ applyFilters }) {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.label}>
+          <Text style={labelStyle}>
             Number of Seats: {seatRange[0]} - {seatRange[1]}
           </Text>
           <View style={styles.sliderSection}>
@@ -80,12 +93,10 @@ function FilterScreen({ applyFilters }) {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.label}>Fuel Type</Text>
+          <Text style={labelStyle}>Fuel Type</Text>
           <MultiSelect
             items={fuelTypes.map((fuelType) => ({ name: fuelType }))}
             uniqueKey="name"
-            selectedItems={selectedFuelTypes}
-            onSelectedItemsChange={(items) => setSelectedFuelTypes(items)}
             selectText="Select Fuel Types"
             searchInputPlaceholderText="Search Fuel Types..."
             displayKey="name"
@@ -96,7 +107,7 @@ function FilterScreen({ applyFilters }) {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.label}>Transmission Type</Text>
+          <Text style={labelStyle}>Transmission Type</Text>
           <MultiSelect
             items={transmissionTypes.map((transmissionType) => ({
               name: transmissionType,
@@ -136,10 +147,6 @@ const styles = StyleSheet.create({
   sliderSection: {
     paddingHorizontal: 5,
     maxWidth: 150,
-  },
-  label: {
-    fontSize: 18,
-    marginBottom: 5,
   },
   sliderContainer: {
     height: 30,

@@ -11,7 +11,7 @@ export default function CarItem({ car, date, distance }) {
   const theme = useSelector((state) => state.theme);
 
   const favoriteCars = useSelector((state) => state.favoriteCars);
-  const isLiked = favoriteCars.find((item) => item.info.id === car.id) ? true : false;
+  const isLiked = favoriteCars.find((item) => item.info.id === car.info.id) ? true : false;
   const [isFavorite, setIsFavorite] = useState(isLiked);
 
   const toggleFavorite = async () => {
@@ -93,7 +93,7 @@ export default function CarItem({ car, date, distance }) {
                 }}
               >
                 <Icon name="location-pin" color="gray" size={12} />
-                <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>{distance}</Text>
+                <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>{distance} km away</Text>
               </View>
             )}
             <View style={{ flexDirection: 'row' }}>

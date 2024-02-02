@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 
 export default function BookACarScreen({ navigation }) {
   const { cars } = jsonData;
-  const theme = useSelector(state=>state.theme);
+  const theme = useSelector((state) => state.theme);
 
   const [isFilter, setIsFilter] = useState(false);
   const [showCarList, setShowCarList] = useState(false);
@@ -42,7 +42,7 @@ export default function BookACarScreen({ navigation }) {
         <>
           {isFilter && <FilterScreen applyFilters={applyFilters} setIsFilter={setIsFilter} />}
           {!isFilter && (
-            <View style={{ paddingBottom: 90, color: theme === 'light' ? '#222' : '#fff', }}>
+            <View style={{ paddingBottom: 90, color: theme === 'light' ? '#222' : '#fff' }}>
               <TouchableOpacity style={bookStyles.filterButton} onPress={openFilterScreen}>
                 <Text style={bookStyles.buttonText}>Filter</Text>
               </TouchableOpacity>
@@ -52,27 +52,27 @@ export default function BookACarScreen({ navigation }) {
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
                   <Pressable key={item.id} onPress={() => handleCardPress(item)}>
-                    <CarItem car={item} navigation={navigation} distance={5}/>
+                    <CarItem car={item} navigation={navigation} distance={5} />
                   </Pressable>
                 )}
               />
-              <View style={{ paddingTop: 10,  backgroundColor: theme === 'light' ? '#222' : '#fff', }}>
                 <TouchableOpacity style={styles.activeButton} onPress={toggleCarListView}>
                   <Text style={styles.buttonText}>
                     {showCarList ? 'Show Map' : 'Show Car List'}
                   </Text>
                 </TouchableOpacity>
-              </View>
             </View>
           )}
         </>
       )}
       {!showCarList && (
-        <MapScreen/>
+        <>
+          <MapScreen />
+            <TouchableOpacity style={styles.activeButton} onPress={toggleCarListView}>
+              <Text style={styles.buttonText}>{showCarList ? 'Show Map' : 'Show Car List'}</Text>
+            </TouchableOpacity>
+        </>
       )}
-      <TouchableOpacity style={styles.activeButton} onPress={toggleCarListView}>
-          <Text style={styles.buttonText}>{showCarList ? 'Show Map' : 'Show Car List'}</Text>
-      </TouchableOpacity>
     </View>
   );
 }
