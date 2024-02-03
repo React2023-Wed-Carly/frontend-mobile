@@ -1,6 +1,8 @@
-import axios, { AxiosError } from 'axios';
+import axiosRetry from 'axios-retry';
+import axios from 'axios';
+import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useSelector } from 'react-redux';
+
 import {
   getPaymentsSuccess,
   getFavoriteCars,
@@ -24,12 +26,28 @@ const fetchUserDetails = async (jwtToken) => {
       },
     });
 
-    if (userDetailsResponse.status === 200) {
-      return userDetailsResponse.data;
-    }
-    throw new Error('User details fetch failed');
+    return userDetailsResponse.data;
   } catch (error) {
     console.error('Error fetching user details:', error);
+    throw error;
+  }
+};
+
+const updateUserData = async (field, value) => {
+  try {
+    const storedUserData = await AsyncStorage.getItem('userInfo');
+    const parsedUserData = JSON.parse(storedUserData);
+
+    if (parsedUserData) {
+      parsedUserData[field] = value;
+      await AsyncStorage.setItem('userInfo', JSON.stringify(parsedUserData));
+
+      console.log(`User data field '${field}' updated successfully.`);
+    } else {
+      console.error('Error updating user data: User data not found in AsyncStorage.');
+    }
+  } catch (error) {
+    console.error('Error updating user data:', error);
     throw error;
   }
 };
@@ -45,29 +63,26 @@ export const login =
 
       if (response.status === 200) {
         const jwtToken = response.data.jwttoken;
-
-        // Use the token to fetch user details
         const userData = await fetchUserDetails(jwtToken);
 
-        // Dispatch actions for successful login and user details
         dispatch(loginSuccess({ ...userData, jwtToken }));
 
-        // Save user information to AsyncStorage
         await AsyncStorage.setItem('userInfo', JSON.stringify({ ...userData, jwtToken }));
+        await SecureStore.setItemAsync('userToken', jwtToken);
       } else {
         throw new Error('Login failed');
       }
     } catch (error) {
       console.error('Error during login:', error);
-      throw error; // Rethrow the error for the calling function to handle
+      throw error;
     }
   };
-export const logAgain = () => async (dispatch) => {
-  var userInfo = await AsyncStorage.getItem('userInfo');
-  userInfo = JSON.parse(userInfo);
-  console.log(userInfo);
 
+export const retryLogin = () => async (dispatch) => {
   try {
+    const userInfo = await AsyncStorage.getItem('userInfo');
+    const parsedUserInfo = JSON.parse(userInfo);
+
     const response = await axios.post(`${URL}/auth/login`, {
       username: 'abc',
       password: 'abc',
@@ -75,15 +90,16 @@ export const logAgain = () => async (dispatch) => {
 
     if (response.status === 200) {
       const jwtToken = response.data.jwttoken;
-      dispatch(loginSuccess({ ...userInfo, jwtToken }));
+      dispatch(loginSuccess({ ...parsedUserInfo, jwtToken }));
 
-      await AsyncStorage.setItem('userInfo', JSON.stringify({ ...userInfo, jwtToken }));
+      await AsyncStorage.setItem('userInfo', JSON.stringify({ ...parsedUserInfo, jwtToken }));
+      await SecureStore.setItemAsync('userToken', jwtToken);
     } else {
       throw new Error('Login failed');
     }
   } catch (error) {
     console.error('Error during login:', error);
-    throw error; // Rethrow the error for the calling function to handle
+    throw error;
   }
 };
 
@@ -103,15 +119,12 @@ export const register =
 
       if (response.status === 201) {
         const jwtToken = response.data.jwttoken;
+        const userData = await fetchUserDetails();
 
-        // Use the token to fetch user details
-        const userData = await fetchUserDetails(jwtToken);
-
-        // Dispatch actions for successful registration and user details
         dispatch(registerSuccess({ ...userData, jwtToken }));
 
-        // Save user information to AsyncStorage
         await AsyncStorage.setItem('userInfo', JSON.stringify({ ...userData, jwtToken }));
+        await SecureStore.setItemAsync('userToken', jwtToken);
       } else {
         throw new Error('Registration failed');
       }
@@ -121,60 +134,25 @@ export const register =
     }
   };
 
-const updateUserData = async (field, value) => {
-  try {
-    // Retrieve existing user data from AsyncStorage
-    const storedUserData = await AsyncStorage.getItem('userInfo');
-
-    if (storedUserData) {
-      // Parse the stored user data
-      const parsedUserData = JSON.parse(storedUserData);
-
-      // Update the specified field with the new value
-      parsedUserData[field] = value;
-
-      // Save the updated user information back to AsyncStorage
-      await AsyncStorage.setItem('userInfo', JSON.stringify(parsedUserData));
-
-      console.log(`User data field '${field}' updated successfully.`);
-    } else {
-      console.error('Error updating user data: User data not found in AsyncStorage.');
-    }
-  } catch (error) {
-    console.error('Error updating user data:', error);
-    throw error;
-  }
-};
-
 export const topUpAccount = (amount) => async (dispatch) => {
   try {
-    // Retrieve JWT token from AsyncStorage
-    const userInfo = await AsyncStorage.getItem('userInfo');
-    const { jwtToken } = JSON.parse(userInfo);
+    const jwtToken = await SecureStore.getItemAsync('userToken');
 
     if (!jwtToken) {
       throw new Error('JWT token not found. User must be logged in.');
     }
 
-    // Make a request to the top-up endpoint with the provided amount
     const response = await axios.post(`${URL}/users/details/Topup`, null, {
-      params: {
-        amount,
-      },
-
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-      },
+      params: { amount },
+      headers: { Authorization: `Bearer ${jwtToken}` },
     });
 
     if (response.status === 200) {
-      // Dispatch action for successful top-up
       dispatch(topUpSuccess(amount));
 
       const storedUserData = await AsyncStorage.getItem('userInfo');
       const parsedUserData = JSON.parse(storedUserData);
 
-      // Save the updated user information to AsyncStorage
       await updateUserData('balance', parsedUserData.balance + amount);
 
       console.log('Top-up successful');
@@ -187,29 +165,23 @@ export const topUpAccount = (amount) => async (dispatch) => {
   }
 };
 
+axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
+
 export const getPayments = () => async (dispatch) => {
   try {
-    // Retrieve JWT token from AsyncStorage
-    const userInfo = await AsyncStorage.getItem('userInfo');
-    const { jwtToken } = JSON.parse(userInfo);
+    const jwtToken = await SecureStore.getItemAsync('userToken');
 
     if (!jwtToken) {
       throw new Error('JWT token not found. User must be logged in.');
     }
 
-    // Make a request to the top-up endpoint with the provided amount
-    const response = await axios.get(`${URL}/payments`, {
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-      },
-    });
+    const paymentsData = await axios
+      .get(`${URL}/users/details/payments?page=0`, {
+        headers: { Authorization: `Bearer ${jwtToken}`, 'Content-Type': 'application/json' },
+      })
+      .then((response) => response.data);
 
-    if (response.status === 200) {
-      // Dispatch action for successful top-up
-      dispatch(getPaymentsSuccess(response.data));
-    } else {
-      throw new Error('Payments fetching failed');
-    }
+    dispatch(getPaymentsSuccess(paymentsData));
   } catch (error) {
     console.error('Error during receiving payments:', error);
     throw error;
@@ -217,17 +189,15 @@ export const getPayments = () => async (dispatch) => {
 };
 
 export const sendLikedCar = (id) => async (dispatch) => {
-  const userInfo = await AsyncStorage.getItem('userInfo');
-  const { jwtToken } = JSON.parse(userInfo);
-
-  if (!jwtToken) {
-    throw new Error('JWT token not found. User must be logged in.');
-  }
   try {
-    const response = await axios.post(`${URL}/users/favorites/${id}`, {
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-      },
+    const jwtToken = await SecureStore.getItemAsync('userToken');
+
+    if (!jwtToken) {
+      throw new Error('JWT token not found. User must be logged in.');
+    }
+
+    const response = await axios.post(`${URL}/users/favorites/${id}`, null, {
+      headers: { Authorization: `Bearer ${jwtToken}` },
     });
 
     if (response.status === 201) {
@@ -242,17 +212,15 @@ export const sendLikedCar = (id) => async (dispatch) => {
 };
 
 export const sendUnlikedCar = (id) => async (dispatch) => {
-  const userInfo = await AsyncStorage.getItem('userInfo');
-  const { jwtToken } = JSON.parse(userInfo);
-
-  if (!jwtToken) {
-    throw new Error('JWT token not found. User must be logged in.');
-  }
   try {
+    const jwtToken = await SecureStore.getItemAsync('userToken');
+
+    if (!jwtToken) {
+      throw new Error('JWT token not found. User must be logged in.');
+    }
+
     const response = await axios.delete(`${URL}/users/favorites/${id}`, {
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-      },
+      headers: { Authorization: `Bearer ${jwtToken}` },
     });
 
     if (response.status === 201) {
@@ -267,19 +235,17 @@ export const sendUnlikedCar = (id) => async (dispatch) => {
 };
 
 export const fetchFavoriteCars = () => async (dispatch) => {
-  const userInfo = await AsyncStorage.getItem('userInfo');
-  const { jwtToken } = JSON.parse(userInfo);
-
-  if (!jwtToken) {
-    throw new Error('JWT token not found. User must be logged in.');
-  }
-
   try {
+    const jwtToken = await SecureStore.getItemAsync('userToken');
+
+    if (!jwtToken) {
+      throw new Error('JWT token not found. User must be logged in.');
+    }
+
     const response = await axios.get(`${URL}/users/favorites?page=0`, {
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-      },
+      headers: { Authorization: `Bearer ${jwtToken}` },
     });
+
     if (response.status === 200) {
       const favoriteCars = response.data;
       dispatch(getFavoriteCars(favoriteCars));
@@ -292,21 +258,18 @@ export const fetchFavoriteCars = () => async (dispatch) => {
   }
 };
 
-export const fetchFilteredCars = (location, filters) => {};
-
 export const fetchRentHistory = () => async (dispatch) => {
-  const userInfo = await AsyncStorage.getItem('userInfo');
-  const { jwtToken } = JSON.parse(userInfo);
-
-  if (!jwtToken) {
-    throw new Error('JWT token not found. User must be logged in.');
-  }
   try {
+    const jwtToken = await SecureStore.getItemAsync('userToken');
+
+    if (!jwtToken) {
+      throw new Error('JWT token not found. User must be logged in.');
+    }
+
     const response = await axios.get(`${URL}/bookings`, {
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-      },
+      headers: { Authorization: `Bearer ${jwtToken}` },
     });
+
     if (response.status === 200) {
       const rentHistory = response.data;
       dispatch(getRentHistory(rentHistory));
@@ -321,22 +284,19 @@ export const fetchRentHistory = () => async (dispatch) => {
 };
 
 export const fetchRentHistoryCars = (rentHistory) => async (dispatch) => {
-  const userInfo = await AsyncStorage.getItem('userInfo');
-  const { jwtToken } = JSON.parse(userInfo);
-
-  if (!jwtToken) {
-    throw new Error('JWT token not found. User must be logged in.');
-  }
-
   try {
+    const jwtToken = await SecureStore.getItemAsync('userToken');
+
+    if (!jwtToken) {
+      throw new Error('JWT token not found. User must be logged in.');
+    }
+
     const carsDetails = [];
     for (const historyItem of rentHistory) {
       const carId = historyItem['carId'];
       try {
         const response = await axios.get(`${URL}/cars/${carId}`, {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
+          headers: { Authorization: `Bearer ${jwtToken}` },
         });
 
         if (response.status === 200) {
@@ -357,6 +317,10 @@ export const fetchRentHistoryCars = (rentHistory) => async (dispatch) => {
   }
 };
 
-export const handleLogout = (username) => {};
+export const handleLogout = (username) => {
+  // Implement logout logic if needed
+};
 
-export const deleteAccount = (username) => {};
+export const deleteAccount = (username) => {
+  // Implement account deletion logic if needed
+};
