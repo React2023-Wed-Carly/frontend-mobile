@@ -1,11 +1,12 @@
 import { FlatList, View, Text } from 'react-native';
 import { fetchFavoriteCars } from '../redux/api';
 import { useDispatch, useSelector } from 'react-redux';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import CarItem from '../components/CarItem';
 
 export default function FavoriteCarsScreen() {
   const dispatch = useDispatch();
+  const theme = useSelector(state=>state.theme)
 
   useEffect(() => {
     dispatch(fetchFavoriteCars());
@@ -15,10 +16,7 @@ export default function FavoriteCarsScreen() {
 
   const renderItem = ({ item }) => (
       <CarItem
-        id = {item.info.id}
-        name={`${item.info.brand} ${item.info.model}`}
-        price={item.info.dailyPrice}
-        photo={item.img}
+        car={item}
       />
     );
 
@@ -27,7 +25,7 @@ export default function FavoriteCarsScreen() {
       style={{
         padding: 20,
         paddingHorizontal: 20,
-        backgroundColor: 'white',
+        color: theme==='light' ? '#222' : '#fff',
         flex: 1,
       }}
     >

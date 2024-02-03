@@ -9,6 +9,7 @@ import { getPayments } from '../redux/api';
 
 function PaymentsScreen() {
   const dispatch = useDispatch();
+  const theme = useSelector(state=>state.theme);
   const payments = useSelector((state) => state.payments);
   const renderItem = ({ item }) => (
     <PaymentItem amount={item.amount} date={item.date} type={item.type} />
@@ -20,7 +21,7 @@ function PaymentsScreen() {
   }, [dispatch]);
 
   return (
-    <View style={{ padding: 10, backgroundColor: 'white', flex: 1 }}>
+    <View style={{ padding: 10, color: theme==='light' ? '#222' : '#fff', flex: 1 }}>
       <FlatList
         data={payments}
         keyExtractor={(item, index) => index.toString()}

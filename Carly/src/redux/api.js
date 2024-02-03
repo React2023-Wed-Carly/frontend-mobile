@@ -73,8 +73,6 @@ export const logAgain = () => async (dispatch) => {
       password: 'abc',
     });
 
-    console.log(response + "xdxd");
-
     if (response.status === 200) {
       const jwtToken = response.data.jwttoken;
       dispatch(loginSuccess({ ...userInfo, jwtToken }));
@@ -232,7 +230,7 @@ export const sendLikedCar = (id) => async (dispatch) => {
       },
     });
 
-    if (response.status === 200) {
+    if (response.status === 201) {
       dispatch(likeCar(id));
     } else {
       throw new Error('Adding car to favorites failed.');
@@ -257,7 +255,7 @@ export const sendUnlikedCar = (id) => async (dispatch) => {
       },
     });
 
-    if (response.status === 200) {
+    if (response.status === 201) {
       dispatch(unlikeCar(id));
     } else {
       throw new Error('Deleting car from favorites failed.');
@@ -304,7 +302,7 @@ export const fetchRentHistory = () => async (dispatch) => {
     throw new Error('JWT token not found. User must be logged in.');
   }
   try {
-    const response = await axios.get(`${URL}/users/details/bookings?page=0`, {
+    const response = await axios.get(`${URL}/bookings`, {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
       },

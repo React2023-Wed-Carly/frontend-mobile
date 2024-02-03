@@ -7,8 +7,8 @@ import { fetchFavoriteCars, fetchRentHistory} from '../redux/api';
 import { useDispatch, useSelector } from 'react-redux';
 
 function RentHistoryScreen() {
-
   const dispatch = useDispatch();
+  const theme = useSelector(state=>state.theme);
 
   useEffect(() => {
     dispatch(fetchRentHistory());
@@ -22,10 +22,7 @@ function RentHistoryScreen() {
 
     return (
       <CarItem
-        id={item.car.info.id}
-        name={`${item.car.info.brand} ${item.car.info.model}`}
-        price={item.car.info.dailyPrice}
-        photo={item.car.info.img}
+        car={item.car}
         date={item.startDate}
       />
     );
@@ -36,7 +33,7 @@ function RentHistoryScreen() {
       style={{
         padding: 20,
         paddingHorizontal: 20,
-        backgroundColor: 'white',
+        color: theme==='light' ? '#222' : '#fff',
         flex: 1,
       }}
     >

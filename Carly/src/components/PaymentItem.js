@@ -3,16 +3,18 @@ import { View, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Card from './Card';
 import { formatPrice } from '../utils/textFormatting';
+import { useSelector } from 'react-redux';
 
 function PaymentItem({ amount, date }) {
   const isTopUp = amount > 0;
   const amountStyle = { fontSize: 18, color: isTopUp ? 'green' : 'red' };
   const iconColor = 'grey';
   const dateParsed = new Date(date.split('.')[0]);
+  const theme = useSelector((state) => state.theme);
 
   return (
     <Card>
-      <View>
+      <View style={{color: theme==='light' ? '#222' : '#fff',}}>
         <Text style={amountStyle}>
           {!isTopUp && '-'}
           {formatPrice(amount)}

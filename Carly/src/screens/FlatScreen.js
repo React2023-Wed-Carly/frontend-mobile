@@ -1,16 +1,20 @@
 import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native';
 import Card from '../components/Card';
 import { styles, selectedCarStyles } from '../styles';
+import { useSelector } from 'react-redux';
 
 export default function FlatScreen({ route, navigation }) {
   const { flat } = route.params;
+  const theme = useSelector(state=>state.theme);
 
-  const labelStyle = { fontWeight: 'bold', paddingRight: 10 };
+  const labelStyle = { fontWeight: 'bold', paddingRight: 10, color:theme === 'light' ? '#222' : '#fff' };
+  const valueStyle = { color:theme === 'light' ? '#222' : '#fff' };
   const textPairContainerStyle = {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 5,
     justifyContent: 'space-between',
+    color:theme === 'light' ? '#222' : '#fff'
   };
 
   return (
@@ -28,24 +32,24 @@ export default function FlatScreen({ route, navigation }) {
             <View style={{ alignItems: 'center' }}>
               <View style={{ padding: 20, alignItems: 'center' }}>
                 <Text
-                  style={{ fontWeight: 'bold', fontSize: 20 }}
+                  style={{ fontWeight: 'bold', fontSize: 20, color:theme === 'light' ? '#222' : '#fff' }}
                 >{`${flat.title}`}</Text>
-                <Text>{flat.description}</Text>
+                <Text style={{color:theme === 'light' ? '#222' : '#fff'}}>{flat.description}</Text>
               </View>
             </View>
 
             <View style={{ width: '85%' }}>
             <View style={textPairContainerStyle}>
                 <Text style={labelStyle}>Beds: </Text>
-                <Text>{flat.beds}</Text>
+                <Text style={valueStyle}>{flat.beds}</Text>
               </View>
               <View style={textPairContainerStyle}>
                 <Text style={labelStyle}>Bedrooms: </Text>
-                <Text>{flat.bedrooms}</Text>
+                <Text style={valueStyle}>{flat.bedrooms}</Text>
               </View>
               <View style={textPairContainerStyle}>
                 <Text style={labelStyle}>Bathrooms: </Text>
-                <Text>{flat.bathrooms}</Text>
+                <Text style={valueStyle}>{flat.bathrooms}</Text>
               </View>
 
               {flat.facilities.length > 0 && (
@@ -70,7 +74,7 @@ export default function FlatScreen({ route, navigation }) {
                           margin: 5,
                         }}
                       >
-                        <Text style={{ fontSize: 12 }}>{feature}</Text>
+                        <Text style={{ fontSize: 12, color: theme === 'light' ? '#222' : '#fff' }}>{feature}</Text>
                       </View>
                     ))}
                   </View>

@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, TextInput, Button } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, MapStyle } from 'react-native-maps';
 import * as Location from 'expo-location';
 import jsonData from '../DummyData.json';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { useDispatch, useSelector } from 'react-redux';
+import {darkMap} from '../../assets/dark_map';
+import { setLocation } from '../redux/actions';
 
 const defaultLocation = {
   latitude: 52.2297,
   longitude: 21.0122,
 };
 
-const MapScreen = ({ location, setLocation }) => {
+const MapScreen = () => {
   const cars = jsonData.cars;
+  const theme = useSelector((state) => state.theme);
+  const dispatch = useDispatch();
+  const currentLocation = useSelector(state=>state.userInfo.currentLocation);
 
   const [initialRegion, setInitialRegion] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -23,6 +29,7 @@ const MapScreen = ({ location, setLocation }) => {
       latitudeDelta: 0.1,
       longitudeDelta: 0.1,
     });
+    dispatch(setLocation(defaultLocation));
     setSelectedLocation(defaultLocation);
     setAutocompleteLocation(defaultLocation);
   };
@@ -37,8 +44,10 @@ const MapScreen = ({ location, setLocation }) => {
       }
 
       let location = await Location.getCurrentPositionAsync({});
+      dispatch(setLocation(location.coords));
       setSelectedLocation(location.coords);
       setAutocompleteLocation(location.coords);
+
       setInitialRegion({
         ...location.coords,
         latitudeDelta: 0.005,
@@ -59,6 +68,7 @@ const MapScreen = ({ location, setLocation }) => {
   }, [autocompleteLocation]);
 
   const handleMapPress = (event) => {
+    dispatch(setLocation(event.nativeEvent.coordinate));
     setSelectedLocation(event.nativeEvent.coordinate);
   };
 
@@ -71,6 +81,10 @@ const MapScreen = ({ location, setLocation }) => {
       latitude: details.geometry.location.lat,
       longitude: details.geometry.location.lng,
     });
+    dispatch(setLocation({
+      latitude: details.geometry.location.lat,
+      longitude: details.geometry.location.lng,
+    }));
   };
 
   return (
@@ -97,7 +111,12 @@ const MapScreen = ({ location, setLocation }) => {
           },
         }}
       />
-      <MapView style={styles.map} region={initialRegion} onPress={handleMapPress}>
+      <MapView
+        style={{ flex: 1 }}
+        customMapStyle={theme === 'light' ? null : darkMap}
+        region={initialRegion}
+        onPress={handleMapPress}
+      >
         {selectedLocation && (
           <Marker
             coordinate={selectedLocation}

@@ -14,8 +14,10 @@ import {
   LOGIN_SUCCESS,
   TOP_UP_SUCCESS,
   GET_PAYMENTS_SUCCESS,
+  CHANGE_THEME,
+  CHANGE_UNIT,
+  SET_LOCATION,
 } from './actions';
-import { fetchFavoriteCars } from './api';
 
 const initialState = {
   userInfo: {
@@ -32,12 +34,15 @@ const initialState = {
     balance: 1000,
     distanceTravelled: 150,
   },
+  unit: 'kilometers',
+  theme: 'light',
   favoriteCars: [],
   filters: {
-    maxDistance: Number.MAX_VALUE,
-    seatingCapacity: 0,
-    dailyPrice: Number.MAX_VALUE,
-    transmission: ['Automatic', 'Manual'],
+    minPrice: 0,
+    maxPrice: 10000,
+    minSeat: 0,
+    maxSeat: 10,
+    trans: [],
   },
   filteredCars: [],
   payments: [],
@@ -53,6 +58,28 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         userInfo: updatedUserInfo,
+      };
+    case CHANGE_THEME:
+      const { payload: theme } = action;
+      return {
+        ...state,
+        theme,
+      };
+
+    case CHANGE_UNIT:
+      const { payload: unit } = action;
+      return {
+        ...state,
+        unit,
+      };
+    case SET_LOCATION:
+      const { payload: currentLocation } = action;
+      return {
+        ...state,
+        userInfo: {
+          ...state.userInfo,
+          currentLocation,
+        },
       };
 
     case LIKE_CAR:
