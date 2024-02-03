@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeScreen from './screens/HomeScreen';
@@ -80,18 +80,12 @@ function HomeStack() {
 function AuthenticatedApp({ handleLogout }) {
   const theme = useSelector((state) => state.theme);
 
-  const MyTheme = {
-    ...DefaultTheme,
-    colors: {
-      ...DefaultTheme.colors,
-      background: theme==='light' ? '#fff' : '#222'
-    },
-  };
-
   return (
-    <Drawer.Navigator drawerStyle={{
-      backgroundColor: theme==='light' ? '#fff' : '#222'
-    }}>
+    <Drawer.Navigator
+      drawerStyle={{
+        backgroundColor: theme === 'light' ? '#fff' : '#222',
+      }}
+    >
       <Drawer.Screen name="Home" component={HomeStack} />
       <Drawer.Screen name="Book a car" component={AppStack} />
       <Drawer.Screen name="Book a flat" component={BookAFlatScreen} />
@@ -112,13 +106,7 @@ function App() {
   const dispatch = useDispatch();
   const theme = useSelector((state) => state.theme);
 
-  const MyTheme = {
-    ...DefaultTheme,
-    colors: {
-      ...DefaultTheme.colors,
-      background: theme==='light' ? '#fff' : '#222'
-    },
-  };
+  const MyTheme = theme === 'light' ? DefaultTheme : DarkTheme;
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -171,18 +159,18 @@ function App() {
     }
   };
   return (
-      <NavigationContainer theme={MyTheme}>
-        {loading ? (
-          // Show a loading indicator here
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#0000ff" />
-          </View>
-        ) : isLoggedIn ? (
-          <AuthenticatedApp updateLoginStatus={handleLogout} handleLogout={handleLogout} />
-        ) : (
-          <AuthStack theme={MyTheme} updateLoginStatus={updateLoginStatus} />
-        )}
-      </NavigationContainer>
+    <NavigationContainer theme={MyTheme}>
+      {loading ? (
+        // Show a loading indicator here
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      ) : isLoggedIn ? (
+        <AuthenticatedApp updateLoginStatus={handleLogout} handleLogout={handleLogout} />
+      ) : (
+        <AuthStack theme={MyTheme} updateLoginStatus={updateLoginStatus} />
+      )}
+    </NavigationContainer>
   );
 }
 
