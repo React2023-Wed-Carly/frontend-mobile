@@ -178,7 +178,12 @@ export const getPayments = () => async (dispatch) => {
       })
       .then((response) => response.data);
 
-    dispatch(getPaymentsSuccess(paymentsData));
+    if (paymentsData) {
+      await AsyncStorage.setItem('payments', JSON.stringify(paymentsData));
+      dispatch(getPaymentsSuccess(paymentsData));
+    } else {
+      throw new Error('Payments fetching failed');
+    }
   } catch (error) {
     console.error('Error during receiving payments:', error);
 
@@ -220,6 +225,10 @@ export const sendLikedCar = (id) => async (dispatch) => {
     });
 
     if (response.status === 201) {
+      const prevFavoriteCars = await AsyncStorage.getItem('favoriteCars');
+      const carsDetails = await AsyncStorage.getItem('carsDetails');
+      const car = carsDetails.find((item) => item.info.id === id);
+      await AsyncStorage.setItem('favoriteCars', JSON.stringify([...prevFavoriteCars, car]));
       dispatch(likeCar(id));
     } else {
       throw new Error('Adding car to favorites failed.');
@@ -243,6 +252,11 @@ export const sendUnlikedCar = (id) => async (dispatch) => {
     });
 
     if (response.status === 201) {
+      const prevFavoriteCars = await AsyncStorage.getItem('favoriteCars');
+      await AsyncStorage.setItem(
+        'favoriteCars',
+        JSON.stringify(prevFavoriteCars.filter((item) => item.info.id !== id))
+      );
       dispatch(unlikeCar(id));
     } else {
       throw new Error('Deleting car from favorites failed.');
@@ -268,6 +282,7 @@ export const fetchFavoriteCars = () => async (dispatch) => {
 
     if (response.status === 200) {
       const favoriteCars = response.data;
+      await AsyncStorage.setItem('favoriteCars', JSON.stringify(favoriteCars));
       dispatch(getFavoriteCars(favoriteCars));
     } else {
       throw new Error('Fetching favorite cars failed.');
@@ -318,6 +333,7 @@ export const fetchRentHistory = () => async (dispatch) => {
 
     if (response.status === 200) {
       const rentHistory = response.data;
+      await AsyncStorage.setItem('rentHistory', JSON.stringify(rentHistory));
       dispatch(getRentHistory(rentHistory));
       dispatch(fetchRentHistoryCars(rentHistory));
     } else {
@@ -381,6 +397,7 @@ export const fetchRentHistoryCars = (rentHistory) => async (dispatch) => {
         throw error;
       }
     }
+    await AsyncStorage.setItem('carsDetails', JSON.stringify(carsDetails));
     dispatch(getRentHistoryCars(carsDetails));
   } catch (error) {
     console.error('Error during fetching rent history cars:', error);
