@@ -3,48 +3,38 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import MultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useSelector, useDispatch } from 'react-redux';
+import { setFilters } from '../redux/actions';
+import { fetchFilteredCars } from '../redux/api';
 
 const brands = ['Toyota', 'Honda', 'Ford', 'Chevrolet'];
 const fuelTypes = ['Gasoline', 'Electric', 'Hybrid'];
 const transmissionTypes = ['Automatic', 'Manual'];
 
-function FilterScreen({ applyFilters }) {
-  const [selectedBrands, setSelectedBrands] = useState([]);
-  const [priceRange, setPriceRange] = useState([0, 100]);
-  const [seatRange, setSeatRange] = useState([2, 9]);
-  const [selectedFuelTypes, setSelectedFuelTypes] = useState([]);
-  const [selectedTransmissionTypes, setSelectedTransmissionTypes] = useState([]);
+function FilterScreen({ applyFilters, setIsFilter }) {
+  const filters = useSelector((state) => state.filters);
+  const currentLocation = useSelector((state) => state.currentLocation);
+
+  const dispatch = useDispatch();
+
+  const [priceRange, setPriceRange] = useState([filters.minPrice, filters.maxPrice]);
+  const [seatRange, setSeatRange] = useState([filters.minSeat, filters.maxSeat]);
+  const [selectedTransmissionTypes, setSelectedTransmissionTypes] = useState(filters.trans);
 
   const handleApplyFilters = () => {
-    console.log('Filters Applied:', {
-      brands: selectedBrands,
-      priceRange,
-      seatRange,
-      fuelTypes: selectedFuelTypes,
-      transmissionTypes: selectedTransmissionTypes,
+    setFilters({
+      minPrice: priceRange[0],
+      maxPrice: priceRange[1],
+      minSeat: seatRange[0],
+      maxSeat: seatRange[1],
+      trans: selectedTransmissionTypes,
     });
-    applyFilters();
+    dispatch(fetchFilteredCars({ location: currentLocation, filters }));
+    setIsFilter(false);
   };
-
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.section}>
-          <Text style={styles.label}>Brand</Text>
-          <MultiSelect
-            items={brands.map((brand) => ({ name: brand }))}
-            uniqueKey="name"
-            selectedItems={selectedBrands}
-            onSelectedItemsChange={(items) => setSelectedBrands(items)}
-            selectText="Select Brands"
-            searchInputPlaceholderText="Search Brands..."
-            displayKey="name"
-            styleDropdownMenu={styles.multiSelectDropdown}
-            styleListContainer={styles.multiSelectList}
-            IconRenderer={Icon}
-          />
-        </View>
-
         <View style={styles.section}>
           <Text style={styles.label}>
             Price per day: {priceRange[0]} - {priceRange[1]}
@@ -79,7 +69,7 @@ function FilterScreen({ applyFilters }) {
           </View>
         </View>
 
-        <View style={styles.section}>
+        {/* <View style={styles.section}>
           <Text style={styles.label}>Fuel Type</Text>
           <MultiSelect
             items={fuelTypes.map((fuelType) => ({ name: fuelType }))}
@@ -93,7 +83,7 @@ function FilterScreen({ applyFilters }) {
             styleListContainer={styles.multiSelectList}
             IconRenderer={Icon}
           />
-        </View>
+        </View> */}
 
         <View style={styles.section}>
           <Text style={styles.label}>Transmission Type</Text>

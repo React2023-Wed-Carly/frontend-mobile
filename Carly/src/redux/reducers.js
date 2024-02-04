@@ -14,8 +14,11 @@ import {
   LOGIN_SUCCESS,
   TOP_UP_SUCCESS,
   GET_PAYMENTS_SUCCESS,
+  SET_LOCATION,
+  CHANGE_UNIT,
+  BOOK_CAR,
+  BOOK_FLAT,
 } from './actions';
-import { fetchFavoriteCars } from './api';
 
 const initialState = {
   userInfo: {
@@ -25,23 +28,27 @@ const initialState = {
     lastName: 'Johnson',
     email: 'alice@example.com',
     password: 'password123',
-    currentLocation: {
-      latitude: 40.7128,
-      longitude: -74.006,
-    },
     balance: 1000,
     distanceTravelled: 150,
   },
+  currentLocation: {
+    latitude: 40.7128,
+    longitude: -74.006,
+  },
   favoriteCars: [],
+  unit: 'kilometers',
   filters: {
-    maxDistance: Number.MAX_VALUE,
-    seatingCapacity: 0,
-    dailyPrice: Number.MAX_VALUE,
-    transmission: ['Automatic', 'Manual'],
+    minPrice: 0,
+    maxPrice: 1000000,
+    minSeat: 0,
+    maxSeat: 10,
+    trans: [],
   },
   filteredCars: [],
   payments: [],
   rentHistory: [],
+  currentCarBooking: null,
+  currentFlatBooking: null
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -71,12 +78,40 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         favoriteCars: newFavoriteCars,
       };
+    case BOOK_CAR: 
+    const {payload: carBooking} = action;
+    return {
+      ...state,
+      currentCarBooking: carBooking
+    };
+
+    case BOOK_FLAT: 
+    const {payload: flatBooking} = action;
+    return {
+      ...state,
+      currentFlatBooking: flatBooking
+    };
+
 
     case GET_FAVORITE_CARS:
       const { payload: favoriteCars } = action;
       return {
         ...state,
         favoriteCars,
+      };
+
+    case CHANGE_UNIT:
+      const { payload: unit } = action;
+      return {
+        ...state,
+        unit,
+      };
+
+    case SET_LOCATION:
+      const { payload: currentLocation } = action;
+      return {
+        ...state,
+        currentLocation,
       };
 
     case SET_FILTERS:
@@ -88,13 +123,11 @@ const rootReducer = (state = initialState, action) => {
 
     case GET_FILTERED_CARS:
       const {
-        payload: { filters: carFilters, location },
+        payload: { filteredCars },
       } = action;
-      // Fetch filtered cars here and update filteredCars
-      const updatedFilteredCars = []; // Fetch the actual filtered cars
       return {
         ...state,
-        filteredCars: updatedFilteredCars,
+        filteredCars,
       };
 
     case GET_RENT_HISTORY:

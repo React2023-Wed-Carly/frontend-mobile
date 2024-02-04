@@ -4,6 +4,9 @@ import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import jsonData from '../DummyData.json';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { setNewLocation } from '../redux/api';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchFilteredCars } from '../redux/api';
 
 const defaultLocation = {
   latitude: 52.2297,
@@ -12,6 +15,10 @@ const defaultLocation = {
 
 const MapScreen = ({ location, setLocation }) => {
   const cars = jsonData.cars;
+  const dispatch = useDispatch();
+
+  const filters = useSelector(state=>state.filters);
+  const currentLocation = useSelector(state=>state.currentLocation);
 
   const [initialRegion, setInitialRegion] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -25,6 +32,8 @@ const MapScreen = ({ location, setLocation }) => {
     });
     setSelectedLocation(defaultLocation);
     setAutocompleteLocation(defaultLocation);
+    dispatch(setNewLocationLocation(defaultLocation))
+    dispatch(fetchFilteredCars({location: currentLocation,filters}));
   };
 
   useEffect(() => {
@@ -44,6 +53,8 @@ const MapScreen = ({ location, setLocation }) => {
         latitudeDelta: 0.005,
         longitudeDelta: 0.005,
       });
+      dispatch(setNewLocation(location.coords));
+      dispatch(fetchFilteredCars({location: currentLocation,filters}));
     };
     getLocation();
   }, []);
@@ -60,6 +71,8 @@ const MapScreen = ({ location, setLocation }) => {
 
   const handleMapPress = (event) => {
     setSelectedLocation(event.nativeEvent.coordinate);
+    dispatch(setNewLocation(event.nativeEvent.coordinate))
+    dispatch(fetchFilteredCars({location: currentLocation,filters}));
   };
 
   const handleAddressSelect = (data, details) => {
@@ -71,6 +84,11 @@ const MapScreen = ({ location, setLocation }) => {
       latitude: details.geometry.location.lat,
       longitude: details.geometry.location.lng,
     });
+    dispatch(setNewLocation({
+      latitude: details.geometry.location.lat,
+      longitude: details.geometry.location.lng,
+    }));
+    dispatch(fetchFilteredCars({location: currentLocation,filters}));
   };
 
   return (

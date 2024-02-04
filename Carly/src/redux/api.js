@@ -12,6 +12,10 @@ import {
   unlikeCar,
   getRentHistoryCars,
   loginAgain,
+  setLocation,
+  getFilteredCars,
+  bookCar,
+  bookFlat,
 } from './actions';
 
 const URL = 'https://wedcarly.azurewebsites.net';
@@ -72,8 +76,6 @@ export const logAgain = () => async (dispatch) => {
       username: 'abc',
       password: 'abc',
     });
-
-    console.log(response + "xdxd");
 
     if (response.status === 200) {
       const jwtToken = response.data.jwttoken;
@@ -294,7 +296,49 @@ export const fetchFavoriteCars = () => async (dispatch) => {
   }
 };
 
-export const fetchFilteredCars = (location, filters) => {};
+export const setNewLocation = (location) => async (dispatch) => {
+  dispatch(setLocation(location));
+};
+
+export const fetchFilteredCars =
+  ({ location, filters }) =>
+  async (dispatch) => {
+    const userInfo = await AsyncStorage.getItem('userInfo');
+    const { jwtToken } = JSON.parse(userInfo);
+
+    if (!jwtToken) {
+      throw new Error('JWT token not found. User must be logged in.');
+    }
+
+    var types = '';
+    if (filters.trans.length === 1) {
+      types = filters.trans[0];
+    } else {
+      types = filters.trans[0] + '%3B' + filters.trans[1];
+    }
+    types = 'manual';
+
+    try {
+      const response = await axios.get(
+        `${URL}/cars?page=0&lat=${location.latitude}&lon=${location.longitude}&minPrice=${filters.minPrice}&maxPrice=${filters.maxPrice}&minSeat=${filters.minSeat}&maxSeat=${filters.maxPrice}&trans=${types}`,
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        const filteredCars = response.data;
+
+        dispatch(getFilteredCars(filteredCars));
+      } else {
+        throw new Error('Fetching favorite cars failed.');
+      }
+    } catch (error) {
+      console.error('Error during fetching favorite cars:', error);
+      throw error;
+    }
+  };
 
 export const fetchRentHistory = () => async (dispatch) => {
   const userInfo = await AsyncStorage.getItem('userInfo');
@@ -358,6 +402,37 @@ export const fetchRentHistoryCars = (rentHistory) => async (dispatch) => {
     throw error;
   }
 };
+
+export const sendCarBooking = (carId, carBooking) => async (dispatch) => {
+  const userInfo = await AsyncStorage.getItem('userInfo');
+  const { jwtToken } = JSON.parse(userInfo);
+
+  if (!jwtToken) {
+    throw new Error('JWT token not found. User must be logged in.');
+  }
+
+  const response = await axios.post(
+    `${URL}/cars/${carId}/bookings`,
+    { ...carBooking, carId },
+    {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    }
+  );
+
+  if (response.status === 202) {
+    console.log("success");
+    dispatch(bookCar(carBooking));
+  } else if (axios.isAxiosError(error) && error.status===404) {
+    throw new Error('Dates are overlapping.');
+  } else {
+    console.error('Error during adding car booking:', error.status);
+  }
+  
+};
+
+export const sendFlatBooking = (flatBooking) => async (dispatch) => {};
 
 export const handleLogout = (username) => {};
 

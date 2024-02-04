@@ -1,27 +1,31 @@
-import React from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image, ScrollView, TouchableOpacity, Modal, Button } from 'react-native';
 import { styles, selectedCarStyles } from '../styles';
+import { useDispatch, useSelector } from 'react-redux';
+//import DateTimePicker from '@react-native-community/datetimepicker';
+
 import Card from '../components/Card';
+import { sendCarBooking } from '../redux/api';
 
 function SelectedCarScreen({ navigation, route }) {
   const { car, bookCar, reservation } = route.params;
 
-  const {
-    brand,
-    model,
-    year,
-    description,
-    dailyPrice,
-    owner,
-    seatingCapacity,
-    fuelType,
-    transmission,
-    mileage,
-    features,
-    licensePlateNumber,
-  } = car; // Use index 2 instead of 4 as there's no 'owner' in the example data.
+  const dispatch = useDispatch();
+  const currentLocation = useSelector((state) => state.currentLocation);
+  const currentCarBooking = useSelector((state) => state.currentCarBooking);
 
-  const featuresLength = car.features ? car.features.length : 0;
+  const [startDate, setStartDate] = useState(new Date('2024-12-10T03:24:00'));
+  const [endDate, setEndDate] = useState(new Date('2024-12-12T03:24:00'));
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const [showModal, setShowModal] = useState(true);
+  const [modalMessage, setModalMessage] = useState('Dates are overlapping.');
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  const featuresLength = car.info.features ? car.info.features.length : 0;
 
   const textPairContainerStyle = {
     flexDirection: 'row',
@@ -32,8 +36,34 @@ function SelectedCarScreen({ navigation, route }) {
 
   const labelStyle = { fontWeight: 'bold', paddingRight: 10 };
 
-  const handleBookCar = () => {
-    // book a car logic
+  const renderDatePicker = () => {
+    if (showDatePicker) {
+      return (
+        <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+          <Text style={{ color: 'blue' }}>Select End Date</Text>
+        </TouchableOpacity>
+      );
+    } else {
+      return <></>;
+    }
+  };
+
+  const handleBookCar = async () => {
+    try {
+      await dispatch(
+        sendCarBooking(car.info.id, {
+          carId: car.info.id,
+          longitude: currentLocation.longitude,
+          latitude: currentLocation.latitude,
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString(),
+          integratedSystemId: 0,
+        })
+      );
+    } catch (error) {
+      setModalMessage('Dates are overlapping. Please choose another date.');
+      setShowModal(true);
+    }
   };
 
   return (
@@ -52,59 +82,59 @@ function SelectedCarScreen({ navigation, route }) {
             <View style={{ alignItems: 'center' }}>
               <View style={{ padding: 20, alignItems: 'center' }}>
                 <Text style={{ fontWeight: 'bold', fontSize: 20 }}>
-                  {`${brand} ${model} ${year}`}
+                  {`${car.info.brand} ${car.info.model} ${car.info.year}`}
                 </Text>
-                <Text>{description}</Text>
+                <Text>{car.info.description}</Text>
               </View>
 
               <View style={{ width: '85%' }}>
-              {reservation && (
-                <>
-                  <View style={textPairContainerStyle}>
-                    <Text style={labelStyle}>Start date:</Text>
+                <View style={textPairContainerStyle}>
+                  <Text style={labelStyle}>Start date:</Text>
+                  {bookCar ? (
+                    <Text>{startDate.toLocaleDateString()}</Text>
+                  ) : (
                     <Text>{reservation.startDate}</Text>
-                  </View>
+                  )}
+                </View>
 
-                  <View style={textPairContainerStyle}>
-                    <Text style={labelStyle}>End date:</Text>
-                    <Text>{reservation.endDate}</Text>
-                  </View>
-                </>
-              )}
+                <View style={textPairContainerStyle}>
+                  <Text style={labelStyle}>End date:</Text>
+                  {bookCar ? renderDatePicker() : <Text>{reservation.endDate}</Text>}
+                </View>
 
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>Owner</Text>
-                  <Text>{owner}</Text>
+                  <Text>{car.info.owner}</Text>
                 </View>
 
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>Daily Price</Text>
-                  <Text>{`$${dailyPrice}`}</Text>
+                  <Text>{`$${car.info.dailyPrice}`}</Text>
                 </View>
 
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>Seating Capacity</Text>
-                  <Text>{seatingCapacity}</Text>
+                  <Text>{car.info.seatingCapacity}</Text>
                 </View>
 
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>Fuel Type</Text>
-                  <Text>{fuelType}</Text>
+                  <Text>{car.info.fuelType}</Text>
                 </View>
 
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>Transmission</Text>
-                  <Text>{transmission}</Text>
+                  <Text>{car.info.transmission}</Text>
                 </View>
 
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>Mileage</Text>
-                  <Text>{`${mileage} miles`}</Text>
+                  <Text>{`${car.info.mileage} miles`}</Text>
                 </View>
 
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>License Plate</Text>
-                  <Text>{licensePlateNumber}</Text>
+                  <Text>{car.info.licensePlateNumber}</Text>
                 </View>
 
                 {featuresLength > 0 && (
@@ -116,7 +146,7 @@ function SelectedCarScreen({ navigation, route }) {
                       justifyContent: 'center',
                     }}
                   >
-                    {features.map((feature, index) => (
+                    {car.info.features.split(',').map((feature, index) => (
                       <View
                         // eslint-disable-next-line react/no-array-index-key
                         key={index}
@@ -138,6 +168,15 @@ function SelectedCarScreen({ navigation, route }) {
             </View>
           </View>
         </Card>
+
+        <Modal visible={showModal} animationType="slide" transparent={false}>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
+              <Text>{modalMessage}</Text>
+              <Button title="OK" onPress={closeModal} />
+            </View>
+          </View>
+        </Modal>
       </ScrollView>
       <View
         style={{
