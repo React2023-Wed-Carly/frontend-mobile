@@ -36,7 +36,7 @@ const initialState = {
   },
   unit: 'kilometers',
   theme: 'light',
-  favoriteCars: [],
+  favoriteCars: null,
   filters: {
     minPrice: 0,
     maxPrice: 10000,
@@ -45,8 +45,8 @@ const initialState = {
     trans: [],
   },
   filteredCars: [],
-  payments: [],
-  rentHistory: [],
+  payments: null,
+  rentHistory: null,
 };
 
 const rootReducer = (state = initialState, action) => {

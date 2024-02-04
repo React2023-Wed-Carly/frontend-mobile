@@ -5,7 +5,7 @@ import * as Location from 'expo-location';
 import jsonData from '../DummyData.json';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { useDispatch, useSelector } from 'react-redux';
-import {darkMap} from '../../assets/dark_map';
+import { darkMap } from '../../assets/dark_map';
 import { setLocation } from '../redux/actions';
 
 const defaultLocation = {
@@ -13,11 +13,11 @@ const defaultLocation = {
   longitude: 21.0122,
 };
 
-const MapScreen = () => {
+function MapScreen() {
   const cars = jsonData.cars;
   const theme = useSelector((state) => state.theme);
   const dispatch = useDispatch();
-  const currentLocation = useSelector(state=>state.userInfo.currentLocation);
+  const currentLocation = useSelector((state) => state.userInfo.currentLocation);
 
   const [initialRegion, setInitialRegion] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -81,10 +81,12 @@ const MapScreen = () => {
       latitude: details.geometry.location.lat,
       longitude: details.geometry.location.lng,
     });
-    dispatch(setLocation({
-      latitude: details.geometry.location.lat,
-      longitude: details.geometry.location.lng,
-    }));
+    dispatch(
+      setLocation({
+        latitude: details.geometry.location.lat,
+        longitude: details.geometry.location.lng,
+      })
+    );
   };
 
   return (
@@ -128,7 +130,7 @@ const MapScreen = () => {
       </MapView>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
