@@ -29,7 +29,7 @@ function AccountScreen() {
 
   const handleTopUp = (amount) => {
     try {
-      dispatch(topUpAccount(amount));
+      dispatch(topUpAccount(amount * 100));
 
       console.log('Top-up successful');
     } catch (error) {

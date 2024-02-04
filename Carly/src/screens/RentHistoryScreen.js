@@ -15,7 +15,7 @@ function RentHistoryScreen() {
     dispatch(fetchRentHistory());
   }
   if (!favoriteCars) {
-    dispatch(fetchFavoriteCars());
+    dispatch(fetchFavoriteCars(0));
   }
 
   const renderItem = ({ item }) => {

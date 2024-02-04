@@ -301,6 +301,7 @@ export const getPayments = (page) => async (dispatch) => {
   await fetchDataWithRetry(url, config, dispatch, getPaymentsSuccess, 'payments');
 };
 
+
 export const setNewLocation = (location) => async (dispatch) => {
   dispatch(setLocation(location));
 };
@@ -345,7 +346,8 @@ export const fetchFilteredCars =
     }
   };
 
-export const fetchFavoriteCars = () => async (dispatch) => {
+export const fetchFavoriteCars = (page) => async (dispatch) => {
+
   const jwtToken = await SecureStore.getItemAsync('userToken');
 
   if (!jwtToken) {
@@ -354,7 +356,7 @@ export const fetchFavoriteCars = () => async (dispatch) => {
 
   const url = `${URL}/users/favorites`;
   const config = {
-    params: { page: 0 },
+    params: { page },
     headers: { Authorization: `Bearer ${jwtToken}` },
   };
 
