@@ -6,18 +6,19 @@ import { formatPrice } from '../utils/textFormatting';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchFavoriteCars, sendLikedCar, sendUnlikedCar } from '../redux/api';
 
-export default function CarItem({ id, name, photo, price, date }) {
+export default function CarItem({ car, date, distance }) {
   const dispatch = useDispatch();
+  const theme = useSelector((state) => state.theme);
 
   const favoriteCars = useSelector((state) => state.favoriteCars);
-  const isLiked = favoriteCars.find((item) => item.info.id === id) ? true : false;
+  const isLiked = favoriteCars?.find((item) => item.info.id === car.info.id) ? true : false;
   const [isFavorite, setIsFavorite] = useState(isLiked);
 
   const toggleFavorite = async () => {
     if (isFavorite) {
-      dispatch(sendUnlikedCar(id));
+      dispatch(sendUnlikedCar(car.info.id));
     } else {
-      dispatch(sendLikedCar(id));
+      dispatch(sendLikedCar(car.info.id));
     }
     setIsFavorite((prev) => !prev);
   };
@@ -46,13 +47,17 @@ export default function CarItem({ id, name, photo, price, date }) {
           />
           <View style={{ width: '60%' }}>
             <Text
-              style={{ fontSize: 19, fontWeight: 'bold' }}
+              style={{
+                fontSize: 19,
+                fontWeight: 'bold',
+                color: theme === 'light' ? '#222' : '#fff',
+              }}
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              {name}
+              {car.info.brand} {car.info.model}
             </Text>
-            {price && (
+            {car.info.dailyPrice && (
               <View
                 style={{
                   flexDirection: 'row',
@@ -63,7 +68,7 @@ export default function CarItem({ id, name, photo, price, date }) {
               >
                 <Icon name="payments" color="gray" size={12} />
                 <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>
-                  {formatPrice(price)}
+                  {formatPrice(car.info.dailyPrice)}
                 </Text>
               </View>
             )}
@@ -79,6 +84,26 @@ export default function CarItem({ id, name, photo, price, date }) {
                 <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>{date}</Text>
               </View>
             )}
+            {distance && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignContent: 'center',
+                  padding: 2,
+                }}
+              >
+                <Icon name="location-pin" color="gray" size={12} />
+                <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>
+                  {distance} km away
+                </Text>
+              </View>
+            )}
+            <View style={{ flexDirection: 'row' }}>
+              <Icon name="airline-seat-recline-extra" color="gray" size={12} />
+              <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>
+                {`${car.info.seatingCapacity}`}
+              </Text>
+            </View>
           </View>
         </View>
         <View>

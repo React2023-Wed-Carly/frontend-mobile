@@ -5,7 +5,7 @@ import FlatItem from '../components/FlatItem';
 
 export default function HomeScreen({ navigation }) {
   const reservation = data.reservations[0];
-  const car = data.cars.find((item) => item.id === reservation.carId);
+  const car = data.cars.find((item) => item.info.id === reservation.carId);
   const flat = data.flat;
 
   const navigateToReservationScreen = () => {
@@ -23,10 +23,8 @@ export default function HomeScreen({ navigation }) {
       <Text>Current reservations: </Text>
       <TouchableOpacity style={{ alignItems: 'center'}} onPress={navigateToReservationScreen}>
         <CarItem
-          name={`${car.brand} ${car.model}`}
-          price={car.dailyPrice}
+          car={car}
           date={reservation.startDate}
-          photo={car.photo}
         />
       </TouchableOpacity>
       <TouchableOpacity style={{ alignItems: 'center'}} onPress={navigateToFlatScreen}>

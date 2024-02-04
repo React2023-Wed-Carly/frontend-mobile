@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
-import { useDispatch } from 'react-redux';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import HomeScreen from './screens/HomeScreen';
 import BookACarScreen from './screens/BookACarScreen';
@@ -20,7 +20,7 @@ import { styles } from './styles';
 import SelectedCarScreen from './screens/SelectedCarScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
-import { loginSuccess } from './redux/actions';
+import { changeTheme, loginSuccess } from './redux/actions';
 import { getPayments } from './redux/api';
 import FlatScreen from './screens/FlatScreen';
 
@@ -78,10 +78,15 @@ function HomeStack() {
 }
 
 function AuthenticatedApp({ handleLogout }) {
+  const theme = useSelector((state) => state.theme);
+
   return (
-    <Drawer.Navigator drawerStyle={styles.drawerStyle}>
+    <Drawer.Navigator
+      drawerStyle={{
+        backgroundColor: theme === 'light' ? '#fff' : '#222',
+      }}
+    >
       <Drawer.Screen name="Home" component={HomeStack} />
-      <Drawer.Screen name="Map" component={MapScreen} />
       <Drawer.Screen name="Book a car" component={AppStack} />
       <Drawer.Screen name="Book a flat" component={BookAFlatScreen} />
       <Drawer.Screen name="Account" component={AccountScreen} />
@@ -99,6 +104,9 @@ function App() {
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true); // New loading state
   const dispatch = useDispatch();
+  const theme = useSelector((state) => state.theme);
+
+  const MyTheme = theme === 'light' ? DefaultTheme : DarkTheme;
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -150,9 +158,8 @@ function App() {
       console.error('Error logging out:', error);
     }
   };
-
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={MyTheme}>
       {loading ? (
         // Show a loading indicator here
         <View style={styles.loadingContainer}>
@@ -161,7 +168,7 @@ function App() {
       ) : isLoggedIn ? (
         <AuthenticatedApp updateLoginStatus={handleLogout} handleLogout={handleLogout} />
       ) : (
-        <AuthStack updateLoginStatus={updateLoginStatus} />
+        <AuthStack theme={MyTheme} updateLoginStatus={updateLoginStatus} />
       )}
     </NavigationContainer>
   );

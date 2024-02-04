@@ -18,6 +18,7 @@ import {
   CHANGE_UNIT,
   BOOK_CAR,
   BOOK_FLAT,
+  CHANGE_THEME,
 } from './actions';
 
 const initialState = {
@@ -35,20 +36,21 @@ const initialState = {
     latitude: 40.7128,
     longitude: -74.006,
   },
-  favoriteCars: [],
   unit: 'kilometers',
+  theme: 'light',
+  favoriteCars: null,
   filters: {
     minPrice: 0,
-    maxPrice: 1000000,
+    maxPrice: 10000,
     minSeat: 0,
     maxSeat: 10,
     trans: [],
   },
   filteredCars: [],
-  payments: [],
-  rentHistory: [],
   currentCarBooking: null,
-  currentFlatBooking: null
+  currentFlatBooking: null,
+  payments: null,
+  rentHistory: null,
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -60,6 +62,28 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         userInfo: updatedUserInfo,
+      };
+    case CHANGE_THEME:
+      const { payload: theme } = action;
+      return {
+        ...state,
+        theme,
+      };
+
+    case CHANGE_UNIT:
+      const { payload: unit } = action;
+      return {
+        ...state,
+        unit,
+      };
+    case SET_LOCATION:
+      const { payload: currentLocation } = action;
+      return {
+        ...state,
+        userInfo: {
+          ...state.userInfo,
+          currentLocation,
+        },
       };
 
     case LIKE_CAR:
@@ -78,20 +102,19 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         favoriteCars: newFavoriteCars,
       };
-    case BOOK_CAR: 
-    const {payload: carBooking} = action;
-    return {
-      ...state,
-      currentCarBooking: carBooking
-    };
+    case BOOK_CAR:
+      const { payload: carBooking } = action;
+      return {
+        ...state,
+        currentCarBooking: carBooking,
+      };
 
-    case BOOK_FLAT: 
-    const {payload: flatBooking} = action;
-    return {
-      ...state,
-      currentFlatBooking: flatBooking
-    };
-
+    case BOOK_FLAT:
+      const { payload: flatBooking } = action;
+      return {
+        ...state,
+        currentFlatBooking: flatBooking,
+      };
 
     case GET_FAVORITE_CARS:
       const { payload: favoriteCars } = action;

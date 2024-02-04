@@ -1,10 +1,12 @@
 import { View } from 'react-native';
+import { useSelector } from 'react-redux';
 
 export default function Card({ children }) {
+  const theme = useSelector(state=>state.theme);
   return (
     <View
       style={{
-        backgroundColor: 'white',
+        backgroundColor: theme === 'light' ? '#fff' : '#222',
         borderRadius: 10,
         padding: 18,
         marginBottom: 13,

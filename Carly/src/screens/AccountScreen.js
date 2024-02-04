@@ -14,6 +14,14 @@ function AccountScreen() {
     (state) => state.userInfo
   );
 
+  const theme = useSelector((state) => state.theme);
+  const textStyles = { color: theme === 'light' ? '#222' : '#fff', marginLeft: 10, fontSize: 16 };
+  const distanceStyles = {
+    color: theme === 'light' ? '#222' : '#fff',
+    marginBottom: 10,
+    fontSize: 16,
+  };
+
   const handleDeleteAccount = () => {
     console.log('Delete account clicked');
     // Add logic for deleting the account
@@ -32,12 +40,12 @@ function AccountScreen() {
   return (
     <View style={accountStyles.container}>
       <View style={accountStyles.userInfoContainer}>
-        <Icon name="person" size={50} color="#000" />
+        <Icon name="person" size={50} color={theme === 'light' ? '#222' : '#fff'} />
         <View style={accountStyles.nameBalanceContainer}>
-          <Text style={accountStyles.nameText}>
+          <Text style={textStyles}>
             {firstName} {lastName}
           </Text>
-          <Text style={accountStyles.balanceText}>${balance}</Text>
+          <Text style={textStyles}>${balance}</Text>
         </View>
       </View>
 
@@ -48,11 +56,11 @@ function AccountScreen() {
       <View style={accountStyles.divider} />
 
       <View style={accountStyles.userInfoContainer}>
-        <Icon name="email" size={30} color="#000" />
-        <Text style={accountStyles.userInfoText}>{email}</Text>
+        <Icon name="email" size={30} color={theme === 'light' ? '#222' : '#fff'} />
+        <Text style={textStyles}>{email}</Text>
       </View>
 
-      <Text style={accountStyles.distanceText}>
+      <Text style={distanceStyles}>
         Distance travelled: {'\n'}
         {distanceTravelled} km
       </Text>

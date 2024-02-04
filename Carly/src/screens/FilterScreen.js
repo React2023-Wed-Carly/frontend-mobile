@@ -14,6 +14,7 @@ const transmissionTypes = ['Automatic', 'Manual'];
 function FilterScreen({ applyFilters, setIsFilter }) {
   const filters = useSelector((state) => state.filters);
   const currentLocation = useSelector((state) => state.currentLocation);
+  const theme = useSelector((state) => state.theme);
 
   const dispatch = useDispatch();
 
@@ -32,6 +33,9 @@ function FilterScreen({ applyFilters, setIsFilter }) {
     dispatch(fetchFilteredCars({ location: currentLocation, filters }));
     setIsFilter(false);
   };
+
+  const labelStyle = { fontSize: 18, marginBottom: 5, color: theme === 'light' ? '#222' : '#fff' };
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -53,7 +57,7 @@ function FilterScreen({ applyFilters, setIsFilter }) {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.label}>
+          <Text style={labelStyle}>
             Number of Seats: {seatRange[0]} - {seatRange[1]}
           </Text>
           <View style={styles.sliderSection}>
@@ -74,8 +78,6 @@ function FilterScreen({ applyFilters, setIsFilter }) {
           <MultiSelect
             items={fuelTypes.map((fuelType) => ({ name: fuelType }))}
             uniqueKey="name"
-            selectedItems={selectedFuelTypes}
-            onSelectedItemsChange={(items) => setSelectedFuelTypes(items)}
             selectText="Select Fuel Types"
             searchInputPlaceholderText="Search Fuel Types..."
             displayKey="name"
@@ -86,7 +88,7 @@ function FilterScreen({ applyFilters, setIsFilter }) {
         </View> */}
 
         <View style={styles.section}>
-          <Text style={styles.label}>Transmission Type</Text>
+          <Text style={labelStyle}>Transmission Type</Text>
           <MultiSelect
             items={transmissionTypes.map((transmissionType) => ({
               name: transmissionType,
@@ -126,10 +128,6 @@ const styles = StyleSheet.create({
   sliderSection: {
     paddingHorizontal: 5,
     maxWidth: 150,
-  },
-  label: {
-    fontSize: 18,
-    marginBottom: 5,
   },
   sliderContainer: {
     height: 30,

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, Modal, Button } from 'react-native';
-import { styles, selectedCarStyles } from '../styles';
 import { useDispatch, useSelector } from 'react-redux';
-//import DateTimePicker from '@react-native-community/datetimepicker';
+import { styles, selectedCarStyles } from '../styles';
+
+// import DateTimePicker from '@react-native-community/datetimepicker';
 
 import Card from '../components/Card';
 import { sendCarBooking } from '../redux/api';
@@ -13,6 +14,7 @@ function SelectedCarScreen({ navigation, route }) {
   const dispatch = useDispatch();
   const currentLocation = useSelector((state) => state.currentLocation);
   const currentCarBooking = useSelector((state) => state.currentCarBooking);
+  const theme = useSelector((state) => state.theme);
 
   const [startDate, setStartDate] = useState(new Date('2024-12-10T03:24:00'));
   const [endDate, setEndDate] = useState(new Date('2024-12-12T03:24:00'));
@@ -32,9 +34,15 @@ function SelectedCarScreen({ navigation, route }) {
     alignItems: 'center',
     marginBottom: 5,
     justifyContent: 'space-between',
+    color: theme === 'light' ? '#222' : '#fff',
   };
 
-  const labelStyle = { fontWeight: 'bold', paddingRight: 10 };
+  const labelStyle = {
+    fontWeight: 'bold',
+    paddingRight: 10,
+    color: theme === 'light' ? '#222' : '#fff',
+  };
+  const valueStyle = { color: theme === 'light' ? '#222' : '#fff' };
 
   const renderDatePicker = () => {
     if (showDatePicker) {
@@ -43,9 +51,8 @@ function SelectedCarScreen({ navigation, route }) {
           <Text style={{ color: 'blue' }}>Select End Date</Text>
         </TouchableOpacity>
       );
-    } else {
-      return <></>;
     }
+    return <></>;
   };
 
   const handleBookCar = async () => {
@@ -159,7 +166,9 @@ function SelectedCarScreen({ navigation, route }) {
                           margin: 5,
                         }}
                       >
-                        <Text style={{ fontSize: 12 }}>{feature}</Text>
+                        <Text style={{ fontSize: 12, color: theme === 'light' ? '#222' : '#fff' }}>
+                          {feature}
+                        </Text>
                       </View>
                     ))}
                   </View>

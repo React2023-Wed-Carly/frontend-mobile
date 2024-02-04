@@ -49,7 +49,7 @@ export default function BookCarItem({ car, navigation }) {
       >
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Image
-            source={require('../../assets/dummy_cars/car.png')} // Assuming photo is a URL or local image path
+            source={require(`../../assets/dummy_cars/car.png`)} // Assuming photo is a URL or local image path
             style={{
               width: 80,
               height: 80,
@@ -105,7 +105,7 @@ export default function BookCarItem({ car, navigation }) {
               <Icon name="location-pin" color="gray" size={12} />
               <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>
                 {unit === 'meters' && `${(distance * 1000).toFixed(0)} m`}
-                {unit === 'kilometers' && `${(distance).toFixed(2)} km`}
+                {unit === 'kilometers' && `${distance.toFixed(2)} km`}
               </Text>
             </View>
           </View>
