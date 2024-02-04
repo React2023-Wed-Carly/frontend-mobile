@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FlatList, View, TouchableOpacity, Text, Pressable } from 'react-native';
 import jsonData from '../DummyData.json';
 import { styles } from '../styles';
-import CarItem from '../components/CarItem';
+import BookCarItem from '../components/CarItem';
 import FilterScreen from './FilterScreen';
 import MapScreen from './MapScreen';
 import { useSelector } from 'react-redux';
@@ -52,7 +52,7 @@ export default function BookACarScreen({ navigation }) {
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
                   <Pressable key={item.id} onPress={() => handleCardPress(item)}>
-                    <CarItem car={item} navigation={navigation} distance={5} />
+                    <BookCarItem car={item} navigation={navigation} distance={5} />
                   </Pressable>
                 )}
               />
