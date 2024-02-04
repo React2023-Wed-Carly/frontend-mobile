@@ -1,29 +1,76 @@
-import React from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image, ScrollView, TouchableOpacity, Modal, Button } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import { styles, selectedCarStyles } from '../styles';
+
+// import DateTimePicker from '@react-native-community/datetimepicker';
+
 import Card from '../components/Card';
-import { useSelector } from 'react-redux';
+import { sendCarBooking } from '../redux/api';
 
 function SelectedCarScreen({ navigation, route }) {
   const { car, bookCar, reservation } = route.params;
-  const theme = useSelector(state=>state.theme);
 
-  const featuresLength = car.features ? car.features.length : 0;
+  const dispatch = useDispatch();
+  const currentLocation = useSelector((state) => state.currentLocation);
+  const currentCarBooking = useSelector((state) => state.currentCarBooking);
+  const theme = useSelector((state) => state.theme);
+
+  const [startDate, setStartDate] = useState(new Date('2024-12-10T03:24:00'));
+  const [endDate, setEndDate] = useState(new Date('2024-12-12T03:24:00'));
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const [showModal, setShowModal] = useState(true);
+  const [modalMessage, setModalMessage] = useState('Dates are overlapping.');
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  const featuresLength = car.info.features ? car.info.features.length : 0;
 
   const textPairContainerStyle = {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 5,
     justifyContent: 'space-between',
-    color:theme === 'light' ? '#222' : '#fff'
+    color: theme === 'light' ? '#222' : '#fff',
   };
 
-  const labelStyle = { fontWeight: 'bold', paddingRight: 10, color:theme === 'light' ? '#222' : '#fff' };
-  const valueStyle = { color:theme === 'light' ? '#222' : '#fff' };
+  const labelStyle = {
+    fontWeight: 'bold',
+    paddingRight: 10,
+    color: theme === 'light' ? '#222' : '#fff',
+  };
+  const valueStyle = { color: theme === 'light' ? '#222' : '#fff' };
 
+  const renderDatePicker = () => {
+    if (showDatePicker) {
+      return (
+        <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+          <Text style={{ color: 'blue' }}>Select End Date</Text>
+        </TouchableOpacity>
+      );
+    }
+    return <></>;
+  };
 
-  const handleBookCar = () => {
-    // book a car logic
+  const handleBookCar = async () => {
+    try {
+      await dispatch(
+        sendCarBooking(car.info.id, {
+          carId: car.info.id,
+          longitude: currentLocation.longitude,
+          latitude: currentLocation.latitude,
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString(),
+          integratedSystemId: 0,
+        })
+      );
+    } catch (error) {
+      setModalMessage('Dates are overlapping. Please choose another date.');
+      setShowModal(true);
+    }
   };
 
   return (
@@ -41,60 +88,60 @@ function SelectedCarScreen({ navigation, route }) {
 
             <View style={{ alignItems: 'center' }}>
               <View style={{ padding: 20, alignItems: 'center' }}>
-                <Text style={{ fontWeight: 'bold', fontSize: 20, color:theme === 'light' ? '#222' : '#fff' }}>
+                <Text style={{ fontWeight: 'bold', fontSize: 20 }}>
                   {`${car.info.brand} ${car.info.model} ${car.info.year}`}
                 </Text>
-                <Text style={{color:theme === 'light' ? '#222' : '#fff' }}>{car.info.description}</Text>
+                <Text>{car.info.description}</Text>
               </View>
 
               <View style={{ width: '85%' }}>
-              {reservation && (
-                <>
-                  <View style={textPairContainerStyle}>
-                    <Text style={labelStyle}>Start date:</Text>
-                    <Text style={valueStyle}>{reservation.startDate}</Text>
-                  </View>
+                <View style={textPairContainerStyle}>
+                  <Text style={labelStyle}>Start date:</Text>
+                  {bookCar ? (
+                    <Text>{startDate.toLocaleDateString()}</Text>
+                  ) : (
+                    <Text>{reservation.startDate}</Text>
+                  )}
+                </View>
 
-                  <View style={textPairContainerStyle}>
-                    <Text style={labelStyle}>End date:</Text>
-                    <Text style={valueStyle}>{reservation.endDate}</Text>
-                  </View>
-                </>
-              )}
+                <View style={textPairContainerStyle}>
+                  <Text style={labelStyle}>End date:</Text>
+                  {bookCar ? renderDatePicker() : <Text>{reservation.endDate}</Text>}
+                </View>
 
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>Owner</Text>
-                  <Text style={valueStyle}>{car.info.owner}</Text>
+                  <Text>{car.info.owner}</Text>
                 </View>
 
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>Daily Price</Text>
-                  <Text style={valueStyle}>{`$${car.info.dailyPrice}`}</Text>
+                  <Text>{`$${car.info.dailyPrice}`}</Text>
                 </View>
 
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>Seating Capacity</Text>
-                  <Text style={valueStyle}>{car.info.seatingCapacity}</Text>
+                  <Text>{car.info.seatingCapacity}</Text>
                 </View>
 
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>Fuel Type</Text>
-                  <Text style={valueStyle}>{car.info.fuelType}</Text>
+                  <Text>{car.info.fuelType}</Text>
                 </View>
 
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>Transmission</Text>
-                  <Text style={valueStyle}>{car.info.transmission}</Text>
+                  <Text>{car.info.transmission}</Text>
                 </View>
 
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>Mileage</Text>
-                  <Text style={valueStyle}>{`${car.info.mileage} miles`}</Text>
+                  <Text>{`${car.info.mileage} miles`}</Text>
                 </View>
 
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>License Plate</Text>
-                  <Text style={valueStyle}>{car.info.licensePlateNumber}</Text>
+                  <Text>{car.info.licensePlateNumber}</Text>
                 </View>
 
                 {featuresLength > 0 && (
@@ -106,7 +153,7 @@ function SelectedCarScreen({ navigation, route }) {
                       justifyContent: 'center',
                     }}
                   >
-                    {car.features.map((feature, index) => (
+                    {car.info.features.split(',').map((feature, index) => (
                       <View
                         // eslint-disable-next-line react/no-array-index-key
                         key={index}
@@ -119,7 +166,9 @@ function SelectedCarScreen({ navigation, route }) {
                           margin: 5,
                         }}
                       >
-                        <Text style={{ fontSize: 12, color:theme === 'light' ? '#222' : '#fff' }}>{feature}</Text>
+                        <Text style={{ fontSize: 12, color: theme === 'light' ? '#222' : '#fff' }}>
+                          {feature}
+                        </Text>
                       </View>
                     ))}
                   </View>
@@ -128,6 +177,15 @@ function SelectedCarScreen({ navigation, route }) {
             </View>
           </View>
         </Card>
+
+        <Modal visible={showModal} animationType="slide" transparent={false}>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
+              <Text>{modalMessage}</Text>
+              <Button title="OK" onPress={closeModal} />
+            </View>
+          </View>
+        </Modal>
       </ScrollView>
       <View
         style={{

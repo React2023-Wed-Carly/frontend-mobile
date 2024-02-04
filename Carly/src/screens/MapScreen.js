@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, TextInput, Button } from 'react-native';
 import MapView, { Marker, MapStyle } from 'react-native-maps';
 import * as Location from 'expo-location';
-import jsonData from '../DummyData.json';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { useDispatch, useSelector } from 'react-redux';
-import { darkMap } from '../../assets/dark_map';
-import { setLocation } from '../redux/actions';
+import { GooglePlacesAutocomplete, darkMap } from 'react-native-google-places-autocomplete';
+import { setNewLocation, fetchFilteredCars } from '../redux/api';
 
 const defaultLocation = {
   latitude: 52.2297,
@@ -14,7 +12,7 @@ const defaultLocation = {
 };
 
 function MapScreen() {
-  const cars = jsonData.cars;
+  const filters = useSelector((state) => state.filters);
   const theme = useSelector((state) => state.theme);
   const dispatch = useDispatch();
   const currentLocation = useSelector((state) => state.userInfo.currentLocation);
@@ -29,22 +27,22 @@ function MapScreen() {
       latitudeDelta: 0.1,
       longitudeDelta: 0.1,
     });
-    dispatch(setLocation(defaultLocation));
     setSelectedLocation(defaultLocation);
     setAutocompleteLocation(defaultLocation);
+    dispatch(setNewLocation(defaultLocation));
+    dispatch(fetchFilteredCars({ location: currentLocation, filters }));
   };
 
   useEffect(() => {
     const getLocation = async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
+      const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         console.log('Permission to access location was denied');
         setDefaultLocation();
         return;
       }
 
-      let location = await Location.getCurrentPositionAsync({});
-      dispatch(setLocation(location.coords));
+      const location = await Location.getCurrentPositionAsync({});
       setSelectedLocation(location.coords);
       setAutocompleteLocation(location.coords);
 
@@ -53,6 +51,8 @@ function MapScreen() {
         latitudeDelta: 0.005,
         longitudeDelta: 0.005,
       });
+      dispatch(setNewLocation(location.coords));
+      dispatch(fetchFilteredCars({ location: currentLocation, filters }));
     };
     getLocation();
   }, []);
@@ -68,8 +68,9 @@ function MapScreen() {
   }, [autocompleteLocation]);
 
   const handleMapPress = (event) => {
-    dispatch(setLocation(event.nativeEvent.coordinate));
     setSelectedLocation(event.nativeEvent.coordinate);
+    dispatch(setNewLocation(event.nativeEvent.coordinate));
+    dispatch(fetchFilteredCars({ location: currentLocation, filters }));
   };
 
   const handleAddressSelect = (data, details) => {
@@ -82,11 +83,12 @@ function MapScreen() {
       longitude: details.geometry.location.lng,
     });
     dispatch(
-      setLocation({
+      setNewLocation({
         latitude: details.geometry.location.lat,
         longitude: details.geometry.location.lng,
       })
     );
+    dispatch(fetchFilteredCars({ location: currentLocation, filters }));
   };
 
   return (

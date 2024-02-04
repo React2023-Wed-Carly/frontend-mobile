@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FlatList, View, TouchableOpacity, Text, Pressable } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import jsonData from '../DummyData.json';
 import { styles } from '../styles';
 import BookCarItem from '../components/CarItem';
@@ -8,17 +8,13 @@ import FilterScreen from './FilterScreen';
 import MapScreen from './MapScreen';
 
 export default function BookACarScreen({ navigation }) {
-  const { cars } = jsonData;
-  const theme = useSelector((state) => state.theme);
+  const filteredCars = useSelector((state) => state.filteredCars);
 
   const [isFilter, setIsFilter] = useState(false);
   const [showCarList, setShowCarList] = useState(false);
 
   const toggleCarListView = () => {
     setShowCarList((prev) => !prev);
-  };
-  const applyFilters = () => {
-    setIsFilter(false);
   };
 
   const openFilterScreen = () => {
@@ -40,7 +36,7 @@ export default function BookACarScreen({ navigation }) {
     >
       {showCarList && (
         <>
-          {isFilter && <FilterScreen applyFilters={applyFilters} setIsFilter={setIsFilter} />}
+          {isFilter && <FilterScreen setIsFilter={setIsFilter} />}
           {!isFilter && (
             <View style={{ paddingBottom: 90, color: theme === 'light' ? '#222' : '#fff' }}>
               <TouchableOpacity style={bookStyles.filterButton} onPress={openFilterScreen}>
@@ -48,7 +44,7 @@ export default function BookACarScreen({ navigation }) {
               </TouchableOpacity>
 
               <FlatList
-                data={cars}
+                data={filteredCars}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
                   <Pressable key={item.id} onPress={() => handleCardPress(item)}>
@@ -63,13 +59,11 @@ export default function BookACarScreen({ navigation }) {
           )}
         </>
       )}
+      {!showCarList && <MapScreen />}
       {!showCarList && (
-        <>
-          <MapScreen />
-          <TouchableOpacity style={styles.activeButton} onPress={toggleCarListView}>
-            <Text style={styles.buttonText}>{showCarList ? 'Show Map' : 'Show Car List'}</Text>
-          </TouchableOpacity>
-        </>
+        <TouchableOpacity style={styles.activeButton} onPress={toggleCarListView}>
+          <Text style={styles.buttonText}>{showCarList ? 'Show Map' : 'Show Car List'}</Text>
+        </TouchableOpacity>
       )}
     </View>
   );

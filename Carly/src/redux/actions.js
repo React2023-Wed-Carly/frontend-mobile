@@ -8,9 +8,11 @@ export const GET_RENT_HISTORY = 'GET_RENT_HISTORY';
 export const GET_RENT_HISTORY_CARS = 'GET_RENT_HISTORY_CARS';
 export const LOGOUT = 'LOGOUT';
 export const DELETE_ACCOUNT = 'DELETE_ACCOUNT';
+export const BOOK_CAR = 'BOOK_CAR';
+export const BOOK_FLAT = 'BOOK_FLAT';
 export const CHANGE_THEME = 'CHANGE_THEME';
 export const CHANGE_UNIT = 'CHANGE_UNIT';
-export const SET_LOCATION = 'SET_LOCATION'
+export const SET_LOCATION = 'SET_LOCATION';
 
 export const LOGIN_AGAIN = 'LOGIN_AGAIN';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
@@ -47,19 +49,18 @@ export const getUserData = (username) => ({
 
 export const changeTheme = (theme) => ({
   type: CHANGE_THEME,
-  payload: theme
+  payload: theme,
 });
 
 export const changeUnit = (unit) => ({
   type: CHANGE_UNIT,
-  payload: unit
+  payload: unit,
 });
 
 export const setLocation = (currentLocation) => ({
   type: SET_LOCATION,
-  payload: currentLocation
+  payload: currentLocation,
 });
-
 
 export const likeCar = (carId) => ({
   type: LIKE_CAR,
@@ -69,6 +70,16 @@ export const likeCar = (carId) => ({
 export const unlikeCar = (carId) => ({
   type: UNLIKE_CAR,
   payload: carId,
+});
+
+export const bookCar = (carBooking) => ({
+  type: BOOK_CAR,
+  payload: carBooking,
+});
+
+export const bookFlat = (flatBooking) => ({
+  type: BOOK_CAR,
+  payload: flatBooking,
 });
 
 export const setFilters = (filters) => ({
@@ -81,9 +92,9 @@ export const getFavoriteCars = (favoriteCars) => ({
   payload: favoriteCars,
 });
 
-export const getFilteredCars = (location, filters) => ({
+export const getFilteredCars = (filteredCars) => ({
   type: GET_FILTERED_CARS,
-  payload: { location, filters },
+  payload: { filteredCars },
 });
 
 export const getRentHistory = (rentHistory) => ({
