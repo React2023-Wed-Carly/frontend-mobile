@@ -1,6 +1,6 @@
 // PaymentsScreen.js
-import React from 'react';
-import { FlatList, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { FlatList, View, Text, ActivityIndicator } from 'react-native'; // Import Text from react-native
 import { useSelector, useDispatch } from 'react-redux';
 import PaymentItem from '../components/PaymentItem';
 import { getPayments } from '../redux/api';
@@ -9,18 +9,38 @@ function PaymentsScreen() {
   const dispatch = useDispatch();
   const theme = useSelector((state) => state.theme);
   const payments = useSelector((state) => state.payments);
+  const currentPage = useSelector((state) => state.paymentsPage);
+  const pageEnd = useSelector((state) => state.paymentsPageEnd);
+  const balance = useSelector((state) => state.balance);
+
   const renderItem = ({ item }) => (
     <PaymentItem amount={item.amount} date={item.date} type={item.type} />
   );
 
-  if (!payments) dispatch(getPayments());
+  useEffect(() => {
+    // Fetch payments when the component mounts or when balance changes
+    dispatch(getPayments(currentPage));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, balance]);
+
+  const handleEndReached = () => {
+    // Fetch the next page when reaching the end of the list
+    if (!pageEnd) dispatch(getPayments(currentPage));
+  };
+
+  console.log(payments);
 
   return (
-    <View style={{ padding: 10, color: theme === 'light' ? '#222' : '#fff', flex: 1 }}>
+    <View style={{ padding: 10, backgroundColor: theme === 'light' ? '#fff' : '#222', flex: 1 }}>
+      {/* Display a message if there are no payments */}
+      {!payments && <ActivityIndicator size="large" />}
+
       <FlatList
-        data={payments}
+        data={payments || []}
         keyExtractor={(item, index) => index.toString()}
         renderItem={renderItem}
+        onEndReached={handleEndReached}
+        onEndReachedThreshold={0.1}
       />
     </View>
   );

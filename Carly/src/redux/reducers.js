@@ -46,6 +46,10 @@ const initialState = {
   },
   filteredCars: [],
   payments: null,
+  paymentsPage: 0,
+  paymentsPageEnd: false,
+  favoriteCarsPage: 0,
+  favoriteCarsPageEnd: false,
   rentHistory: null,
 };
 
@@ -85,9 +89,11 @@ const rootReducer = (state = initialState, action) => {
     case LIKE_CAR:
       const { payload: likedId } = action;
       const car = state.carsDetails.find((item) => item.info.id === likedId);
-      const newFavoriteCars = [...state.favoriteCars, car];
+      let newFavoriteCars = [...state.favoriteCars, car];
       return {
         ...state,
+        favoriteCarsPageEnd: false,
+        favoriteCarsPage: 0,
         favoriteCars: newFavoriteCars,
       };
 
@@ -96,14 +102,25 @@ const rootReducer = (state = initialState, action) => {
       newFavoriteCars = state.favoriteCars.filter((item) => item.info.id !== unlikedId);
       return {
         ...state,
+        favoriteCarsPageEnd: false,
+        favoriteCarsPage: 0,
         favoriteCars: newFavoriteCars,
       };
 
     case GET_FAVORITE_CARS:
       const { payload: favoriteCars } = action;
+      let pageNumber = state.favoriteCarsPageEnd
+        ? state.favoriteCarsPage
+        : !state.favoriteCarsPageEnd && favoriteCars.length === 0
+          ? state.favoriteCarsPage - 1
+          : state.favoriteCarsPage + 1;
       return {
         ...state,
-        favoriteCars,
+        favoriteCarsPageEnd: !state.paymentsPageEnd
+          ? favoriteCars.length === 0
+          : state.favoriteCarsPageEnd,
+        favoriteCarsPage: pageNumber,
+        favoriteCars: [...(state.favoriteCars ?? []), ...favoriteCars],
       };
 
     case SET_FILTERS:
@@ -156,7 +173,12 @@ const rootReducer = (state = initialState, action) => {
       // Handle registration success, update state with user data
       return {
         ...state,
-        userInfo: userLoginData,
+        userInfo: {
+          ...userLoginData,
+          firstName: userLoginData.firstname,
+          distanceTravelled: userLoginData.DistanceTravelled,
+          balance: userLoginData.balance / 100,
+        },
       };
     case LOGIN_AGAIN:
       // Handle registration success, update state with user data
@@ -173,18 +195,31 @@ const rootReducer = (state = initialState, action) => {
       };
     case GET_PAYMENTS_SUCCESS:
       const { payload: payments } = action;
+      pageNumber = state.paymentsPageEnd
+        ? state.paymentsPage
+        : !state.paymentsPageEnd && payments.length === 0
+          ? state.paymentsPage - 1
+          : state.paymentsPage + 1;
       return {
         ...state,
-        payments: payments.reverse(),
+        paymentsPageEnd: !state.paymentsPageEnd ? payments.length === 0 : state.paymentsPageEnd,
+        paymentsPage: pageNumber,
+        payments: [
+          ...(state.payments ?? []),
+          ...payments.map((payment) => ({ ...payment, amount: payment.amount / 100 })),
+        ],
       };
     case TOP_UP_SUCCESS:
       const { payload: amount } = action;
       // Update the relevant part of your state with the new user data
       return {
         ...state,
+        paymentsPage: 0,
+        paymentsPageEnd: false,
         userInfo: {
           ...state.userInfo,
-          balance: state.userInfo.balance + amount,
+          payments: null,
+          balance: state.userInfo.balance + amount / 100,
         },
       };
     default:

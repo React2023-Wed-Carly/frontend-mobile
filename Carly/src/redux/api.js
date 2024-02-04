@@ -218,13 +218,13 @@ export const sendUnlikedCar = (id) => async (dispatch) => {
   }
 };
 
-const fetchDataWithRetry = async (url, config, dispatch, successCallback) => {
+const fetchDataWithRetry = async (url, config, dispatch, successCallback, storageKey) => {
   try {
     const response = await axios(url, config);
 
     if (response.status === 200) {
       const { data } = response;
-      await AsyncStorage.setItem(url, JSON.stringify(data));
+      await AsyncStorage.setItem(storageKey, JSON.stringify(data));
       dispatch(successCallback(data));
     } else {
       throw new Error(`Fetching data failed for ${url}.`);
@@ -261,7 +261,7 @@ const fetchDataWithRetry = async (url, config, dispatch, successCallback) => {
   }
 };
 
-export const getPayments = () => async (dispatch) => {
+export const getPayments = (page) => async (dispatch) => {
   const jwtToken = await SecureStore.getItemAsync('userToken');
 
   if (!jwtToken) {
@@ -270,14 +270,14 @@ export const getPayments = () => async (dispatch) => {
 
   const url = `${URL}/users/details/payments`;
   const config = {
-    params: { page: 0 },
+    params: { page },
     headers: { Authorization: `Bearer ${jwtToken}`, 'Content-Type': 'application/json' },
   };
 
-  await fetchDataWithRetry(url, config, dispatch, getPaymentsSuccess);
+  await fetchDataWithRetry(url, config, dispatch, getPaymentsSuccess, 'payments');
 };
 
-export const fetchFavoriteCars = () => async (dispatch) => {
+export const fetchFavoriteCars = (page) => async (dispatch) => {
   const jwtToken = await SecureStore.getItemAsync('userToken');
 
   if (!jwtToken) {
@@ -286,11 +286,11 @@ export const fetchFavoriteCars = () => async (dispatch) => {
 
   const url = `${URL}/users/favorites`;
   const config = {
-    params: { page: 0 },
+    params: { page },
     headers: { Authorization: `Bearer ${jwtToken}` },
   };
 
-  await fetchDataWithRetry(url, config, dispatch, getFavoriteCars);
+  await fetchDataWithRetry(url, config, dispatch, getFavoriteCars, 'favoriteCars');
 };
 
 export const fetchRentHistory = () => async (dispatch) => {
@@ -306,10 +306,16 @@ export const fetchRentHistory = () => async (dispatch) => {
     headers: { Authorization: `Bearer ${jwtToken}` },
   };
 
-  await fetchDataWithRetry(url, config, dispatch, (data) => {
-    dispatch(getRentHistory(data));
-    dispatch(fetchRentHistoryCars(data));
-  });
+  await fetchDataWithRetry(
+    url,
+    config,
+    dispatch,
+    (data) => {
+      dispatch(getRentHistory(data));
+      dispatch(fetchRentHistoryCars(data));
+    },
+    'rentHistory'
+  );
 };
 
 export const fetchRentHistoryCars = (rentHistory) => async (dispatch) => {
