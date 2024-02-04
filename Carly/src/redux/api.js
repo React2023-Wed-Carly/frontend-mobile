@@ -69,6 +69,7 @@ export const login =
 
         await AsyncStorage.setItem('userInfo', JSON.stringify({ ...userData, jwtToken }));
         await SecureStore.setItemAsync('userToken', jwtToken);
+        await SecureStore.setItemAsync('userLogin', JSON.stringify({ username, password }));
       } else {
         throw new Error('Login failed');
       }
@@ -78,25 +79,22 @@ export const login =
     }
   };
 
-export const retryLogin = () => async (dispatch) => {
+export const getNewToken = () => async (dispatch) => {
   try {
-    const userInfo = await AsyncStorage.getItem('userInfo');
-    const parsedUserInfo = JSON.parse(userInfo);
+    const loginData = await SecureStore.getItemAsync('userLogin');
+    const { username, password } = JSON.parse(loginData);
 
     const response = await axios.post(`${URL}/auth/login`, {
-      username: 'abc',
-      password: 'abc',
+      username,
+      password,
     });
 
     if (response.status === 200) {
       const jwtToken = response.data.jwttoken;
-      dispatch(loginSuccess({ ...parsedUserInfo, jwtToken }));
-
-      await AsyncStorage.setItem('userInfo', JSON.stringify({ ...parsedUserInfo, jwtToken }));
       await SecureStore.setItemAsync('userToken', jwtToken);
-    } else {
-      throw new Error('Login failed');
+      return jwtToken;
     }
+    throw new Error('Login failed');
   } catch (error) {
     console.error('Error during login:', error);
     throw error;
@@ -165,8 +163,6 @@ export const topUpAccount = (amount) => async (dispatch) => {
   }
 };
 
-axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
-
 export const getPayments = () => async (dispatch) => {
   try {
     const jwtToken = await SecureStore.getItemAsync('userToken');
@@ -176,7 +172,8 @@ export const getPayments = () => async (dispatch) => {
     }
 
     const paymentsData = await axios
-      .get(`${URL}/users/details/payments?page=0`, {
+      .get(`${URL}/users/details/payments`, {
+        params: { page: 0 },
         headers: { Authorization: `Bearer ${jwtToken}`, 'Content-Type': 'application/json' },
       })
       .then((response) => response.data);
@@ -184,7 +181,29 @@ export const getPayments = () => async (dispatch) => {
     dispatch(getPaymentsSuccess(paymentsData));
   } catch (error) {
     console.error('Error during receiving payments:', error);
-    throw error;
+
+    // Check if the error is due to unauthorized access
+    if (axios.isAxiosError(error) && error.response && error.response.status === 401) {
+      try {
+        // Try to get a new token
+        const newToken = await dispatch(getNewToken());
+
+        // Retry the request with the new token
+        const paymentsData = await axios
+          .get(`${URL}/users/details/payments`, {
+            params: { page: 0 },
+            headers: { Authorization: `Bearer ${newToken}`, 'Content-Type': 'application/json' },
+          })
+          .then((response) => response.data);
+
+        dispatch(getPaymentsSuccess(paymentsData));
+      } catch (tokenError) {
+        console.error('Error during token refresh:', tokenError);
+        throw tokenError;
+      }
+    } else {
+      throw error;
+    }
   }
 };
 
@@ -242,7 +261,8 @@ export const fetchFavoriteCars = () => async (dispatch) => {
       throw new Error('JWT token not found. User must be logged in.');
     }
 
-    const response = await axios.get(`${URL}/users/favorites?page=0`, {
+    const response = await axios.get(`${URL}/users/favorites`, {
+      params: { page: 0 },
       headers: { Authorization: `Bearer ${jwtToken}` },
     });
 
@@ -254,7 +274,32 @@ export const fetchFavoriteCars = () => async (dispatch) => {
     }
   } catch (error) {
     console.error('Error during fetching favorite cars:', error);
-    throw error;
+
+    // Check if the error is due to unauthorized access
+    if (axios.isAxiosError(error) && error.response && error.response.status === 401) {
+      try {
+        // Try to get a new token
+        const newToken = await dispatch(getNewToken());
+
+        // Retry the request with the new token
+        const response = await axios.get(`${URL}/users/favorites`, {
+          params: { page: 0 },
+          headers: { Authorization: `Bearer ${newToken}` },
+        });
+
+        if (response.status === 200) {
+          const favoriteCars = response.data;
+          dispatch(getFavoriteCars(favoriteCars));
+        } else {
+          throw new Error('Fetching favorite cars failed.');
+        }
+      } catch (tokenError) {
+        console.error('Error during token refresh:', tokenError);
+        throw tokenError;
+      }
+    } else {
+      throw error;
+    }
   }
 };
 
@@ -266,7 +311,8 @@ export const fetchRentHistory = () => async (dispatch) => {
       throw new Error('JWT token not found. User must be logged in.');
     }
 
-    const response = await axios.get(`${URL}/bookings`, {
+    const response = await axios.get(`${URL}/users/details/bookings`, {
+      params: { page: 0 },
       headers: { Authorization: `Bearer ${jwtToken}` },
     });
 
@@ -279,7 +325,32 @@ export const fetchRentHistory = () => async (dispatch) => {
     }
   } catch (error) {
     console.error('Error during fetching rent history:', error);
-    throw error;
+
+    // Check if the error is due to unauthorized access
+    if (axios.isAxiosError(error) && error.response && error.response.status === 401) {
+      try {
+        // Try to get a new token
+        const newToken = await dispatch(getNewToken());
+
+        // Retry the request with the new token
+        const response = await axios.get(`${URL}/bookings`, {
+          headers: { Authorization: `Bearer ${newToken}` },
+        });
+
+        if (response.status === 200) {
+          const rentHistory = response.data;
+          dispatch(getRentHistory(rentHistory));
+          dispatch(fetchRentHistoryCars(rentHistory));
+        } else {
+          throw new Error('Fetching rent history failed.');
+        }
+      } catch (tokenError) {
+        console.error('Error during token refresh:', tokenError);
+        throw tokenError;
+      }
+    } else {
+      throw error;
+    }
   }
 };
 

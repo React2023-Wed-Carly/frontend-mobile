@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { FlatList, View, TouchableOpacity, Text, Pressable } from 'react-native';
+import { useSelector } from 'react-redux';
 import jsonData from '../DummyData.json';
 import { styles } from '../styles';
 import CarItem from '../components/CarItem';
 import FilterScreen from './FilterScreen';
 import MapScreen from './MapScreen';
-import { useSelector } from 'react-redux';
 
 export default function BookACarScreen({ navigation }) {
   const { cars } = jsonData;
@@ -56,11 +56,9 @@ export default function BookACarScreen({ navigation }) {
                   </Pressable>
                 )}
               />
-                <TouchableOpacity style={styles.activeButton} onPress={toggleCarListView}>
-                  <Text style={styles.buttonText}>
-                    {showCarList ? 'Show Map' : 'Show Car List'}
-                  </Text>
-                </TouchableOpacity>
+              <TouchableOpacity style={styles.activeButton} onPress={toggleCarListView}>
+                <Text style={styles.buttonText}>{showCarList ? 'Show Map' : 'Show Car List'}</Text>
+              </TouchableOpacity>
             </View>
           )}
         </>
@@ -68,9 +66,9 @@ export default function BookACarScreen({ navigation }) {
       {!showCarList && (
         <>
           <MapScreen />
-            <TouchableOpacity style={styles.activeButton} onPress={toggleCarListView}>
-              <Text style={styles.buttonText}>{showCarList ? 'Show Map' : 'Show Car List'}</Text>
-            </TouchableOpacity>
+          <TouchableOpacity style={styles.activeButton} onPress={toggleCarListView}>
+            <Text style={styles.buttonText}>{showCarList ? 'Show Map' : 'Show Car List'}</Text>
+          </TouchableOpacity>
         </>
       )}
     </View>
