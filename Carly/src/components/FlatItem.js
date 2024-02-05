@@ -19,17 +19,32 @@ export default function FlatItem({ flat }) {
         }}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image
-            source={require('../../assets/apartment.png')} // Assuming photo is a URL or local image path
-            style={{
-              width: 80,
-              height: 80,
-              borderRadius: 25,
-              margin: -20,
-              marginRight: 20,
-              padding: 0,
-            }}
-          />
+          {flat.thumbnail && (
+            <Image
+              source={{ uri: flat.thumbnail }} // Assuming photo is a URL or local image path
+              style={{
+                width: 80,
+                height: 80,
+                borderRadius: 25,
+                margin: -20,
+                marginRight: 20,
+                padding: 0,
+              }}
+            />
+          )}
+          {flat.thumbnailUrl && (
+            <Image
+              source={{ uri: flat.thumbnailUrl }} // Assuming photo is a URL or local image path
+              style={{
+                width: 80,
+                height: 80,
+                borderRadius: 25,
+                margin: -20,
+                marginRight: 20,
+                padding: 0,
+              }}
+            />
+          )}
           <View style={{ width: '60%' }}>
             <Text
               style={{
@@ -40,7 +55,7 @@ export default function FlatItem({ flat }) {
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              {flat.title}
+              {flat.title}, {flat.city}
             </Text>
             <View
               style={{
@@ -51,9 +66,16 @@ export default function FlatItem({ flat }) {
               }}
             >
               <Icon name="payments" color="gray" size={12} />
-              <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>
-                {formatPrice(flat.pricePerNight)}
-              </Text>
+              {flat.totalPrice && (
+                <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>
+                  {formatPrice(flat.pricePerNight)}
+                </Text>
+              )}
+              {flat.pricePerNight && (
+                <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>
+                  {formatPrice(flat.pricePerNight)}
+                </Text>
+              )}
             </View>
 
             {flat.startDate && (
@@ -65,10 +87,9 @@ export default function FlatItem({ flat }) {
                 }}
               >
                 <Icon name="calendar-today" color="gray" size={12} />
-                <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>{flat.startDate}</Text>
+                <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>{flat.startDate} - {flat.endDate}</Text>
               </View>
             )}
-
           </View>
         </View>
       </View>

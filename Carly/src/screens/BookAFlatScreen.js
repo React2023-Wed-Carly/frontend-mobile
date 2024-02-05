@@ -3,12 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { styles } from '../styles';
 import FlatlyLogin from '../components/FlatlyLogin';
-import { fetchFlats, fetchFlatDetails } from '../redux/flatlyApi';
+import { fetchFlats, fetchFlatDetails, getFlatBooking } from '../redux/flatlyApi';
 import FlatItem from '../components/FlatItem';
 
 export default function BookAFlatScreen({navigation}) {
   const theme = useSelector((state) => state.theme);
   const flats = useSelector(state=>state.flats);
+  const id = useSelector(state=>state.userInfo.id);
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.flatlyData.isLoggedIn);
   const [showLogin, setShowLogin] = useState(false);
@@ -17,6 +18,12 @@ export default function BookAFlatScreen({navigation}) {
     await dispatch(fetchFlatDetails(id));
     navigation.push('Flat', { flatId: id, flatTitle:title, bookFlat:true });
   }
+
+
+  useEffect(() => {
+    dispatch(fetchFlats());
+    dispatch(getFlatBooking(id));
+  }, [dispatch, showLogin]);
 
 
   return (

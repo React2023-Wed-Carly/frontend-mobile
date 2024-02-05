@@ -3,7 +3,7 @@ import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { bookFlat, flatlyLoginSuccess, getFlatDetails, getFlats } from './actions';
+import { bookFlat, flatlyLoginSuccess, getFlatDetails, getFlatImage, getFlats } from './actions';
 
 const URL = 'https://pwflatlyreact.azurewebsites.net';
 
@@ -36,7 +36,6 @@ export const loginFlatly =
   ({ email, password }) =>
   async (dispatch) => {
     try {
-      console.log(email, password);
       const response = await axios.post(`${URL}/auth/login`, {
         email,
         password,
@@ -78,7 +77,7 @@ export const fetchFlats = () => async (dispatch) => {
   }
 };
 
-export const fetchFlatDetails = (flatId) => async(dispatch) => {
+export const fetchFlatDetails = (flatId) => async (dispatch) => {
   try {
     const jwtToken = await SecureStore.getItemAsync('flatlyToken');
     const response = await axios.get(`${URL}/flats/${flatId}`, {
@@ -97,41 +96,69 @@ export const fetchFlatDetails = (flatId) => async(dispatch) => {
     console.error('Error during fetching flat details.', error);
     throw error;
   }
-}
+};
 
-export const sendFlatBooking = (flat, flatBooking) => async (dispatch) => {
-    try {
-      const jwtToken = await SecureStore.getItemAsync('flatlyToken');
-  
-      if (!jwtToken) {
-        throw new Error('JWT token not found. User must be logged in.');
+export const getFlatBooking = (id) => async (dispatch) => {
+  try {
+    const jwtToken = await SecureStore.getItemAsync('flatlyToken');
+
+    if (!jwtToken) {
+      throw new Error('JWT token not found. User must be logged in.');
+    }
+
+    const response = await axios.get(
+      `${URL}/reservations?page=0&pageSize=10&filter=active&externalUserId=${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
       }
-      const response = await axios.post(
-        `${URL}/reservation`,
-        { flatBooking },
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        }
+    );
+    if (response.status >= 200 && response.status < 300) {
+      dispatch(getFlatBooking(response.data));
+    } else {
+      console.error('Error during fetching flat booking:', response.status);
+    }
+  } catch (error) {
+    console.error('Error during fetching flat booking:', error);
+    throw error;
+  }
+};
+
+export const sendFlatBooking = (flat, flatBooking, id) => async (dispatch) => {
+  try {
+    const jwtToken = await SecureStore.getItemAsync('flatlyToken');
+
+    if (!jwtToken) {
+      throw new Error('JWT token not found. User must be logged in.');
+    }
+
+    const response = await axios.post(`${URL}/reservation?externalUserId=${id}`, {
+      params: flatBooking,
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.status >= 200 && response.status < 300) {
+      await AsyncStorage.setItem(
+        'currentFlatBooking',
+        JSON.stringify({ booking: flatBooking, flat })
       );
-  
-      if (response.status >= 200 && response.status < 300) {
-        await AsyncStorage.setItem('currentFlatBooking', JSON.stringify({booking:flatBooking, flat}));
-        console.log('success');
-        dispatch(bookFlat({booking:flatBooking, flat}));
-      } else {
-        console.log('yyy');
-        console.error('Error during adding flat booking:', response.status);
-        if (response.status === 404) {
-          throw new Error('Dates are overlapping.');
-        } else {
-          throw new Error('Unexpected error during flat booking.');
-        }
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.status === 404) {
+      console.log('success');
+      dispatch(bookFlat({ booking: flatBooking, flat }));
+    } else {
+      console.error('Error during adding flat booking:', response.status);
+      if (response.status === 404) {
         throw new Error('Dates are overlapping.');
+      } else {
+        throw new Error('Unexpected error during flat booking.');
       }
     }
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.status === 404) {
+      throw new Error('Dates are overlapping.');
+    }
+  }
 };

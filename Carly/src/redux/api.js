@@ -459,8 +459,8 @@ export const sendCarBooking = (car, carBooking) => async (dispatch) => {
     }
     const response = await axios.post(
       `${URL}/cars/${car.info.id}/bookings`,
-      { ...carBooking },
       {
+        params: carBooking,
         headers: {
           Authorization: `Bearer ${jwtToken}`,
         },
