@@ -149,11 +149,13 @@ function SelectedCarScreen({ navigation, route }) {
   const handleBookCar = async () => {
     try {
       dispatch(
+      dispatch(
         sendCarBooking(car, {
           carId: car.info.id,
           longitude: currentLocation.longitude,
           latitude: currentLocation.latitude,
           startDate: startDate.toISOString(),
+          endDate: calculateEndDate().toISOString(),
           endDate: calculateEndDate().toISOString(),
           integratedSystemId: 0,
         })
@@ -162,6 +164,11 @@ function SelectedCarScreen({ navigation, route }) {
       // Show reservation details modal
       setShowReservationModal(true);
     } catch (error) {
+      // Use the Alert component to display the error message
+      Alert.alert(
+        'Error',
+        'The date you have selected overlaps with an existing reservation. Someone must have booked the car faster than you - please choose another car.'
+      );
       // Use the Alert component to display the error message
       Alert.alert(
         'Error',
@@ -205,6 +212,7 @@ function SelectedCarScreen({ navigation, route }) {
             <View style={{ flexDirection: 'column', alignItems: 'center', flex: 1 }}>
               <Image
                 // eslint-disable-next-line global-require
+                source={{ uri: `data:image/png;base64,${car.img}` }}
                 source={{ uri: `data:image/png;base64,${car.img}` }}
                 style={selectedCarStyles.carImage}
               />
