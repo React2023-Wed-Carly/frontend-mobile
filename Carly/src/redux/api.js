@@ -18,7 +18,9 @@ import {
   getFilteredCars,
   bookCar,
   bookFlat,
+  logout,
 } from './actions';
+import { useSelector } from 'react-redux';
 
 const URL = 'https://wedcarly.azurewebsites.net';
 
@@ -108,11 +110,11 @@ const fetchDataWithRetry = async (url, config, dispatch, successCallback, storag
 
     if (response.status === 200) {
       const { data } = response;
-      await AsyncStorage.setItem(storageKey, JSON.stringify(data));
-      dispatch(successCallback(data));
-    } else {
-      throw new Error(`Fetching data failed for ${url}.`);
+      if (storageKey) await AsyncStorage.setItem(storageKey, JSON.stringify(data));
+      if (successCallback) dispatch(successCallback(data));
+      return data;
     }
+    throw new Error(`Fetching data failed for ${url}.`);
   } catch (error) {
     console.error(`Error during fetching data for ${url}:`, error);
 
@@ -130,11 +132,11 @@ const fetchDataWithRetry = async (url, config, dispatch, successCallback, storag
 
         if (response.status === 200) {
           const { data } = response;
-          await AsyncStorage.setItem(url, JSON.stringify(data));
-          dispatch(successCallback(data));
-        } else {
-          throw new Error(`Fetching data failed for ${url}.`);
+          if (storageKey) await AsyncStorage.setItem(storageKey, JSON.stringify(data));
+          if (successCallback) dispatch(successCallback(data));
+          return data;
         }
+        throw new Error(`Fetching data failed for ${url}.`);
       } catch (tokenError) {
         console.error('Error during token refresh:', tokenError);
         throw tokenError;
@@ -366,7 +368,7 @@ export const fetchFavoriteCars = (page) => async (dispatch) => {
   await fetchDataWithRetry(url, config, dispatch, getFavoriteCars, 'favoriteCars');
 };
 
-export const fetchRentHistory = () => async (dispatch) => {
+export const fetchRentHistory = (page) => async (dispatch) => {
   const jwtToken = await SecureStore.getItemAsync('carlyToken');
 
   if (!jwtToken) {
@@ -375,51 +377,74 @@ export const fetchRentHistory = () => async (dispatch) => {
 
   const url = `${URL}/users/details/bookings`;
   const config = {
-    params: { page: 0 },
+    params: { page },
     headers: { Authorization: `Bearer ${jwtToken}` },
   };
 
-  await fetchDataWithRetry(
-    url,
-    config,
-    dispatch,
-    (data) => {
-      dispatch(getRentHistory(data));
-      dispatch(fetchRentHistoryCars(data));
-    },
-    'rentHistory'
-  );
+  try {
+    const rentHistoryData = await fetchDataWithRetry(
+      url,
+      config,
+      dispatch,
+      getRentHistory,
+      'rentHistory'
+    );
+
+    await fetchRentHistoryCars(dispatch, rentHistoryData);
+  } catch (error) {
+    console.error('Error during fetching rent history:', error);
+    throw error;
+  }
 };
 
-export const fetchRentHistoryCars = (rentHistory) => async (dispatch) => {
+export const fetchRentHistoryCars = async (dispatch, rentHistory) => {
   try {
     const jwtToken = await SecureStore.getItemAsync('carlyToken');
-
     if (!jwtToken) {
       throw new Error('JWT token not found. User must be logged in.');
     }
 
-    const carsDetails = [];
-    for (const historyItem of rentHistory) {
-      const carId = historyItem['carId'];
+    const fetchDetails = async (carId) => {
       try {
-        const response = await axios.get(`${URL}/cars/${carId}`, {
-          headers: { Authorization: `Bearer ${jwtToken}` },
-        });
+        const carDetails = await fetchDataWithRetry(
+          `${URL}/cars/${carId}`,
+          {
+            headers: { Authorization: `Bearer ${jwtToken}` },
+          },
+          dispatch,
+          null,
+          null
+        );
 
-        if (response.status === 200) {
-          const carDetails = response.data;
-          carsDetails.push(carDetails);
-        } else {
-          throw new Error(`Fetching details for carId ${carId} failed.`);
-        }
+        // Check if the car is a favorite
+        const isFavoriteResponse = await fetchDataWithRetry(
+          `${URL}/users/favorites/isFavorite/${carId}`,
+          {
+            headers: { Authorization: `Bearer ${jwtToken}` },
+          },
+          dispatch,
+          null,
+          null
+        );
+
+        carDetails.isFavorite = isFavoriteResponse;
+        return carDetails;
       } catch (error) {
         console.error(`Error during fetching details for carId ${carId}:`, error);
         throw error;
       }
-    }
-    await AsyncStorage.setItem('carsDetails', JSON.stringify(carsDetails));
-    dispatch(getRentHistoryCars(carsDetails));
+    };
+
+    const carsDetailsPromises = rentHistory.map((historyItem) => fetchDetails(historyItem.carId));
+
+    const carsDetailsResults = await Promise.allSettled(carsDetailsPromises);
+
+    const successfulCarsDetails = carsDetailsResults
+      .filter((result) => result.status === 'fulfilled')
+      .map((result) => result.value);
+
+    await AsyncStorage.setItem('carsDetails', JSON.stringify(successfulCarsDetails));
+    dispatch(getRentHistoryCars(successfulCarsDetails));
   } catch (error) {
     console.error('Error during fetching rent history cars:', error);
     throw error;
@@ -463,7 +488,11 @@ export const sendCarBooking = (carId, carBooking) => async (dispatch) => {
 
 export const sendFlatBooking = (flatBooking) => async (dispatch) => {};
 
-export const handleLogout = (username) => {};
+export const logUserOut = () => async (dispatch) => {
+  await AsyncStorage.clear();
+  await SecureStore.clear();
+  dispatch(logout());
+};
 
 export const deleteAccount = (username) => {
   // Implement account deletion logic if needed

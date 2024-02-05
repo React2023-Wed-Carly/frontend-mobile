@@ -1,6 +1,6 @@
 // PaymentsScreen.js
-import React from 'react';
-import { FlatList, View, Text } from 'react-native';
+import React, { useEffect } from 'react';
+import { FlatList, View, ActivityIndicator } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import CarItem from '../components/CarItem';
 import { fetchFavoriteCars, fetchRentHistory } from '../redux/api';
@@ -9,22 +9,33 @@ function RentHistoryScreen() {
   const dispatch = useDispatch();
   const theme = useSelector((state) => state.theme);
   const rentHistory = useSelector((state) => state.rentHistory);
-  const favoriteCars = useSelector((state) => state.favoriteCars);
+  const rentHistoryCars = useSelector((state) => state.rentHistoryCars);
+  const currentPage = useSelector((state) => state.rentHistoryPage);
+  const pageEnd = useSelector((state) => state.rentHistoryPageEnd);
 
-  if (!rentHistory) {
-    dispatch(fetchRentHistory());
-  }
-  if (!favoriteCars) {
-    dispatch(fetchFavoriteCars(0));
-  }
+  useEffect(() => {
+    // Fetch favorite cars when the component mounts or when currentPage changes
+    if (!rentHistory) {
+      dispatch(fetchRentHistory(currentPage));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, rentHistory]);
 
   const renderItem = ({ item }) => {
-    if (!item.car) return null;
+    if (!rentHistoryCars) return null;
+    const car = rentHistoryCars.find((c) => c.info.id === item.carId);
 
-    return <CarItem car={item.car} date={item.startDate} />;
+    if (!car) return null;
+
+    return <CarItem car={car} date={item.startDate} />;
   };
 
-  return rentHistory && favoriteCars ? (
+  const handleEndReached = () => {
+    // Fetch the next page when reaching the end of the list
+    if (!pageEnd) dispatch(fetchRentHistory(currentPage));
+  };
+
+  return (
     <View
       style={{
         padding: 20,
@@ -33,15 +44,14 @@ function RentHistoryScreen() {
         flex: 1,
       }}
     >
+      {(!rentHistory || !rentHistoryCars) && <ActivityIndicator size="large" />}
       <FlatList
         data={rentHistory}
         keyExtractor={(item, index) => index.toString()}
         renderItem={renderItem}
+        onEndReached={handleEndReached}
+        onEndReachedThreshold={0.1}
       />
-    </View>
-  ) : (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Failed to obtain rent history.</Text>
     </View>
   );
 }

@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { View, Image, Text, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useDispatch, useSelector } from 'react-redux';
 import Card from './Card'; // Assuming that Card component is in the same directory
 import { formatPrice } from '../utils/textFormatting';
-import { useDispatch, useSelector } from 'react-redux';
+
 import { fetchFavoriteCars, sendLikedCar, sendUnlikedCar } from '../redux/api';
 
 export default function CarItem({ car, date, distance }) {
   const dispatch = useDispatch();
   const theme = useSelector((state) => state.theme);
-
-  const favoriteCars = useSelector((state) => state.favoriteCars);
-  const isLiked = favoriteCars?.find((item) => item.info.id === car.info.id) ? true : false;
-  const [isFavorite, setIsFavorite] = useState(isLiked);
+  const [isFavorite, setIsFavorite] = useState(car.isFavorite);
 
   const toggleFavorite = async () => {
     if (isFavorite) {
