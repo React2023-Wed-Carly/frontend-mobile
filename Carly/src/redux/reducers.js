@@ -42,7 +42,6 @@ const initialState = {
   },
   unit: 'kilometers',
   theme: 'light',
-  favoriteCars: null,
   filters: {
     minPrice: 0,
     maxPrice: 10000,
@@ -53,12 +52,18 @@ const initialState = {
   filteredCars: [],
   currentCarBooking: null,
   currentFlatBooking: null,
+
   payments: null,
+  favoriteCars: null,
+  rentHistory: null,
+  rentHistoryCars: null,
+
   paymentsPage: 0,
   paymentsPageEnd: false,
   favoriteCarsPage: 0,
   favoriteCarsPageEnd: false,
-  rentHistory: null,
+  rentHistoryPage: 0,
+  rentHistoryPageEnd: false,
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -176,41 +181,54 @@ const rootReducer = (state = initialState, action) => {
 
     case GET_RENT_HISTORY:
       const { payload: rentHistory } = action;
+
       return {
         ...state,
-        rentHistory,
+        rentHistory: [...(state.rentHistory ?? []), ...rentHistory],
       };
     case GET_RENT_HISTORY_CARS:
       const { payload: carsDetails } = action;
 
       const oldRentHistory = state.rentHistory;
+      const updatedCarsDetails = carsDetails.map((carDetails) => ({
+        ...carDetails,
+        info: {
+          ...carDetails.info,
+          features: carDetails.info.features.split(','),
+          dailyPrice: carDetails.info.dailyPrice / 100,
+        },
+      }));
       const carsDetailsMap = new Map(
-        carsDetails.map((carDetails) => [
+        updatedCarsDetails.map((carDetails) => [
           carDetails.info.id,
           {
             ...carDetails,
-            info: {
-              ...carDetails.info,
-              features: carDetails.info.features.split(','),
-              dailyPrice: carDetails.info.dailyPrice / 100,
-            },
           },
         ])
       );
 
-      // Update each element in rentHistory with car information
       const updatedRentHistory = oldRentHistory.map((historyItem) => ({
         ...historyItem,
         car: carsDetailsMap.get(historyItem.carId),
       }));
 
+      const rentHistoryPageNumber = state.rentHistoryPageEnd
+        ? state.rentHistoryPage
+        : !state.rentHistoryPageEnd && carsDetails.length === 0
+          ? state.rentHistoryPage - 1
+          : state.rentHistoryPage + 1;
+
       return {
         ...state,
-        rentHistoryCars: carsDetails,
-        rentHistory: updatedRentHistory,
+        rentHistoryCars: [...(state.rentHistoryCars ?? []), ...updatedCarsDetails],
+        rentHistory: [...(state.rentHistory ?? []), ...updatedRentHistory],
+        rentHistoryPage: rentHistoryPageNumber,
+        rentHistoryPageEnd: !state.rentHistoryPageEnd
+          ? carsDetails.length === 0
+          : state.rentHistoryPageEnd,
       };
-
     case LOGOUT:
+      return initialState;
     case DELETE_ACCOUNT:
       return initialState; // Reset state to initial values upon logout or account deletion
     case LOGIN_SUCCESS:
@@ -272,6 +290,7 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         flatlyData: { isLoggedIn: true },
       };
+
     default:
       return state;
   }
