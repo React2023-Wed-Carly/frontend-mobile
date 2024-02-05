@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, AsyncStorage } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Modal,
+  AsyncStorage,
+} from 'react-native';
 import { useDispatch } from 'react-redux';
-import { loginFlatly, registerFlatly } from '../redux/flatlyApi';
+import { loginFlatly, registerFlatly, fetchFlats } from '../redux/flatlyApi';
 
 function FlatlyLogin({ hideLogin }) {
   const [email, setEmail] = useState('');

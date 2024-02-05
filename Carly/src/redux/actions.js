@@ -15,14 +15,19 @@ export const CHANGE_UNIT = 'CHANGE_UNIT';
 export const SET_LOCATION = 'SET_LOCATION';
 
 export const LOGIN_AGAIN = 'LOGIN_AGAIN';
+export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_FAILURE = 'LOGIN_FAILURE';
-export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 
 export const TOP_UP_SUCCESS = 'TOP_UP_SUCCESS';
 export const GET_PAYMENTS_SUCCESS = 'GET_PAYMENTS_SUCCESS';
 
 export const FLATLY_LOGIN_SUCCESS = 'FLATLY_LOGIN_SUCCESS';
+export const GET_FLATS = 'GET_FLATS';
+export const GET_FLAT_DETAILS = 'GET_FLAT_DETAILS'
+
+export const SET_FLAT_BOOKING = "SET_FLAT_BOOKING";
+export const SET_CAR_BOOKING = "SET_CAR_BOOKING";
 
 export const loginAgain = (userData) => ({
   type: LOGIN_AGAIN,
@@ -43,6 +48,7 @@ export const registerSuccess = (userData) => ({
   type: REGISTER_SUCCESS,
   payload: userData,
 });
+
 
 export const getUserData = (username) => ({
   type: GET_USER_DATA,
@@ -129,7 +135,27 @@ export const getPaymentsSuccess = (payments) => ({
   payload: payments,
 });
 
-export const flatlyLoginSuccess = (userData) => ({
+export const flatlyLoginSuccess = (flatlyData) => ({
   type: FLATLY_LOGIN_SUCCESS,
-  payload: userData,
+  payload: flatlyData,
 });
+
+export const getFlats = (flats) => ({
+  type:GET_FLATS,
+  payload: flats
+})
+
+export const getFlatDetails = (flatDetails) => ({
+  type:GET_FLAT_DETAILS,
+  payload:flatDetails
+})
+
+export const setFlatBooking = (flatBooking) => ({
+  type:SET_FLAT_BOOKING,
+  payload:flatBooking
+})
+
+export const setCarBooking = (carBooking) => ({
+  type:SET_CAR_BOOKING,
+  payload:carBooking
+})

@@ -20,7 +20,6 @@ import {
   bookFlat,
   logout,
 } from './actions';
-import { useSelector } from 'react-redux';
 
 const URL = 'https://wedcarly.azurewebsites.net';
 
@@ -451,7 +450,7 @@ export const fetchRentHistoryCars = async (dispatch, rentHistory) => {
   }
 };
 
-export const sendCarBooking = (carId, carBooking) => async (dispatch) => {
+export const sendCarBooking = (car, carBooking) => async (dispatch) => {
   try {
     const jwtToken = await SecureStore.getItemAsync('carlyToken');
 
@@ -459,8 +458,8 @@ export const sendCarBooking = (carId, carBooking) => async (dispatch) => {
       throw new Error('JWT token not found. User must be logged in.');
     }
     const response = await axios.post(
-      `${URL}/cars/${carId}/bookings`,
-      { ...carBooking, carId },
+      `${URL}/cars/${car.info.id}/bookings`,
+      { ...carBooking },
       {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
@@ -470,7 +469,8 @@ export const sendCarBooking = (carId, carBooking) => async (dispatch) => {
 
     if (response.status >= 200 && response.status < 300) {
       console.log('success');
-      dispatch(bookCar(carBooking));
+      await AsyncStorage.setItem('currentCarBooking', JSON.stringify({ booking: carBooking, car }));
+      dispatch(bookCar({ booking: carBooking, car }));
     } else {
       console.error('Error during adding car booking:', response.status);
       if (response.status === 404) {
