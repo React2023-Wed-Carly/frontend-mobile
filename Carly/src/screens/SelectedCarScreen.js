@@ -11,11 +11,9 @@ import {
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { styles, selectedCarStyles } from '../styles';
-
-// import DateTimePicker from '@react-native-community/datetimepicker';
-
 import Card from '../components/Card';
 import { sendCarBooking } from '../redux/api';
+import { formatPrice } from '../utils/textFormatting';
 
 function SelectedCarScreen({ navigation, route }) {
   const { car, bookCar, reservation } = route.params;
@@ -32,6 +30,7 @@ function SelectedCarScreen({ navigation, route }) {
   const [startDate, setStartDate] = useState(today);
   const [selectedDuration, setSelectedDuration] = useState(1);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showReservationModal, setShowReservationModal] = useState(false);
 
   const calculateEndDate = () => {
     const newEndDate = new Date(startDate);
@@ -77,6 +76,76 @@ function SelectedCarScreen({ navigation, route }) {
     return null;
   };
 
+  const closeModal = () => {
+    setShowReservationModal(false);
+  };
+
+  const renderReservationModal = () => (
+    <Modal
+      transparent
+      animationType="slide"
+      visible={showReservationModal}
+      onRequestClose={closeModal}
+    >
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        }}
+      >
+        <View style={{ backgroundColor: 'white', padding: 30, borderRadius: 20 }}>
+          <Text style={{ fontWeight: 'bold', fontSize: 20, marginBottom: 10 }}>
+            Reservation details
+          </Text>
+          {/* Render reservation details content here based on your UI structure */}
+          <View style={textPairContainerStyle}>
+            <Text style={labelStyle}>Start date:</Text>
+            <Text>{startDate.toLocaleDateString()}</Text>
+          </View>
+          <View style={textPairContainerStyle}>
+            <Text style={labelStyle}>End date:</Text>
+            <Text>{calculateEndDate().toLocaleDateString()}</Text>
+          </View>
+          <View style={textPairContainerStyle}>
+            <Text style={labelStyle}>Price:</Text>
+            <Text>{formatPrice(car.info.dailyPrice * selectedDuration)}</Text>
+          </View>
+          <View style={textPairContainerStyle}>
+            <Text style={labelStyle}>Duration (days):</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <TouchableOpacity onPress={handleDecreaseDuration}>
+                <Text style={{ fontSize: 20, marginRight: 10 }}>-</Text>
+              </TouchableOpacity>
+              <Text>{selectedDuration}</Text>
+              <TouchableOpacity onPress={handleIncreaseDuration}>
+                <Text style={{ fontSize: 20, marginLeft: 10 }}>+</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Book and Close buttons */}
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginTop: 20,
+              marginBottom: -20,
+            }}
+          >
+            <TouchableOpacity onPress={closeModal} style={styles.button}>
+              <Text style={styles.buttonText}>Close</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleBookCar} style={styles.activeButton}>
+              <Text style={styles.buttonText}>Book</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+
   const handleBookCar = async () => {
     try {
       dispatch(
@@ -89,6 +158,9 @@ function SelectedCarScreen({ navigation, route }) {
           integratedSystemId: 0,
         })
       );
+
+      // Show reservation details modal
+      setShowReservationModal(true);
     } catch (error) {
       // Use the Alert component to display the error message
       Alert.alert(
@@ -147,37 +219,6 @@ function SelectedCarScreen({ navigation, route }) {
               </View>
 
               <View style={{ width: '85%' }}>
-                <View style={textPairContainerStyle}>
-                  <Text style={labelStyle}>Start date:</Text>
-                  {bookCar ? (
-                    <Text>{startDate.toLocaleDateString()}</Text>
-                  ) : (
-                    <Text>{reservation.startDate}</Text>
-                  )}
-                </View>
-
-                <View style={textPairContainerStyle}>
-                  <Text style={labelStyle}>End date:</Text>
-                  {bookCar ? (
-                    <Text>{calculateEndDate().toLocaleDateString()}</Text>
-                  ) : (
-                    <Text>{reservation.endDate}</Text>
-                  )}
-                </View>
-
-                <View style={textPairContainerStyle}>
-                  <Text style={labelStyle}>Duration (days):</Text>
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <TouchableOpacity onPress={handleDecreaseDuration}>
-                      <Text style={{ fontSize: 20, marginRight: 10 }}>-</Text>
-                    </TouchableOpacity>
-                    <Text>{selectedDuration}</Text>
-                    <TouchableOpacity onPress={handleIncreaseDuration}>
-                      <Text style={{ fontSize: 20, marginLeft: 10 }}>+</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>Owner</Text>
                   <Text>{car.info.owner}</Text>
@@ -278,6 +319,7 @@ function SelectedCarScreen({ navigation, route }) {
           </View>
         )}
       </View>
+      {showReservationModal && renderReservationModal()}
     </View>
   );
 }

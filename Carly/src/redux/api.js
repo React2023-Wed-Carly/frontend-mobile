@@ -283,35 +283,37 @@ export const setNewLocation = (location) => async (dispatch) => {
 export const fetchFilteredCars =
   ({ location, filters }) =>
   async (dispatch) => {
-    const userInfo = await AsyncStorage.getItem('userInfo');
-    const { jwtToken } = JSON.parse(userInfo);
+    const jwtToken = await SecureStore.getItemAsync('carlyToken');
 
     if (!jwtToken) {
       throw new Error('JWT token not found. User must be logged in.');
     }
 
-    var types = '';
-    if (filters.trans.length === 1) {
-      types = filters.trans[0];
-    } else if (filters.trans.length === 2) {
-      types = filters.trans[0] + '%3B' + filters.trans[1];
-    }
-    try {
-      const response = await axios.get(
-        `${URL}/cars?page=0&lat=${location.latitude}&lon=${location.longitude}&minPrice=${filters.minPrice}&maxPrice=${filters.maxPrice}&minSeat=${filters.minSeat}&maxSeat=${filters.maxPrice}&trans=${types}`,
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        }
-      );
-      if (response.status === 200) {
-        const filteredCars = response.data;
+    const params = {
+      page: 0,
+      lat: location.latitude,
+      lon: location.longitude,
+      minPrice: filters.minPrice,
+      maxPrice: filters.maxPrice,
+      minSeat: filters.minSeat,
+      maxSeat: filters.maxSeat,
+      trans: filters.trans.join(';'),
+    };
 
-        dispatch(getFilteredCars(filteredCars));
-      } else {
-        throw new Error('Fetching favorite cars failed.');
-      }
+    const config = {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    };
+
+    try {
+      await fetchDataWithRetry(
+        `${URL}/cars`,
+        { params, ...config },
+        dispatch,
+        getFilteredCars,
+        'filteredCars'
+      );
     } catch (error) {
       console.error('Error during fetching favorite cars:', error);
       throw error;

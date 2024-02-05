@@ -166,7 +166,11 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         filteredCars: filteredCars.map((filteredCar) => ({
           ...filteredCar,
-          dailyPrice: filteredCar.dailyPrice / 100,
+          info: {
+            ...filteredCar.info,
+            features: filteredCar.info.features.split(','),
+            dailyPrice: filteredCar.info.dailyPrice / 100,
+          },
         })),
       };
 
@@ -183,7 +187,14 @@ const rootReducer = (state = initialState, action) => {
       const carsDetailsMap = new Map(
         carsDetails.map((carDetails) => [
           carDetails.info.id,
-          { ...carDetails, dailyPrice: carDetails.dailyPrice / 100 },
+          {
+            ...carDetails,
+            info: {
+              ...carDetails.info,
+              features: carDetails.info.features.split(','),
+              dailyPrice: carDetails.info.dailyPrice / 100,
+            },
+          },
         ])
       );
 
