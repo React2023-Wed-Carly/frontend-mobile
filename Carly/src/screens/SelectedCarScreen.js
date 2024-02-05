@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, Modal, Button } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  Modal,
+  Button,
+  Picker,
+} from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { styles, selectedCarStyles } from '../styles';
 
@@ -16,8 +25,12 @@ function SelectedCarScreen({ navigation, route }) {
   const currentCarBooking = useSelector((state) => state.currentCarBooking);
   const theme = useSelector((state) => state.theme);
 
-  const [startDate, setStartDate] = useState(new Date('2024-12-10T03:24:00'));
-  const [endDate, setEndDate] = useState(new Date('2024-12-12T03:24:00'));
+  const today = new Date();
+  const tommorrow = new Date(today);
+  tommorrow.setDate(today.getDate() + 1);
+
+  const [startDate, setStartDate] = useState(today);
+  const [selectedDuration, setSelectedDuration] = useState(1);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const [showModal, setShowModal] = useState(true);
@@ -25,6 +38,22 @@ function SelectedCarScreen({ navigation, route }) {
 
   const closeModal = () => {
     setShowModal(false);
+  };
+
+  const calculateEndDate = () => {
+    const newEndDate = new Date(startDate);
+    newEndDate.setDate(startDate.getDate() + selectedDuration);
+    return newEndDate;
+  };
+
+  const handleIncreaseDuration = () => {
+    setSelectedDuration(selectedDuration + 1);
+  };
+
+  const handleDecreaseDuration = () => {
+    if (selectedDuration > 1) {
+      setSelectedDuration(selectedDuration - 1);
+    }
   };
 
   const featuresLength = car.info.features ? car.info.features.length : 0;
@@ -47,7 +76,7 @@ function SelectedCarScreen({ navigation, route }) {
   const renderDatePicker = () => {
     if (showDatePicker) {
       return (
-        <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+        <TouchableOpacity onPress={() => setShowDatePicker(false)}>
           <Text style={{ color: 'blue' }}>Select End Date</Text>
         </TouchableOpacity>
       );
@@ -58,7 +87,7 @@ function SelectedCarScreen({ navigation, route }) {
   const handleBookCar = async () => {
     try {
       await dispatch(
-        sendCarBooking(car.info.id, {
+        sendCarBooking(car, {
           carId: car.info.id,
           longitude: currentLocation.longitude,
           latitude: currentLocation.latitude,
@@ -106,7 +135,20 @@ function SelectedCarScreen({ navigation, route }) {
 
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>End date:</Text>
-                  {bookCar ? renderDatePicker() : <Text>{reservation.endDate}</Text>}
+                  {bookCar ? <Text>{calculateEndDate().toLocaleDateString()}</Text> : <Text>{reservation.endDate}</Text>}
+                </View>
+
+                <View style={textPairContainerStyle}>
+                  <Text style={labelStyle}>Duration (days):</Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <TouchableOpacity onPress={handleDecreaseDuration}>
+                      <Text style={{ fontSize: 20, marginRight: 10 }}>-</Text>
+                    </TouchableOpacity>
+                    <Text>{selectedDuration}</Text>
+                    <TouchableOpacity onPress={handleIncreaseDuration}>
+                      <Text style={{ fontSize: 20, marginLeft: 10 }}>+</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
 
                 <View style={textPairContainerStyle}>

@@ -301,7 +301,6 @@ export const getPayments = (page) => async (dispatch) => {
   await fetchDataWithRetry(url, config, dispatch, getPaymentsSuccess, 'payments');
 };
 
-
 export const setNewLocation = (location) => async (dispatch) => {
   dispatch(setLocation(location));
 };
@@ -319,11 +318,9 @@ export const fetchFilteredCars =
     var types = '';
     if (filters.trans.length === 1) {
       types = filters.trans[0];
-    } else {
+    } else if (filters.trans.length === 2) {
       types = filters.trans[0] + '%3B' + filters.trans[1];
     }
-    types = 'manual';
-
     try {
       const response = await axios.get(
         `${URL}/cars?page=0&lat=${location.latitude}&lon=${location.longitude}&minPrice=${filters.minPrice}&maxPrice=${filters.maxPrice}&minSeat=${filters.minSeat}&maxSeat=${filters.maxPrice}&trans=${types}`,
@@ -347,7 +344,6 @@ export const fetchFilteredCars =
   };
 
 export const fetchFavoriteCars = (page) => async (dispatch) => {
-
   const jwtToken = await SecureStore.getItemAsync('userToken');
 
   if (!jwtToken) {
@@ -423,7 +419,7 @@ export const fetchRentHistoryCars = (rentHistory) => async (dispatch) => {
   }
 };
 
-export const sendCarBooking = (carId, carBooking) => async (dispatch) => {
+export const sendCarBooking = (car, carBooking) => async (dispatch) => {
   const userInfo = await AsyncStorage.getItem('userInfo');
   const { jwtToken } = JSON.parse(userInfo);
 
@@ -432,8 +428,8 @@ export const sendCarBooking = (carId, carBooking) => async (dispatch) => {
   }
 
   const response = await axios.post(
-    `${URL}/cars/${carId}/bookings`,
-    { ...carBooking, carId },
+    `${URL}/cars/${carBooking.carId}/bookings`,
+    { ...carBooking },
     {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
@@ -443,7 +439,7 @@ export const sendCarBooking = (carId, carBooking) => async (dispatch) => {
 
   if (response.status === 202) {
     console.log('success');
-    dispatch(bookCar(carBooking));
+    dispatch(bookCar({...carBooking, car}));
   } else if (axios.isAxiosError(error) && error.status === 404) {
     throw new Error('Dates are overlapping.');
   } else {
@@ -451,7 +447,9 @@ export const sendCarBooking = (carId, carBooking) => async (dispatch) => {
   }
 };
 
-export const sendFlatBooking = (flatBooking) => async (dispatch) => {};
+export const sendFlatBooking = (flatBooking) => async (dispatch) => {
+  
+};
 
 export const handleLogout = (username) => {};
 

@@ -2,11 +2,11 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import data from '../DummyData.json';
 import CarItem from '../components/CarItem';
 import FlatItem from '../components/FlatItem';
+import { useSelector } from 'react-redux';
 
 export default function HomeScreen({ navigation }) {
-  const reservation = data.reservations[0];
-  const car = data.cars.find((item) => item.info.id === reservation.carId);
-  const flat = data.flat;
+  const reservation = useSelector(state=>state.currentCarBooking);
+  const flat = useSelector(state=>state.currentFlatBooking);
 
   const navigateToReservationScreen = () => {
     navigation.push('Selected Car', {car, reservation, bookCar: false});
@@ -23,7 +23,7 @@ export default function HomeScreen({ navigation }) {
       <Text>Current reservations: </Text>
       <TouchableOpacity style={{ alignItems: 'center'}} onPress={navigateToReservationScreen}>
         <CarItem
-          car={car}
+          car={reservation.car}
           date={reservation.startDate}
         />
       </TouchableOpacity>

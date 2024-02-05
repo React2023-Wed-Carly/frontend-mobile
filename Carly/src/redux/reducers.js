@@ -44,7 +44,7 @@ const initialState = {
     maxPrice: 10000,
     minSeat: 0,
     maxSeat: 10,
-    trans: [],
+    trans: ['manual','automatic'],
   },
   filteredCars: [],
   currentCarBooking: null,
@@ -75,18 +75,18 @@ const rootReducer = (state = initialState, action) => {
       };
 
     case CHANGE_UNIT:
-      const { payload: unit } = action;
+      const { payload: newUnit } = action;
       return {
         ...state,
-        unit,
+        unit: newUnit,
       };
     case SET_LOCATION:
-      const { payload: currentLocation } = action;
+      const { payload: newLocation } = action;
       return {
         ...state,
         userInfo: {
           ...state.userInfo,
-          currentLocation,
+          currentLocation: newLocation,
         },
       };
 
