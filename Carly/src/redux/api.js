@@ -392,15 +392,15 @@ export const fetchRentHistoryCars = (rentHistory) => async (dispatch) => {
     console.error('Error during fetching rent history cars:', error);
     throw error;
   }
-}
+};
 
-export const sendCarBooking = (car, carBooking) => async (dispatch) => {
-  const userInfo = await AsyncStorage.getItem('userInfo');
-  const { jwtToken } = JSON.parse(userInfo);
+export const sendCarBooking = (carId, carBooking) => async (dispatch) => {
+  try {
+    const jwtToken = await SecureStore.getItemAsync('carlyToken');
 
-  if (!jwtToken) {
-    throw new Error('JWT token not found. User must be logged in.');
-  }
+    if (!jwtToken) {
+      throw new Error('JWT token not found. User must be logged in.');
+    }
     const response = await axios.post(
       `${URL}/cars/${carId}/bookings`,
       { ...carBooking, carId },
@@ -429,9 +429,7 @@ export const sendCarBooking = (car, carBooking) => async (dispatch) => {
   }
 };
 
-export const sendFlatBooking = (flatBooking) => async (dispatch) => {
-  
-};
+export const sendFlatBooking = (flatBooking) => async (dispatch) => {};
 
 export const handleLogout = (username) => {};
 
