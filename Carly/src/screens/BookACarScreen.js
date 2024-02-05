@@ -9,7 +9,7 @@ import MapScreen from './MapScreen';
 
 export default function BookACarScreen({ navigation }) {
   const filteredCars = useSelector((state) => state.filteredCars);
-  const theme = useSelector(state=>state.theme);
+  const theme = useSelector((state) => state.theme);
 
   const [isFilter, setIsFilter] = useState(false);
   const [showCarList, setShowCarList] = useState(false);

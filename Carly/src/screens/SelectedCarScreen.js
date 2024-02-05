@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Modal,
   Button,
-  Picker,
+  Alert,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { styles, selectedCarStyles } from '../styles';
@@ -84,6 +84,11 @@ function SelectedCarScreen({ navigation, route }) {
     return <></>;
   };
 
+  const openCancelModal = () => {
+    setShowModal(true);
+    setModalMessage('Are you sure you want to cancel this reservation?');
+  };
+
   const handleBookCar = async () => {
     try {
       await dispatch(
@@ -100,6 +105,34 @@ function SelectedCarScreen({ navigation, route }) {
       setModalMessage('Dates are overlapping. Please choose another date.');
       setShowModal(true);
     }
+  };
+
+  const handleCancelReservation = () => {
+    // Show confirmation modal
+    Alert.alert(
+      'Cancel Reservation',
+      'Are you sure you want to cancel this reservation? You will not receive a refund for your payment',
+      [
+        {
+          text: 'Back',
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: async () => {
+            // Logic to cancel reservation
+            try {
+              console.log('CANCEL');
+              closeModal();
+            } catch (error) {
+              console.error('Error cancelling reservation:', error);
+              // Handle error if the cancellation fails
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
   };
 
   return (
@@ -195,24 +228,27 @@ function SelectedCarScreen({ navigation, route }) {
                       justifyContent: 'center',
                     }}
                   >
-                    {car.info.features.split(',').map((feature, index) => (
-                      <View
-                        // eslint-disable-next-line react/no-array-index-key
-                        key={index}
-                        style={{
-                          borderColor: 'orange',
-                          borderWidth: 1,
-                          borderRadius: 15,
-                          padding: 5,
-                          paddingHorizontal: 10,
-                          margin: 5,
-                        }}
-                      >
-                        <Text style={{ fontSize: 12, color: theme === 'light' ? '#222' : '#fff' }}>
-                          {feature}
-                        </Text>
-                      </View>
-                    ))}
+                    {car.info.features &&
+                      car.info.features.map((feature, index) => (
+                        <View
+                          // eslint-disable-next-line react/no-array-index-key
+                          key={index}
+                          style={{
+                            borderColor: 'orange',
+                            borderWidth: 1,
+                            borderRadius: 15,
+                            padding: 5,
+                            paddingHorizontal: 10,
+                            margin: 5,
+                          }}
+                        >
+                          <Text
+                            style={{ fontSize: 12, color: theme === 'light' ? '#222' : '#fff' }}
+                          >
+                            {feature}
+                          </Text>
+                        </View>
+                      ))}
                   </View>
                 )}
               </View>
@@ -246,6 +282,13 @@ function SelectedCarScreen({ navigation, route }) {
           <View style={{ width: '45%' }}>
             <TouchableOpacity style={styles.activeButton} onPress={handleBookCar}>
               <Text style={styles.buttonText}>Book</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        {!bookCar && (
+          <View style={{ width: '45%' }}>
+            <TouchableOpacity style={styles.activeButton} onPress={handleCancelReservation}>
+              <Text style={styles.buttonText}>Cancel</Text>
             </TouchableOpacity>
           </View>
         )}

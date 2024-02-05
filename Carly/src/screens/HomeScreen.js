@@ -1,34 +1,39 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useSelector } from 'react-redux';
 import data from '../DummyData.json';
 import CarItem from '../components/CarItem';
+
 import FlatItem from '../components/FlatItem';
 import { useSelector } from 'react-redux';
 
 export default function HomeScreen({ navigation }) {
-  const reservation = useSelector(state=>state.currentCarBooking);
-  const flat = useSelector(state=>state.currentFlatBooking);
+  const reservation = data.reservations[0];
+  const car = data.cars.find((item) => item.info.id === reservation.carId);
+  const userInfo = useSelector((state) => state.userInfo);
+  const flat = data.flat;
 
   const navigateToReservationScreen = () => {
-    navigation.push('Selected Car', {car, reservation, bookCar: false});
+    navigation.push('Selected Car', { car, reservation, bookCar: false });
   };
 
   const navigateToFlatScreen = () => {
-    navigation.push('Flat',{flat});
+    navigation.push('Flat', { flat });
   };
 
-  if(!flat&&!car) return <Text>No reservations.</Text>
+  if (!flat && !car) return <Text>No reservations.</Text>;
 
   return (
-    <View style={{ flex: 1, alignItems: 'center' }}>
-      <Text>Current reservations: </Text>
-      <TouchableOpacity style={{ alignItems: 'center'}} onPress={navigateToReservationScreen}>
-        <CarItem
-          car={reservation.car}
-          date={reservation.startDate}
-        />
+    <View style={{ flex: 1, padding: 10 }}>
+      <View style={{ paddingVertical: 10 }}>
+        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{`Hi, ${userInfo.firstname}!`}</Text>
+      </View>
+      <Text>Your current Carly reservation is: </Text>
+      <TouchableOpacity style={{ alignItems: 'center' }} onPress={navigateToReservationScreen}>
+        <CarItem car={car} date={reservation.startDate} />
       </TouchableOpacity>
-      <TouchableOpacity style={{ alignItems: 'center'}} onPress={navigateToFlatScreen}>
-        <FlatItem flat={flat}/>
+      <Text>Your current Flatly reservation is: </Text>
+      <TouchableOpacity style={{ alignItems: 'center' }} onPress={navigateToFlatScreen}>
+        <FlatItem flat={flat} />
       </TouchableOpacity>
     </View>
   );

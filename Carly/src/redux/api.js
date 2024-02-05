@@ -22,31 +22,6 @@ import {
 
 const URL = 'https://wedcarly.azurewebsites.net';
 
-export const logAgain = () => async (dispatch) => {
-  var userInfo = await AsyncStorage.getItem('userInfo');
-  userInfo = JSON.parse(userInfo);
-  console.log(userInfo);
-
-  try {
-    const response = await axios.post(`${URL}/auth/login`, {
-      username: 'abc',
-      password: 'abc',
-    });
-
-    if (response.status === 200) {
-      const jwtToken = response.data.jwttoken;
-      dispatch(loginSuccess({ ...userInfo, jwtToken }));
-
-      await AsyncStorage.setItem('userInfo', JSON.stringify({ ...userInfo, jwtToken }));
-    } else {
-      throw new Error('Login failed');
-    }
-  } catch (error) {
-    console.error('Error during login:', error);
-    throw error; // Rethrow the error for the calling function to handle
-  }
-};
-
 export const register =
   ({ username, firstName, lastName, email, password }) =>
   async (dispatch) => {
@@ -67,8 +42,8 @@ export const register =
 
         dispatch(registerSuccess({ ...userData, jwtToken }));
 
-        await AsyncStorage.setItem('userInfo', JSON.stringify({ ...userData, jwtToken }));
-        await SecureStore.setItemAsync('userToken', jwtToken);
+        await AsyncStorage.setItem('userInfo', JSON.stringify({ ...userData }));
+        await SecureStore.setItemAsync('carlyToken', jwtToken);
       } else {
         throw new Error('Registration failed');
       }
@@ -94,7 +69,7 @@ export const login =
         dispatch(loginSuccess({ ...userData, jwtToken }));
 
         await AsyncStorage.setItem('userInfo', JSON.stringify({ ...userData, jwtToken }));
-        await SecureStore.setItemAsync('userToken', jwtToken);
+        await SecureStore.setItemAsync('carlyToken', jwtToken);
         await SecureStore.setItemAsync('userLogin', JSON.stringify({ username, password }));
       } else {
         throw new Error('Login failed');
@@ -117,7 +92,7 @@ export const getNewToken = () => async (dispatch) => {
 
     if (response.status === 200) {
       const jwtToken = response.data.jwttoken;
-      await SecureStore.setItemAsync('userToken', jwtToken);
+      await SecureStore.setItemAsync('carlyToken', jwtToken);
       return jwtToken;
     }
     throw new Error('Login failed');
@@ -163,7 +138,7 @@ const updateUserData = async (field, value) => {
 
 export const topUpAccount = (amount) => async (dispatch) => {
   try {
-    const jwtToken = await SecureStore.getItemAsync('userToken');
+    const jwtToken = await SecureStore.getItemAsync('carlyToken');
 
     if (!jwtToken) {
       throw new Error('JWT token not found. User must be logged in.');
@@ -194,7 +169,7 @@ export const topUpAccount = (amount) => async (dispatch) => {
 
 export const sendLikedCar = (id) => async (dispatch) => {
   try {
-    const jwtToken = await SecureStore.getItemAsync('userToken');
+    const jwtToken = await SecureStore.getItemAsync('carlyToken');
 
     if (!jwtToken) {
       throw new Error('JWT token not found. User must be logged in.');
@@ -221,7 +196,7 @@ export const sendLikedCar = (id) => async (dispatch) => {
 
 export const sendUnlikedCar = (id) => async (dispatch) => {
   try {
-    const jwtToken = await SecureStore.getItemAsync('userToken');
+    const jwtToken = await SecureStore.getItemAsync('carlyToken');
 
     if (!jwtToken) {
       throw new Error('JWT token not found. User must be logged in.');
@@ -291,7 +266,7 @@ const fetchDataWithRetry = async (url, config, dispatch, successCallback, storag
 };
 
 export const getPayments = (page) => async (dispatch) => {
-  const jwtToken = await SecureStore.getItemAsync('userToken');
+  const jwtToken = await SecureStore.getItemAsync('carlyToken');
   const url = `${URL}/users/details/payments`;
   const config = {
     params: { page },
@@ -344,7 +319,7 @@ export const fetchFilteredCars =
   };
 
 export const fetchFavoriteCars = (page) => async (dispatch) => {
-  const jwtToken = await SecureStore.getItemAsync('userToken');
+  const jwtToken = await SecureStore.getItemAsync('carlyToken');
 
   if (!jwtToken) {
     throw new Error('JWT token not found. User must be logged in.');
@@ -360,7 +335,7 @@ export const fetchFavoriteCars = (page) => async (dispatch) => {
 };
 
 export const fetchRentHistory = () => async (dispatch) => {
-  const jwtToken = await SecureStore.getItemAsync('userToken');
+  const jwtToken = await SecureStore.getItemAsync('carlyToken');
 
   if (!jwtToken) {
     throw new Error('JWT token not found. User must be logged in.');
@@ -386,7 +361,7 @@ export const fetchRentHistory = () => async (dispatch) => {
 
 export const fetchRentHistoryCars = (rentHistory) => async (dispatch) => {
   try {
-    const jwtToken = await SecureStore.getItemAsync('userToken');
+    const jwtToken = await SecureStore.getItemAsync('carlyToken');
 
     if (!jwtToken) {
       throw new Error('JWT token not found. User must be logged in.');
@@ -417,7 +392,7 @@ export const fetchRentHistoryCars = (rentHistory) => async (dispatch) => {
     console.error('Error during fetching rent history cars:', error);
     throw error;
   }
-};
+}
 
 export const sendCarBooking = (car, carBooking) => async (dispatch) => {
   const userInfo = await AsyncStorage.getItem('userInfo');
@@ -426,24 +401,31 @@ export const sendCarBooking = (car, carBooking) => async (dispatch) => {
   if (!jwtToken) {
     throw new Error('JWT token not found. User must be logged in.');
   }
+    const response = await axios.post(
+      `${URL}/cars/${carId}/bookings`,
+      { ...carBooking, carId },
+      {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      }
+    );
 
-  const response = await axios.post(
-    `${URL}/cars/${carBooking.carId}/bookings`,
-    { ...carBooking },
-    {
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-      },
+    if (response.status >= 200 && response.status < 300) {
+      console.log('success');
+      dispatch(bookCar(carBooking));
+    } else {
+      console.error('Error during adding car booking:', response.status);
+      if (response.status === 404) {
+        throw new Error('Dates are overlapping.');
+      } else {
+        throw new Error('Unexpected error during car booking.');
+      }
     }
-  );
-
-  if (response.status === 202) {
-    console.log('success');
-    dispatch(bookCar({...carBooking, car}));
-  } else if (axios.isAxiosError(error) && error.status === 404) {
-    throw new Error('Dates are overlapping.');
-  } else {
-    console.error('Error during adding car booking:', error.status);
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.status === 404) {
+      throw new Error('Dates are overlapping.');
+    }
   }
 };
 
