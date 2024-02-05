@@ -136,7 +136,6 @@ const rootReducer = (state = initialState, action) => {
 
     case BOOK_FLAT:
       const { payload: flatBooking } = action;
-      console.log(flatBooking);
       return {
         ...state,
         currentFlatBooking: flatBooking,

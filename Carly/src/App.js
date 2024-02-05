@@ -135,7 +135,6 @@ function App() {
         const value = await AsyncStorage.getItem('isLoggedIn');
         if (value !== null && value === 'true') {
           setLoggedIn(true);
-
           dispatch(fetchRentHistory());
           // let currentFlatBooking = AsyncStorage.getItem('currentFlatBooking');
           // currentFlatBooking = JSON.parse(currentFlatBooking);
@@ -158,7 +157,7 @@ function App() {
       try {
         const value = await AsyncStorage.getItem('isLoggedInFlatly');
         if (value !== null && value === 'true') {
-          dispatch(flatlyLoginSuccess());
+          dispatch(flatlyLoginSuccess()); 
         }
       } catch (error) {
         console.error('Error checking login status:', error);

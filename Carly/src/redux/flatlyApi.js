@@ -133,8 +133,7 @@ export const sendFlatBooking = (flat, flatBooking, id) => async (dispatch) => {
       throw new Error('JWT token not found. User must be logged in.');
     }
 
-    const response = await axios.post(`${URL}/reservation?externalUserId=${id}`, {
-      params: flatBooking,
+    const response = await axios.post(`${URL}/reservation?externalUserId=${id}`, flatBooking,{  
       headers: {
         Authorization: `Bearer ${jwtToken}`,
         'Content-Type': 'application/json',

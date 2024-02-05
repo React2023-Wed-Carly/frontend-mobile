@@ -10,12 +10,18 @@ import FlatItem from '../components/FlatItem';
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
-  
 
   const carBooking = useSelector(state=>state.carBooking);
   const flatBooking = useSelector(state=>state.flatBooking);
-  console.log("flat booking");
-  console.log(flatBooking);
+
+  // var carBooking = AsyncStorage.getItem('currentCarReservation');
+  
+  // carBooking = JSON.parse(carBooking);
+  // console.log(carBooking)
+
+  // var flatBooking = AsyncStorage.getItem('currentFlatReservation');
+  // flatBooking = JSON.parse(carBooking);
+
 
   const userInfo = useSelector((state) => state.userInfo);
 

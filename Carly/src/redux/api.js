@@ -470,6 +470,7 @@ export const sendCarBooking = (car, carBooking) => async (dispatch) => {
     if (response.status >= 200 && response.status < 300) {
       console.log('success');
       await AsyncStorage.setItem('currentCarBooking', JSON.stringify({ booking: carBooking, car }));
+      
       dispatch(bookCar({ booking: carBooking, car }));
     } else {
       console.error('Error during adding car booking:', response.status);
