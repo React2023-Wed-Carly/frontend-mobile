@@ -22,11 +22,9 @@ function RentHistoryScreen() {
   }, [dispatch, rentHistory]);
 
   const renderItem = ({ item }) => {
-    if (!rentHistoryCars) return null;
+    if (!rentHistoryCars || !item) return null;
     const car = rentHistoryCars.find((c) => c.info.id === item.carId);
-
     if (!car) return null;
-
     return <CarItem car={car} date={item.startDate} />;
   };
 

@@ -122,6 +122,7 @@ const fetchDataWithRetry = async (url, config, dispatch, successCallback, storag
     if (axios.isAxiosError(error) && error.response && error.response.status === 401) {
       try {
         // Try to get a new token
+
         const newToken = await dispatch(getNewToken());
 
         // Retry the request with the new token
@@ -133,10 +134,11 @@ const fetchDataWithRetry = async (url, config, dispatch, successCallback, storag
         if (response.status === 200) {
           const { data } = response;
           if (storageKey) await AsyncStorage.setItem(storageKey, JSON.stringify(data));
+
           if (successCallback) dispatch(successCallback(data));
           return data;
         }
-        throw new Error(`Fetching data failed for ${url}.`);
+        throw new Error(`Fetching data retry failed for ${url}.`);
       } catch (tokenError) {
         console.error('Error during token refresh:', tokenError);
         throw tokenError;
@@ -403,9 +405,14 @@ export const fetchRentHistoryCars = async (dispatch, rentHistory) => {
     if (!jwtToken) {
       throw new Error('JWT token not found. User must be logged in.');
     }
+    const fetchedDetails = [];
 
-    const fetchDetails = async (carId) => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const historyItem of rentHistory) {
+      const { carId } = historyItem;
+
       try {
+        // eslint-disable-next-line no-await-in-loop
         const carDetails = await fetchDataWithRetry(
           `${URL}/cars/${carId}`,
           {
@@ -417,6 +424,7 @@ export const fetchRentHistoryCars = async (dispatch, rentHistory) => {
         );
 
         // Check if the car is a favorite
+        // eslint-disable-next-line no-await-in-loop
         const isFavoriteResponse = await fetchDataWithRetry(
           `${URL}/users/favorites/isFavorite/${carId}`,
           {
@@ -428,23 +436,15 @@ export const fetchRentHistoryCars = async (dispatch, rentHistory) => {
         );
 
         carDetails.isFavorite = isFavoriteResponse;
-        return carDetails;
+        fetchedDetails.push(carDetails);
       } catch (error) {
         console.error(`Error during fetching details for carId ${carId}:`, error);
-        throw error;
+        // Omit failed entry and continue with the next one
       }
-    };
+    }
 
-    const carsDetailsPromises = rentHistory.map((historyItem) => fetchDetails(historyItem.carId));
-
-    const carsDetailsResults = await Promise.allSettled(carsDetailsPromises);
-
-    const successfulCarsDetails = carsDetailsResults
-      .filter((result) => result.status === 'fulfilled')
-      .map((result) => result.value);
-
-    await AsyncStorage.setItem('carsDetails', JSON.stringify(successfulCarsDetails));
-    dispatch(getRentHistoryCars(successfulCarsDetails));
+    await AsyncStorage.setItem('carsDetails', JSON.stringify(fetchedDetails));
+    dispatch(getRentHistoryCars(fetchedDetails));
   } catch (error) {
     console.error('Error during fetching rent history cars:', error);
     throw error;

@@ -181,24 +181,28 @@ const rootReducer = (state = initialState, action) => {
 
     case GET_RENT_HISTORY:
       const { payload: rentHistory } = action;
+
       return {
         ...state,
-        rentHistory,
+        rentHistory: [...(state.rentHistory ?? []), ...rentHistory],
       };
     case GET_RENT_HISTORY_CARS:
       const { payload: carsDetails } = action;
 
       const oldRentHistory = state.rentHistory;
+      const updatedCarsDetails = carsDetails.map((carDetails) => ({
+        ...carDetails,
+        info: {
+          ...carDetails.info,
+          features: carDetails.info.features.split(','),
+          dailyPrice: carDetails.info.dailyPrice / 100,
+        },
+      }));
       const carsDetailsMap = new Map(
-        carsDetails.map((carDetails) => [
+        updatedCarsDetails.map((carDetails) => [
           carDetails.info.id,
           {
             ...carDetails,
-            info: {
-              ...carDetails.info,
-              features: carDetails.info.features.split(','),
-              dailyPrice: carDetails.info.dailyPrice / 100,
-            },
           },
         ])
       );
@@ -208,8 +212,6 @@ const rootReducer = (state = initialState, action) => {
         car: carsDetailsMap.get(historyItem.carId),
       }));
 
-      console.log('U', updatedRentHistory);
-
       const rentHistoryPageNumber = state.rentHistoryPageEnd
         ? state.rentHistoryPage
         : !state.rentHistoryPageEnd && carsDetails.length === 0
@@ -218,8 +220,8 @@ const rootReducer = (state = initialState, action) => {
 
       return {
         ...state,
-        rentHistoryCars: [...(state.rentHistoryCars ?? []), carsDetails],
-        rentHistory: [...(state.rentHistory ?? []), updatedRentHistory],
+        rentHistoryCars: [...(state.rentHistoryCars ?? []), ...updatedCarsDetails],
+        rentHistory: [...(state.rentHistory ?? []), ...updatedRentHistory],
         rentHistoryPage: rentHistoryPageNumber,
         rentHistoryPageEnd: !state.rentHistoryPageEnd
           ? carsDetails.length === 0
