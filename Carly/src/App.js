@@ -20,8 +20,14 @@ import { styles } from './styles';
 import SelectedCarScreen from './screens/SelectedCarScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
-import { changeTheme, loginSuccess, setFlatBooking, setCarBooking } from './redux/actions';
-import { getPayments } from './redux/api';
+import {
+  changeTheme,
+  flatlyLoginSuccess,
+  loginSuccess,
+  setFlatBooking,
+  setCarBooking,
+} from './redux/actions';
+import { logUserOut } from './redux/api';
 import FlatScreen from './screens/FlatScreen';
 
 const Drawer = createDrawerNavigator();
@@ -129,17 +135,28 @@ function App() {
         if (value !== null && value === 'true') {
           setLoggedIn(true);
 
-          var currentFlatBooking = AsyncStorage.getItem('currentFlatBooking');
-          currentFlatBooking = JSON.parse(currentFlatBooking)
-          if(currentFlatBooking) {
+          let currentFlatBooking = AsyncStorage.getItem('currentFlatBooking');
+          currentFlatBooking = JSON.parse(currentFlatBooking);
+          if (currentFlatBooking) {
             dispatch(setFlatBooking(currentFlatBooking));
           }
 
-          var currentCarBooking = AsyncStorage.getItem('currentCarBooking');
-          currentCarBooking = JSON.parse(currentCarBooking)
-          if(currentCarBooking) {
+          let currentCarBooking = AsyncStorage.getItem('currentCarBooking');
+          currentCarBooking = JSON.parse(currentCarBooking);
+          if (currentCarBooking) {
             dispatch(setCarBooking(currentCarBooking));
           }
+        }
+      } catch (error) {
+        console.error('Error checking login status:', error);
+      }
+    };
+
+    const checkFlatlyLoginStatus = async () => {
+      try {
+        const value = await AsyncStorage.getItem('isLoggedInFlatly');
+        if (value !== null && value === 'true') {
+          dispatch(flatlyLoginSuccess());
         }
       } catch (error) {
         console.error('Error checking login status:', error);
@@ -159,13 +176,9 @@ function App() {
       }
     };
 
-    const getData = async () => {
-      dispatch(getPayments);
-    };
-
     const fetchData = async () => {
       // Use Promise.all to run both checks concurrently
-      await Promise.all([checkLoginStatus(), checkStoredUserInfo()]);
+      await Promise.all([checkLoginStatus(), checkStoredUserInfo(), checkFlatlyLoginStatus()]);
       setLoading(false); // Set loading to false once both checks are completed
     };
 
@@ -178,7 +191,7 @@ function App() {
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.clear();
+      dispatch(logUserOut());
       updateLoginStatus(false);
     } catch (error) {
       console.error('Error logging out:', error);

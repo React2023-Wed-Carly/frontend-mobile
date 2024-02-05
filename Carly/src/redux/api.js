@@ -17,6 +17,8 @@ import {
   setLocation,
   getFilteredCars,
   bookCar,
+  bookFlat,
+  logout,
 } from './actions';
 
 const URL = 'https://wedcarly.azurewebsites.net';
@@ -107,11 +109,11 @@ const fetchDataWithRetry = async (url, config, dispatch, successCallback, storag
 
     if (response.status === 200) {
       const { data } = response;
-      await AsyncStorage.setItem(storageKey, JSON.stringify(data));
-      dispatch(successCallback(data));
-    } else {
-      throw new Error(`Fetching data failed for ${url}.`);
+      if (storageKey) await AsyncStorage.setItem(storageKey, JSON.stringify(data));
+      if (successCallback) dispatch(successCallback(data));
+      return data;
     }
+    throw new Error(`Fetching data failed for ${url}.`);
   } catch (error) {
     console.error(`Error during fetching data for ${url}:`, error);
 
@@ -119,6 +121,7 @@ const fetchDataWithRetry = async (url, config, dispatch, successCallback, storag
     if (axios.isAxiosError(error) && error.response && error.response.status === 401) {
       try {
         // Try to get a new token
+
         const newToken = await dispatch(getNewToken());
 
         // Retry the request with the new token
@@ -129,11 +132,12 @@ const fetchDataWithRetry = async (url, config, dispatch, successCallback, storag
 
         if (response.status === 200) {
           const { data } = response;
-          await AsyncStorage.setItem(url, JSON.stringify(data));
-          dispatch(successCallback(data));
-        } else {
-          throw new Error(`Fetching data failed for ${url}.`);
+          if (storageKey) await AsyncStorage.setItem(storageKey, JSON.stringify(data));
+
+          if (successCallback) dispatch(successCallback(data));
+          return data;
         }
+        throw new Error(`Fetching data retry failed for ${url}.`);
       } catch (tokenError) {
         console.error('Error during token refresh:', tokenError);
         throw tokenError;
@@ -365,7 +369,7 @@ export const fetchFavoriteCars = (page) => async (dispatch) => {
   await fetchDataWithRetry(url, config, dispatch, getFavoriteCars, 'favoriteCars');
 };
 
-export const fetchRentHistory = () => async (dispatch) => {
+export const fetchRentHistory = (page) => async (dispatch) => {
   const jwtToken = await SecureStore.getItemAsync('carlyToken');
 
   if (!jwtToken) {
@@ -374,51 +378,72 @@ export const fetchRentHistory = () => async (dispatch) => {
 
   const url = `${URL}/users/details/bookings`;
   const config = {
-    params: { page: 0 },
+    params: { page },
     headers: { Authorization: `Bearer ${jwtToken}` },
   };
 
-  await fetchDataWithRetry(
-    url,
-    config,
-    dispatch,
-    (data) => {
-      dispatch(getRentHistory(data));
-      dispatch(fetchRentHistoryCars(data));
-    },
-    'rentHistory'
-  );
+  try {
+    const rentHistoryData = await fetchDataWithRetry(
+      url,
+      config,
+      dispatch,
+      getRentHistory,
+      'rentHistory'
+    );
+
+    await fetchRentHistoryCars(dispatch, rentHistoryData);
+  } catch (error) {
+    console.error('Error during fetching rent history:', error);
+    throw error;
+  }
 };
 
-export const fetchRentHistoryCars = (rentHistory) => async (dispatch) => {
+export const fetchRentHistoryCars = async (dispatch, rentHistory) => {
   try {
     const jwtToken = await SecureStore.getItemAsync('carlyToken');
-
     if (!jwtToken) {
       throw new Error('JWT token not found. User must be logged in.');
     }
+    const fetchedDetails = [];
 
-    const carsDetails = [];
+    // eslint-disable-next-line no-restricted-syntax
     for (const historyItem of rentHistory) {
-      const carId = historyItem['carId'];
-      try {
-        const response = await axios.get(`${URL}/cars/${carId}`, {
-          headers: { Authorization: `Bearer ${jwtToken}` },
-        });
+      const { carId } = historyItem;
 
-        if (response.status === 200) {
-          const carDetails = response.data;
-          carsDetails.push(carDetails);
-        } else {
-          throw new Error(`Fetching details for carId ${carId} failed.`);
-        }
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        const carDetails = await fetchDataWithRetry(
+          `${URL}/cars/${carId}`,
+          {
+            headers: { Authorization: `Bearer ${jwtToken}` },
+          },
+          dispatch,
+          null,
+          null
+        );
+
+        // Check if the car is a favorite
+        // eslint-disable-next-line no-await-in-loop
+        const isFavoriteResponse = await fetchDataWithRetry(
+          `${URL}/users/favorites/isFavorite/${carId}`,
+          {
+            headers: { Authorization: `Bearer ${jwtToken}` },
+          },
+          dispatch,
+          null,
+          null
+        );
+
+        carDetails.isFavorite = isFavoriteResponse;
+        fetchedDetails.push(carDetails);
       } catch (error) {
         console.error(`Error during fetching details for carId ${carId}:`, error);
-        throw error;
+        // Omit failed entry and continue with the next one
       }
     }
-    await AsyncStorage.setItem('carsDetails', JSON.stringify(carsDetails));
-    dispatch(getRentHistoryCars(carsDetails));
+
+    await AsyncStorage.setItem('carsDetails', JSON.stringify(fetchedDetails));
+    dispatch(getRentHistoryCars(fetchedDetails));
   } catch (error) {
     console.error('Error during fetching rent history cars:', error);
     throw error;
@@ -444,8 +469,8 @@ export const sendCarBooking = (car, carBooking) => async (dispatch) => {
 
     if (response.status >= 200 && response.status < 300) {
       console.log('success');
-      await AsyncStorage.setItem('currentCarBooking', JSON.stringify({booking:carBooking, car}));
-      dispatch(bookCar({booking: carBooking, car}));
+      await AsyncStorage.setItem('currentCarBooking', JSON.stringify({ booking: carBooking, car }));
+      dispatch(bookCar({ booking: carBooking, car }));
     } else {
       console.error('Error during adding car booking:', response.status);
       if (response.status === 404) {
@@ -461,7 +486,13 @@ export const sendCarBooking = (car, carBooking) => async (dispatch) => {
   }
 };
 
-export const handleLogout = (username) => {};
+export const sendFlatBooking = (flatBooking) => async (dispatch) => {};
+
+export const logUserOut = () => async (dispatch) => {
+  await AsyncStorage.clear();
+  await SecureStore.clear();
+  dispatch(logout());
+};
 
 export const deleteAccount = (username) => {
   // Implement account deletion logic if needed
