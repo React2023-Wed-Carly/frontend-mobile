@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { View, Image, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import Card from './Card'; 
+import Card from './Card';
 import { formatPrice } from '../utils/textFormatting';
 import { useSelector } from 'react-redux';
 
 export default function FlatItem({ flat }) {
-  const theme = useSelector(state=>state.theme);
+  const theme = useSelector((state) => state.theme);
   return (
     <Card>
       <View
@@ -15,6 +15,7 @@ export default function FlatItem({ flat }) {
           justifyContent: 'space-between',
           alignItems: 'center',
           flex: 1,
+          marginLeft: 10,
         }}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -31,7 +32,11 @@ export default function FlatItem({ flat }) {
           />
           <View style={{ width: '60%' }}>
             <Text
-              style={{ fontSize: 19, fontWeight: 'bold', color:theme === 'light' ? '#222' : '#fff' }}
+              style={{
+                fontSize: 19,
+                fontWeight: 'bold',
+                color: theme === 'light' ? '#222' : '#fff',
+              }}
               numberOfLines={1}
               ellipsizeMode="tail"
             >

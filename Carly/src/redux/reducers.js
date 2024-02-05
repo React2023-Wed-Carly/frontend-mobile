@@ -19,6 +19,7 @@ import {
   BOOK_CAR,
   BOOK_FLAT,
   CHANGE_THEME,
+  FLATLY_LOGIN_SUCCESS,
 } from './actions';
 
 const initialState = {
@@ -31,6 +32,9 @@ const initialState = {
     password: 'password123',
     balance: 1000,
     distanceTravelled: 150,
+  },
+  flatlyData: {
+    isLoggedIn: false,
   },
   currentLocation: {
     latitude: 40.7128,
@@ -72,22 +76,6 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         theme,
-      };
-
-    case CHANGE_UNIT:
-      const { payload: unit } = action;
-      return {
-        ...state,
-        unit,
-      };
-    case SET_LOCATION:
-      const { payload: currentLocation } = action;
-      return {
-        ...state,
-        userInfo: {
-          ...state.userInfo,
-          currentLocation,
-        },
       };
 
     case LIKE_CAR:
@@ -137,7 +125,13 @@ const rootReducer = (state = initialState, action) => {
           ? favoriteCars.length === 0
           : state.favoriteCarsPageEnd,
         favoriteCarsPage: pageNumber,
-        favoriteCars: [...(state.favoriteCars ?? []), ...favoriteCars],
+        favoriteCars: [
+          ...(state.favoriteCars ?? []),
+          ...favoriteCars.map((favoriteCar) => ({
+            ...favoriteCar,
+            dailyPrice: favoriteCar.dailyPrice / 100,
+          })),
+        ],
       };
 
     case CHANGE_UNIT:
@@ -167,7 +161,10 @@ const rootReducer = (state = initialState, action) => {
       } = action;
       return {
         ...state,
-        filteredCars,
+        filteredCars: filteredCars.map((filteredCar) => ({
+          ...filteredCar,
+          dailyPrice: filteredCar.dailyPrice / 100,
+        })),
       };
 
     case GET_RENT_HISTORY:
@@ -180,7 +177,12 @@ const rootReducer = (state = initialState, action) => {
       const { payload: carsDetails } = action;
 
       const oldRentHistory = state.rentHistory;
-      const carsDetailsMap = new Map(carsDetails.map((car) => [car.info.id, car]));
+      const carsDetailsMap = new Map(
+        carsDetails.map((carDetails) => [
+          carDetails.info.id,
+          { ...carDetails, dailyPrice: carDetails.dailyPrice / 100 },
+        ])
+      );
 
       // Update each element in rentHistory with car information
       const updatedRentHistory = oldRentHistory.map((historyItem) => ({
@@ -250,6 +252,11 @@ const rootReducer = (state = initialState, action) => {
           payments: null,
           balance: state.userInfo.balance + amount / 100,
         },
+      };
+    case FLATLY_LOGIN_SUCCESS:
+      return {
+        ...state,
+        flatlyData: { isLoggedIn: true },
       };
     default:
       return state;

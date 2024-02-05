@@ -31,11 +31,12 @@ export default function CarItem({ car, date, distance }) {
           justifyContent: 'space-between',
           alignItems: 'center',
           flex: 1,
+          marginLeft: 10,
         }}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Image
-            source={require('../../assets/dummy_cars/car.png')} // Assuming photo is a URL or local image path
+            source={{ uri: `data:image/png;base64,${car.img}` }} // Assuming photo is a URL or local image path
             style={{
               width: 80,
               height: 80,
@@ -66,9 +67,22 @@ export default function CarItem({ car, date, distance }) {
                   paddingTop: 6,
                 }}
               >
-                <Icon name="payments" color="gray" size={12} />
+                <Icon name="payments" color="gray" size={12} style={{ marginTop: 2 }} />
                 <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>
                   {formatPrice(car.info.dailyPrice)}
+                </Text>
+              </View>
+            )}
+            {!date && (
+              <View style={{ flexDirection: 'row' }}>
+                <Icon
+                  name="airline-seat-recline-extra"
+                  color="gray"
+                  size={12}
+                  style={{ marginTop: 2 }}
+                />
+                <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>
+                  {`${car.info.seatingCapacity}`}
                 </Text>
               </View>
             )}
@@ -80,10 +94,13 @@ export default function CarItem({ car, date, distance }) {
                   padding: 2,
                 }}
               >
-                <Icon name="calendar-today" color="gray" size={12} />
-                <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>{date}</Text>
+                <Icon name="calendar-today" color="gray" size={12} style={{ marginTop: 2 }} />
+                <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>
+                  {new Date(date.split('.')[0]).toLocaleDateString()}
+                </Text>
               </View>
             )}
+
             {distance && (
               <View
                 style={{
@@ -98,12 +115,6 @@ export default function CarItem({ car, date, distance }) {
                 </Text>
               </View>
             )}
-            <View style={{ flexDirection: 'row' }}>
-              <Icon name="airline-seat-recline-extra" color="gray" size={12} />
-              <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>
-                {`${car.info.seatingCapacity}`}
-              </Text>
-            </View>
           </View>
         </View>
         <View>

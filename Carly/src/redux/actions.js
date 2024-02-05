@@ -22,6 +22,8 @@ export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 export const TOP_UP_SUCCESS = 'TOP_UP_SUCCESS';
 export const GET_PAYMENTS_SUCCESS = 'GET_PAYMENTS_SUCCESS';
 
+export const FLATLY_LOGIN_SUCCESS = 'FLATLY_LOGIN_SUCCESS';
+
 export const loginAgain = (userData) => ({
   type: LOGIN_AGAIN,
   payload: userData,
@@ -125,4 +127,9 @@ export const topUpSuccess = (userData) => ({
 export const getPaymentsSuccess = (payments) => ({
   type: GET_PAYMENTS_SUCCESS,
   payload: payments,
+});
+
+export const flatlyLoginSuccess = (userData) => ({
+  type: FLATLY_LOGIN_SUCCESS,
+  payload: userData,
 });
