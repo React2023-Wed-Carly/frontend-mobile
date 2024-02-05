@@ -33,13 +33,6 @@ function SelectedCarScreen({ navigation, route }) {
   const [selectedDuration, setSelectedDuration] = useState(1);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const [showModal, setShowModal] = useState(true);
-  const [modalMessage, setModalMessage] = useState('Dates are overlapping.');
-
-  const closeModal = () => {
-    setShowModal(false);
-  };
-
   const calculateEndDate = () => {
     const newEndDate = new Date(startDate);
     newEndDate.setDate(startDate.getDate() + selectedDuration);
@@ -81,29 +74,27 @@ function SelectedCarScreen({ navigation, route }) {
         </TouchableOpacity>
       );
     }
-    return <></>;
-  };
-
-  const openCancelModal = () => {
-    setShowModal(true);
-    setModalMessage('Are you sure you want to cancel this reservation?');
+    return null;
   };
 
   const handleBookCar = async () => {
     try {
-      await dispatch(
+      dispatch(
         sendCarBooking(car, {
           carId: car.info.id,
           longitude: currentLocation.longitude,
           latitude: currentLocation.latitude,
           startDate: startDate.toISOString(),
-          endDate: endDate.toISOString(),
+          endDate: calculateEndDate().toISOString(),
           integratedSystemId: 0,
         })
       );
     } catch (error) {
-      setModalMessage('Dates are overlapping. Please choose another date.');
-      setShowModal(true);
+      // Use the Alert component to display the error message
+      Alert.alert(
+        'Error',
+        'The date you have selected overlaps with an existing reservation. Someone must have booked the car faster than you - please choose another car.'
+      );
     }
   };
 
@@ -123,7 +114,6 @@ function SelectedCarScreen({ navigation, route }) {
             // Logic to cancel reservation
             try {
               console.log('CANCEL');
-              closeModal();
             } catch (error) {
               console.error('Error cancelling reservation:', error);
               // Handle error if the cancellation fails
@@ -143,7 +133,7 @@ function SelectedCarScreen({ navigation, route }) {
             <View style={{ flexDirection: 'column', alignItems: 'center', flex: 1 }}>
               <Image
                 // eslint-disable-next-line global-require
-                source={require('../../assets/dummy_cars/car.png')}
+                source={{ uri: `data:image/png;base64,${car.img}` }}
                 style={selectedCarStyles.carImage}
               />
             </View>
@@ -168,7 +158,11 @@ function SelectedCarScreen({ navigation, route }) {
 
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>End date:</Text>
-                  {bookCar ? <Text>{calculateEndDate().toLocaleDateString()}</Text> : <Text>{reservation.endDate}</Text>}
+                  {bookCar ? (
+                    <Text>{calculateEndDate().toLocaleDateString()}</Text>
+                  ) : (
+                    <Text>{reservation.endDate}</Text>
+                  )}
                 </View>
 
                 <View style={textPairContainerStyle}>
@@ -255,15 +249,6 @@ function SelectedCarScreen({ navigation, route }) {
             </View>
           </View>
         </Card>
-
-        <Modal visible={showModal} animationType="slide" transparent={false}>
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
-              <Text>{modalMessage}</Text>
-              <Button title="OK" onPress={closeModal} />
-            </View>
-          </View>
-        </Modal>
       </ScrollView>
       <View
         style={{
