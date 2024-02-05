@@ -149,13 +149,11 @@ function SelectedCarScreen({ navigation, route }) {
   const handleBookCar = async () => {
     try {
       dispatch(
-      dispatch(
         sendCarBooking(car, {
           carId: car.info.id,
           longitude: currentLocation.longitude,
           latitude: currentLocation.latitude,
           startDate: startDate.toISOString(),
-          endDate: calculateEndDate().toISOString(),
           endDate: calculateEndDate().toISOString(),
           integratedSystemId: 0,
         })
@@ -212,7 +210,6 @@ function SelectedCarScreen({ navigation, route }) {
             <View style={{ flexDirection: 'column', alignItems: 'center', flex: 1 }}>
               <Image
                 // eslint-disable-next-line global-require
-                source={{ uri: `data:image/png;base64,${car.img}` }}
                 source={{ uri: `data:image/png;base64,${car.img}` }}
                 style={selectedCarStyles.carImage}
               />
