@@ -48,7 +48,7 @@ const initialState = {
     maxPrice: 10000,
     minSeat: 0,
     maxSeat: 10,
-    trans: ['manual','automatic'],
+    trans: ['manual', 'automatic'],
   },
   filteredCars: [],
   currentCarBooking: null,
@@ -77,14 +77,14 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         theme,
       };
-      
+
     case CHANGE_UNIT:
       const { payload: newUnit } = action;
       return {
         ...state,
         unit: newUnit,
       };
-      
+
     case SET_LOCATION:
       const { payload: newLocation } = action;
       return {
@@ -94,7 +94,7 @@ const rootReducer = (state = initialState, action) => {
           currentLocation: newLocation,
         },
       };
-      
+
     case LIKE_CAR:
       const { payload: likedId } = action;
       const car = state.carsDetails.find((item) => item.info.id === likedId);
@@ -149,20 +149,6 @@ const rootReducer = (state = initialState, action) => {
             dailyPrice: favoriteCar.dailyPrice / 100,
           })),
         ],
-      };
-
-    case CHANGE_UNIT:
-      const { payload: unit } = action;
-      return {
-        ...state,
-        unit,
-      };
-
-    case SET_LOCATION:
-      const { payload: currentLocation } = action;
-      return {
-        ...state,
-        currentLocation,
       };
 
     case SET_FILTERS:

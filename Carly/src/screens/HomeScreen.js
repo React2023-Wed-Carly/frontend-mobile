@@ -4,7 +4,6 @@ import data from '../DummyData.json';
 import CarItem from '../components/CarItem';
 
 import FlatItem from '../components/FlatItem';
-import { useSelector } from 'react-redux';
 
 export default function HomeScreen({ navigation }) {
   const reservation = data.reservations[0];
