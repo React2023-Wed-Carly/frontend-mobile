@@ -15,7 +15,7 @@ function MapScreen() {
   const filters = useSelector((state) => state.filters);
   const theme = useSelector((state) => state.theme);
   const dispatch = useDispatch();
-  const currentLocation = useSelector((state) => state.userInfo.currentLocation);
+  const currentLocation = useSelector((state) => state.currentLocation);
 
   const [initialRegion, setInitialRegion] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);

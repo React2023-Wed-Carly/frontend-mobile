@@ -283,37 +283,37 @@ export const setNewLocation = (location) => async (dispatch) => {
 export const fetchFilteredCars =
   ({ location, filters }) =>
   async (dispatch) => {
-    const userInfo = await AsyncStorage.getItem('userInfo');
-    const { jwtToken } = JSON.parse(userInfo);
+    const jwtToken = await SecureStore.getItemAsync('carlyToken');
 
     if (!jwtToken) {
       throw new Error('JWT token not found. User must be logged in.');
     }
 
-    var types = '';
-    if (filters.trans.length === 1) {
-      types = filters.trans[0];
-    } else {
-      types = filters.trans[0] + '%3B' + filters.trans[1];
-    }
-    types = 'manual';
+    const params = {
+      page: 0,
+      lat: location.latitude,
+      lon: location.longitude,
+      minPrice: filters.minPrice,
+      maxPrice: filters.maxPrice,
+      minSeat: filters.minSeat,
+      maxSeat: filters.maxSeat,
+      trans: filters.trans.join(';'),
+    };
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    };
 
     try {
-      const response = await axios.get(
-        `${URL}/cars?page=0&lat=${location.latitude}&lon=${location.longitude}&minPrice=${filters.minPrice}&maxPrice=${filters.maxPrice}&minSeat=${filters.minSeat}&maxSeat=${filters.maxPrice}&trans=${types}`,
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        }
+      await fetchDataWithRetry(
+        `${URL}/cars`,
+        { params, ...config },
+        dispatch,
+        getFilteredCars,
+        'filteredCars'
       );
-      if (response.status === 200) {
-        const filteredCars = response.data;
-
-        dispatch(getFilteredCars(filteredCars));
-      } else {
-        throw new Error('Fetching favorite cars failed.');
-      }
     } catch (error) {
       console.error('Error during fetching favorite cars:', error);
       throw error;
@@ -398,13 +398,11 @@ export const fetchRentHistoryCars = (rentHistory) => async (dispatch) => {
 
 export const sendCarBooking = (carId, carBooking) => async (dispatch) => {
   try {
-    const userInfo = await AsyncStorage.getItem('userInfo');
-    const { jwtToken } = JSON.parse(userInfo);
+    const jwtToken = await SecureStore.getItemAsync('carlyToken');
 
     if (!jwtToken) {
       throw new Error('JWT token not found. User must be logged in.');
     }
-
     const response = await axios.post(
       `${URL}/cars/${carId}/bookings`,
       { ...carBooking, carId },

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useSelector, useDispatch } from 'react-redux';
-import DialogInput from 'react-native-dialog-input';
 import { accountStyles } from '../styles';
 import { topUpAccount } from '../redux/api'; // Import the top-up action
 
 function AccountScreen() {
   const dispatch = useDispatch();
-  const [isDialogVisible, setDialogVisible] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [topUpAmount, setTopUpAmount] = useState('');
 
   const { firstName, lastName, email, balance, distanceTravelled } = useSelector(
     (state) => state.userInfo
@@ -27,13 +27,16 @@ function AccountScreen() {
     // Add logic for deleting the account
   };
 
-  const handleTopUp = (amount) => {
-    try {
+  const handleTopUp = () => {
+    const amount = parseFloat(topUpAmount.replace(',', '.')); // Handle commas as decimal separators
+    if (!Number.isNaN(amount) && amount > 0) {
+      // Call your top-up action with the chosen amount
       dispatch(topUpAccount(amount * 100));
-
       console.log('Top-up successful');
-    } catch (error) {
-      console.error('Error during top-up:', error);
+      setModalVisible(false);
+    } else {
+      // Handle invalid input (e.g., show an error message)
+      console.error('Invalid input for top-up amount');
     }
   };
 
@@ -49,7 +52,7 @@ function AccountScreen() {
         </View>
       </View>
 
-      <TouchableOpacity onPress={() => setDialogVisible(true)}>
+      <TouchableOpacity onPress={() => setModalVisible(true)}>
         <Text style={accountStyles.buttonText}>Top Up Account</Text>
       </TouchableOpacity>
 
@@ -70,63 +73,70 @@ function AccountScreen() {
         <Text style={accountStyles.actionText}>Delete account</Text>
       </TouchableOpacity>
 
-      {/* Dialog for choosing the top-up amount */}
-      <DialogInput
-        isDialogVisible={isDialogVisible}
-        title="Account top up"
-        message="Enter the amount you want to add to your account"
-        hintInput="e.g. 50"
-        submitInput={(inputText) => {
-          setDialogVisible(false);
-          const amount = parseFloat(inputText.replace(',', '.')); // Handle commas as decimal separators
-          if (!Number.isNaN(amount) && amount > 0) {
-            // Call handleTopUp with the chosen amount
-            handleTopUp(amount);
-          } else {
-            // Handle invalid input (e.g., show an error message)
-            console.error('Invalid input for top-up amount');
-          }
-        }}
-        closeDialog={() => setDialogVisible(false)}
-        textInputProps={{
-          keyboardType: 'numeric',
-        }}
-        dialogStyle={styles.dialogContainer}
-        titleStyle={styles.dialogTitle}
-        messageStyle={styles.dialogMessage}
-        hintInputStyle={styles.dialogHint}
-        textInputStyle={styles.dialogInput}
-        submitTextStyle={styles.dialogSubmitText}
-        submitText="Top Up"
-        submitInputStyle={styles.dialogSubmitButton}
-        cancelText="Cancel"
-        cancelTextStyle={styles.dialogCancelText}
-        cancelStyle={styles.dialogCancelButton}
-      />
+      {/* Custom Modal for choosing the top-up amount */}
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          }}
+        >
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>Account top-up</Text>
+            <Text style={styles.modalMessage}>
+              Enter the amount you want to add to your account
+            </Text>
+            <TextInput
+              style={styles.modalInput}
+              keyboardType="numeric"
+              placeholder="e.g. 50"
+              onChangeText={(text) => setTopUpAmount(text)}
+            />
+            <View style={styles.modalButtonsContainer}>
+              <TouchableOpacity style={styles.modalButton} onPress={handleTopUp}>
+                <Text style={styles.modalButtonText}>Top Up</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.modalButton} onPress={() => setModalVisible(false)}>
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  dialogContainer: {
-    backgroundColor: '#ffffff',
+  modalContainer: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+    backgroundColor: 'white',
     borderRadius: 10,
-    padding: 5,
+    padding: 20,
+    width: '80%', // Set the width as a percentage of the screen width
   },
-  dialogTitle: {
-    fontSize: 18,
+  modalTitle: {
+    fontSize: 20,
+    marginTop: 10,
     fontWeight: 'bold',
     color: '#333333',
   },
-  dialogMessage: {
-    fontSize: 14,
+  modalMessage: {
+    fontSize: 16,
     color: '#555555',
+    marginBottom: 10,
   },
-  dialogHint: {
-    fontSize: 14,
-    color: '#888888',
-  },
-  dialogInput: {
+  modalInput: {
     height: 40,
     borderColor: '#cccccc',
     borderWidth: 1,
@@ -134,25 +144,28 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     marginTop: 10,
     marginBottom: 10,
-  },
-  dialogSubmitText: {
-    color: '#ffffff',
     fontSize: 16,
-    fontWeight: 'bold',
+    color: '#333333',
+    width: '90%',
   },
-  dialogSubmitButton: {
+  modalButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  modalButton: {
     backgroundColor: '#3498db',
     borderRadius: 5,
     padding: 10,
     alignItems: 'center',
     marginTop: 10,
+    flex: 1,
+    margin: 10,
   },
-  dialogCancelText: {
-    color: '#3498db',
+  modalButtonText: {
+    color: '#ffffff',
     fontSize: 16,
-  },
-  dialogCancelButton: {
-    marginTop: 10,
+    fontWeight: 'bold',
   },
 });
 

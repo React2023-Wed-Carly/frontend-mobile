@@ -48,7 +48,7 @@ const initialState = {
     maxPrice: 10000,
     minSeat: 0,
     maxSeat: 10,
-    trans: [],
+    trans: ['manual', 'automatic'],
   },
   filteredCars: [],
   currentCarBooking: null,
@@ -76,6 +76,23 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         theme,
+      };
+
+    case CHANGE_UNIT:
+      const { payload: newUnit } = action;
+      return {
+        ...state,
+        unit: newUnit,
+      };
+
+    case SET_LOCATION:
+      const { payload: newLocation } = action;
+      return {
+        ...state,
+        userInfo: {
+          ...state.userInfo,
+          currentLocation: newLocation,
+        },
       };
 
     case LIKE_CAR:
@@ -134,20 +151,6 @@ const rootReducer = (state = initialState, action) => {
         ],
       };
 
-    case CHANGE_UNIT:
-      const { payload: unit } = action;
-      return {
-        ...state,
-        unit,
-      };
-
-    case SET_LOCATION:
-      const { payload: currentLocation } = action;
-      return {
-        ...state,
-        currentLocation,
-      };
-
     case SET_FILTERS:
       const { payload: filters } = action;
       return {
@@ -163,7 +166,11 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         filteredCars: filteredCars.map((filteredCar) => ({
           ...filteredCar,
-          dailyPrice: filteredCar.dailyPrice / 100,
+          info: {
+            ...filteredCar.info,
+            features: filteredCar.info.features.split(','),
+            dailyPrice: filteredCar.info.dailyPrice / 100,
+          },
         })),
       };
 
@@ -180,7 +187,14 @@ const rootReducer = (state = initialState, action) => {
       const carsDetailsMap = new Map(
         carsDetails.map((carDetails) => [
           carDetails.info.id,
-          { ...carDetails, dailyPrice: carDetails.dailyPrice / 100 },
+          {
+            ...carDetails,
+            info: {
+              ...carDetails.info,
+              features: carDetails.info.features.split(','),
+              dailyPrice: carDetails.info.dailyPrice / 100,
+            },
+          },
         ])
       );
 

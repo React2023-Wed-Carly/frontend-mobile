@@ -11,11 +11,9 @@ import {
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { styles, selectedCarStyles } from '../styles';
-
-// import DateTimePicker from '@react-native-community/datetimepicker';
-
 import Card from '../components/Card';
 import { sendCarBooking } from '../redux/api';
+import { formatPrice } from '../utils/textFormatting';
 
 function SelectedCarScreen({ navigation, route }) {
   const { car, bookCar, reservation } = route.params;
@@ -25,15 +23,29 @@ function SelectedCarScreen({ navigation, route }) {
   const currentCarBooking = useSelector((state) => state.currentCarBooking);
   const theme = useSelector((state) => state.theme);
 
-  const [startDate, setStartDate] = useState(new Date('2024-12-10T03:24:00'));
-  const [endDate, setEndDate] = useState(new Date('2024-12-12T03:24:00'));
+  const today = new Date();
+  const tommorrow = new Date(today);
+  tommorrow.setDate(today.getDate() + 1);
+
+  const [startDate, setStartDate] = useState(today);
+  const [selectedDuration, setSelectedDuration] = useState(1);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showReservationModal, setShowReservationModal] = useState(false);
 
-  const [showModal, setShowModal] = useState(true);
-  const [modalMessage, setModalMessage] = useState('Dates are overlapping.');
+  const calculateEndDate = () => {
+    const newEndDate = new Date(startDate);
+    newEndDate.setDate(startDate.getDate() + selectedDuration);
+    return newEndDate;
+  };
 
-  const closeModal = () => {
-    setShowModal(false);
+  const handleIncreaseDuration = () => {
+    setSelectedDuration(selectedDuration + 1);
+  };
+
+  const handleDecreaseDuration = () => {
+    if (selectedDuration > 1) {
+      setSelectedDuration(selectedDuration - 1);
+    }
   };
 
   const featuresLength = car.info.features ? car.info.features.length : 0;
@@ -56,34 +68,112 @@ function SelectedCarScreen({ navigation, route }) {
   const renderDatePicker = () => {
     if (showDatePicker) {
       return (
-        <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+        <TouchableOpacity onPress={() => setShowDatePicker(false)}>
           <Text style={{ color: 'blue' }}>Select End Date</Text>
         </TouchableOpacity>
       );
     }
-    return <></>;
+    return null;
   };
 
-  const openCancelModal = () => {
-    setShowModal(true);
-    setModalMessage('Are you sure you want to cancel this reservation?');
+  const closeModal = () => {
+    setShowReservationModal(false);
   };
+
+  const renderReservationModal = () => (
+    <Modal
+      transparent
+      animationType="slide"
+      visible={showReservationModal}
+      onRequestClose={closeModal}
+    >
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        }}
+      >
+        <View style={{ backgroundColor: 'white', padding: 30, borderRadius: 20 }}>
+          <Text style={{ fontWeight: 'bold', fontSize: 20, marginBottom: 10 }}>
+            Reservation details
+          </Text>
+          {/* Render reservation details content here based on your UI structure */}
+          <View style={textPairContainerStyle}>
+            <Text style={labelStyle}>Start date:</Text>
+            <Text>{startDate.toLocaleDateString()}</Text>
+          </View>
+          <View style={textPairContainerStyle}>
+            <Text style={labelStyle}>End date:</Text>
+            <Text>{calculateEndDate().toLocaleDateString()}</Text>
+          </View>
+          <View style={textPairContainerStyle}>
+            <Text style={labelStyle}>Price:</Text>
+            <Text>{formatPrice(car.info.dailyPrice * selectedDuration)}</Text>
+          </View>
+          <View style={textPairContainerStyle}>
+            <Text style={labelStyle}>Duration (days):</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <TouchableOpacity onPress={handleDecreaseDuration}>
+                <Text style={{ fontSize: 20, marginRight: 10 }}>-</Text>
+              </TouchableOpacity>
+              <Text>{selectedDuration}</Text>
+              <TouchableOpacity onPress={handleIncreaseDuration}>
+                <Text style={{ fontSize: 20, marginLeft: 10 }}>+</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Book and Close buttons */}
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginTop: 20,
+              marginBottom: -20,
+            }}
+          >
+            <TouchableOpacity onPress={closeModal} style={styles.button}>
+              <Text style={styles.buttonText}>Close</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleBookCar} style={styles.activeButton}>
+              <Text style={styles.buttonText}>Book</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
 
   const handleBookCar = async () => {
     try {
-      await dispatch(
-        sendCarBooking(car.info.id, {
+      dispatch(
+      dispatch(
+        sendCarBooking(car, {
           carId: car.info.id,
           longitude: currentLocation.longitude,
           latitude: currentLocation.latitude,
           startDate: startDate.toISOString(),
-          endDate: endDate.toISOString(),
+          endDate: calculateEndDate().toISOString(),
+          endDate: calculateEndDate().toISOString(),
           integratedSystemId: 0,
         })
       );
+
+      // Show reservation details modal
+      setShowReservationModal(true);
     } catch (error) {
-      setModalMessage('Dates are overlapping. Please choose another date.');
-      setShowModal(true);
+      // Use the Alert component to display the error message
+      Alert.alert(
+        'Error',
+        'The date you have selected overlaps with an existing reservation. Someone must have booked the car faster than you - please choose another car.'
+      );
+      // Use the Alert component to display the error message
+      Alert.alert(
+        'Error',
+        'The date you have selected overlaps with an existing reservation. Someone must have booked the car faster than you - please choose another car.'
+      );
     }
   };
 
@@ -103,7 +193,6 @@ function SelectedCarScreen({ navigation, route }) {
             // Logic to cancel reservation
             try {
               console.log('CANCEL');
-              closeModal();
             } catch (error) {
               console.error('Error cancelling reservation:', error);
               // Handle error if the cancellation fails
@@ -123,7 +212,8 @@ function SelectedCarScreen({ navigation, route }) {
             <View style={{ flexDirection: 'column', alignItems: 'center', flex: 1 }}>
               <Image
                 // eslint-disable-next-line global-require
-                source={require('../../assets/dummy_cars/car.png')}
+                source={{ uri: `data:image/png;base64,${car.img}` }}
+                source={{ uri: `data:image/png;base64,${car.img}` }}
                 style={selectedCarStyles.carImage}
               />
             </View>
@@ -137,20 +227,6 @@ function SelectedCarScreen({ navigation, route }) {
               </View>
 
               <View style={{ width: '85%' }}>
-                <View style={textPairContainerStyle}>
-                  <Text style={labelStyle}>Start date:</Text>
-                  {bookCar ? (
-                    <Text>{startDate.toLocaleDateString()}</Text>
-                  ) : (
-                    <Text>{reservation.startDate}</Text>
-                  )}
-                </View>
-
-                <View style={textPairContainerStyle}>
-                  <Text style={labelStyle}>End date:</Text>
-                  {bookCar ? renderDatePicker() : <Text>{reservation.endDate}</Text>}
-                </View>
-
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>Owner</Text>
                   <Text>{car.info.owner}</Text>
@@ -222,15 +298,6 @@ function SelectedCarScreen({ navigation, route }) {
             </View>
           </View>
         </Card>
-
-        <Modal visible={showModal} animationType="slide" transparent={false}>
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
-              <Text>{modalMessage}</Text>
-              <Button title="OK" onPress={closeModal} />
-            </View>
-          </View>
-        </Modal>
       </ScrollView>
       <View
         style={{
@@ -260,6 +327,7 @@ function SelectedCarScreen({ navigation, route }) {
           </View>
         )}
       </View>
+      {showReservationModal && renderReservationModal()}
     </View>
   );
 }
