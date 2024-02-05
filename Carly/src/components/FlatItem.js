@@ -52,19 +52,23 @@ export default function FlatItem({ flat }) {
             >
               <Icon name="payments" color="gray" size={12} />
               <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>
-                {formatPrice(flat.price)}
+                {formatPrice(flat.pricePerNight)}
               </Text>
             </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignContent: 'center',
-                padding: 2,
-              }}
-            >
-              <Icon name="calendar-today" color="gray" size={12} />
-              <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>{flat.startDate}</Text>
-            </View>
+
+            {flat.startDate && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignContent: 'center',
+                  padding: 2,
+                }}
+              >
+                <Icon name="calendar-today" color="gray" size={12} />
+                <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>{flat.startDate}</Text>
+              </View>
+            )}
+
           </View>
         </View>
       </View>

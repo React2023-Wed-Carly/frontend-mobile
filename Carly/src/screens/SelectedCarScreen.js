@@ -29,7 +29,7 @@ function SelectedCarScreen({ navigation, route }) {
 
   const [startDate, setStartDate] = useState(today);
   const [selectedDuration, setSelectedDuration] = useState(1);
-  const [showDatePicker, setShowDatePicker] = useState(false);
+
   const [showReservationModal, setShowReservationModal] = useState(false);
 
   const calculateEndDate = () => {
@@ -64,17 +64,6 @@ function SelectedCarScreen({ navigation, route }) {
     color: theme === 'light' ? '#222' : '#fff',
   };
   const valueStyle = { color: theme === 'light' ? '#222' : '#fff' };
-
-  const renderDatePicker = () => {
-    if (showDatePicker) {
-      return (
-        <TouchableOpacity onPress={() => setShowDatePicker(false)}>
-          <Text style={{ color: 'blue' }}>Select End Date</Text>
-        </TouchableOpacity>
-      );
-    }
-    return null;
-  };
 
   const closeModal = () => {
     setShowReservationModal(false);

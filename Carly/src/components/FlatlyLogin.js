@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import { useDispatch } from 'react-redux';
-import { loginFlatly, registerFlatly } from '../redux/flatlyApi';
+import { loginFlatly, registerFlatly, fetchFlats } from '../redux/flatlyApi';
 
 function FlatlyLogin({ hideLogin }) {
   const [email, setEmail] = useState('');
@@ -17,6 +17,8 @@ function FlatlyLogin({ hideLogin }) {
 
     if (isLoginMode) dispatch(loginFlatly({ email, password }));
     else dispatch(registerFlatly({ username, lastname, email, password })); // Pass username and lastname for registration
+    
+    //await dispatch(fetchFlats());
     hideLogin();
   };
 

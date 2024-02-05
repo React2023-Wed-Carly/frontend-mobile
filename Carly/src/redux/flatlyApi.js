@@ -3,23 +3,7 @@ import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {
-  getPaymentsSuccess,
-  getFavoriteCars,
-  loginSuccess,
-  registerSuccess,
-  getRentHistory,
-  topUpSuccess,
-  likeCar,
-  unlikeCar,
-  getRentHistoryCars,
-  loginAgain,
-  setLocation,
-  getFilteredCars,
-  bookCar,
-  bookFlat,
-  flatlyLoginSuccess,
-} from './actions';
+import { bookFlat, flatlyLoginSuccess, getFlatDetails, getFlats } from './actions';
 
 const URL = 'https://pwflatlyreact.azurewebsites.net';
 
@@ -64,10 +48,90 @@ export const loginFlatly =
         await SecureStore.setItemAsync('flatlyToken', jwtToken);
         dispatch(flatlyLoginSuccess());
       } else {
-        throw new Error('Login failed');
+        throw new Error('Login to flatly failed');
       }
     } catch (error) {
-      console.error('Error during login:', error);
+      console.error('Error during login to flatly:', error);
       throw error;
     }
   };
+
+export const fetchFlats = () => async (dispatch) => {
+  try {
+    const jwtToken = await SecureStore.getItemAsync('flatlyToken');
+
+    const response = await axios.get(`${URL}/flats?page=0&pageSize=10`, {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const flats = response.data;
+      dispatch(getFlats(flats.data));
+    } else {
+      throw new Error('Fetching flats failed.');
+    }
+  } catch (error) {
+    console.error('Error during fetching flats.', error);
+    throw error;
+  }
+};
+
+export const fetchFlatDetails = (flatId) => async(dispatch) => {
+  try {
+    const jwtToken = await SecureStore.getItemAsync('flatlyToken');
+    const response = await axios.get(`${URL}/flats/${flatId}`, {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    });
+
+    if (response.status === 200) {
+      const flat = response.data;
+      dispatch(getFlatDetails(flat));
+    } else {
+      throw new Error('Fetching flat details failed.');
+    }
+  } catch (error) {
+    console.error('Error during fetching flat details.', error);
+    throw error;
+  }
+}
+
+export const sendFlatBooking = (flat, flatBooking) => async (dispatch) => {
+    try {
+      const jwtToken = await SecureStore.getItemAsync('flatlyToken');
+  
+      if (!jwtToken) {
+        throw new Error('JWT token not found. User must be logged in.');
+      }
+      const response = await axios.post(
+        `${URL}/reservation`,
+        { flatBooking },
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+  
+      if (response.status >= 200 && response.status < 300) {
+        await AsyncStorage.setItem('currentFlatBooking', JSON.stringify({booking:flatBooking, flat}));
+        console.log('success');
+        dispatch(bookFlat({booking:flatBooking, flat}));
+      } else {
+        console.log('yyy');
+        console.error('Error during adding flat booking:', response.status);
+        if (response.status === 404) {
+          throw new Error('Dates are overlapping.');
+        } else {
+          throw new Error('Unexpected error during flat booking.');
+        }
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.status === 404) {
+        throw new Error('Dates are overlapping.');
+      }
+    }
+};

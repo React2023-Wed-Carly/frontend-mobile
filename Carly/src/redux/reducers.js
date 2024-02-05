@@ -20,6 +20,10 @@ import {
   BOOK_FLAT,
   CHANGE_THEME,
   FLATLY_LOGIN_SUCCESS,
+  GET_FLATS,
+  GET_FLAT_DETAILS,
+  SET_CAR_BOOKING,
+  SET_FLAT_BOOKING
 } from './actions';
 
 const initialState = {
@@ -59,6 +63,7 @@ const initialState = {
   favoriteCarsPage: 0,
   favoriteCarsPageEnd: false,
   rentHistory: null,
+  flatsDetails: [],
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -124,6 +129,7 @@ const rootReducer = (state = initialState, action) => {
 
     case BOOK_FLAT:
       const { payload: flatBooking } = action;
+      console.log(flatBooking);
       return {
         ...state,
         currentFlatBooking: flatBooking,
@@ -271,6 +277,31 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         flatlyData: { isLoggedIn: true },
+      };
+    case GET_FLATS:
+      const { payload: flats } = action;
+      return {
+        ...state,
+        flats,
+      };
+    case GET_FLAT_DETAILS:
+      const { payload: flatDetails } = action;
+
+      return {
+        ...state,
+        flatsDetails: [...state.flatsDetails, flatDetails],
+      };
+    case SET_FLAT_BOOKING:
+      const { payload: currentFlatBooking } = action;
+      return {
+        ...state,
+        currentFlatBooking,
+      };
+    case SET_CAR_BOOKING:
+      const { payload: currentCarBooking } = action;
+      return {
+        ...state,
+        currentCarBooking,
       };
     default:
       return state;

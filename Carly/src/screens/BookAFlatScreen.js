@@ -1,13 +1,24 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useSelector } from 'react-redux';
-import { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Button,Pressable } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { useState, useEffect } from 'react';
 import { styles } from '../styles';
 import FlatlyLogin from '../components/FlatlyLogin';
+import { fetchFlats, fetchFlatDetails } from '../redux/flatlyApi';
+import FlatItem from '../components/FlatItem';
 
-export default function BookAFlatScreen() {
+export default function BookAFlatScreen({navigation}) {
   const theme = useSelector((state) => state.theme);
+  const flats = useSelector(state=>state.flats);
+  const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.flatlyData.isLoggedIn);
   const [showLogin, setShowLogin] = useState(false);
+
+  const handleFlatPress = async ({id, title}) => {
+    await dispatch(fetchFlatDetails(id));
+    navigation.push('Flat', { flatId: id, flatTitle:title, bookFlat:true });
+  }
+
+
   return (
     <View style={{ backgroundColor: theme === 'dark' ? '#222' : '#fff', flex: 1 }}>
       {!isLoggedIn && showLogin && <FlatlyLogin hideLogin={() => setShowLogin(false)} />}
@@ -23,8 +34,17 @@ export default function BookAFlatScreen() {
         </View>
       )}
       {isLoggedIn && (
-        <View style={{ flex: 1, justifyContent: 'center', margin: 10, alignItems: 'center' }}>
-          <Text>Flat list!</Text>
+        <View style={{ paddingBottom: 90, color: theme === 'light' ? '#222' : '#fff' }}>
+          <Button onPress={()=>{dispatch(fetchFlats())}} title="Get flats"></Button>
+          <FlatList
+            data={flats}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <Pressable key={item.id} onPress={() => handleFlatPress({id: item.id, title:item.title})}>
+                <FlatItem flat={item} navigation={navigation} />
+              </Pressable>
+            )}
+          />
         </View>
       )}
     </View>

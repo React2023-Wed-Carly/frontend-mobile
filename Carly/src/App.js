@@ -20,7 +20,7 @@ import { styles } from './styles';
 import SelectedCarScreen from './screens/SelectedCarScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
-import { changeTheme, loginSuccess } from './redux/actions';
+import { changeTheme, loginSuccess, setFlatBooking, setCarBooking } from './redux/actions';
 import { getPayments } from './redux/api';
 import FlatScreen from './screens/FlatScreen';
 
@@ -77,6 +77,20 @@ function HomeStack() {
   );
 }
 
+function FlatlyStack() {
+  return (
+    <Stack.Navigator
+      initialRouteName="Flatly"
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="Book a Flat" component={BookAFlatScreen} />
+      <Stack.Screen name="Flat" component={FlatScreen} />
+    </Stack.Navigator>
+  );
+}
+
 function AuthenticatedApp({ handleLogout }) {
   const theme = useSelector((state) => state.theme);
 
@@ -88,7 +102,7 @@ function AuthenticatedApp({ handleLogout }) {
     >
       <Drawer.Screen name="Home" component={HomeStack} />
       <Drawer.Screen name="Book a car" component={AppStack} />
-      <Drawer.Screen name="Book a flat" component={BookAFlatScreen} />
+      <Drawer.Screen name="Book a flat" component={FlatlyStack} />
       <Drawer.Screen name="Account" component={AccountScreen} />
       <Drawer.Screen name="Rent history" component={RentHistoryScreen} />
       <Drawer.Screen name="Favorite Cars" component={FavoriteCarsScreen} />
@@ -114,6 +128,18 @@ function App() {
         const value = await AsyncStorage.getItem('isLoggedIn');
         if (value !== null && value === 'true') {
           setLoggedIn(true);
+
+          var currentFlatBooking = AsyncStorage.getItem('currentFlatBooking');
+          currentFlatBooking = JSON.parse(currentFlatBooking)
+          if(currentFlatBooking) {
+            dispatch(setFlatBooking(currentFlatBooking));
+          }
+
+          var currentCarBooking = AsyncStorage.getItem('currentCarBooking');
+          currentCarBooking = JSON.parse(currentCarBooking)
+          if(currentCarBooking) {
+            dispatch(setCarBooking(currentCarBooking));
+          }
         }
       } catch (error) {
         console.error('Error checking login status:', error);
