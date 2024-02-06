@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 
 export default function BookCarItem({ car, navigation }) {
   const currentLocation = useSelector((state) => state.currentLocation);
+  const theme = useSelector((state) => state.theme);
   const unit = useSelector((state) => state.unit);
 
   const haversineDistance = (carLocation, currentLocation) => {
@@ -62,7 +63,11 @@ export default function BookCarItem({ car, navigation }) {
 
           <View style={{ width: '70%' }}>
             <Text
-              style={{ fontSize: 19, fontWeight: 'bold' }}
+              style={{
+                fontSize: 19,
+                fontWeight: 'bold',
+                color: theme === 'light' ? '#222' : '#fff',
+              }}
               numberOfLines={1}
               ellipsizeMode="tail"
             >

@@ -7,15 +7,29 @@ import { styles } from '../styles';
 import BookCarItem from '../components/BookCarItem';
 import FilterScreen from './FilterScreen';
 import MapScreen from './MapScreen';
+import { fetchFilteredCars } from '../redux/api';
 
 export default function BookACarScreen({ navigation }) {
   const filteredCars = useSelector((state) => state.filteredCars);
   const theme = useSelector((state) => state.theme);
   const currentCarBooking = useSelector((state) => state.currentCarBooking);
+  
+  const currentPage = useSelector((state) => state.carsPage);
+  const pageEnd = useSelector((state) => state.carsPageEnd);
+
+  const filters = useSelector((state) => state.filters);
+  const currentLocation = useSelector((state) => state.currentLocation);
+
+
   const [isFilter, setIsFilter] = useState(false);
   const [showCarList, setShowCarList] = useState(false);
 
   const isCarBooked = !!currentCarBooking;
+
+  const handleEndReached = () => {
+    // Fetch the next page when reaching the end of the list
+    if (!pageEnd) dispatch(fetchFilteredCars({location: currentLocation, filters, page: currentPage}));
+  };
 
   const toggleCarListView = () => {
     setShowCarList((prev) => !prev);
@@ -68,6 +82,8 @@ export default function BookACarScreen({ navigation }) {
                     <BookCarItem car={item} navigation={navigation} distance={5} />
                   </Pressable>
                 )}
+                onEndReached={handleEndReached}
+                onEndReachedThreshold={0.1}
               />
               <TouchableOpacity style={styles.activeButton} onPress={toggleCarListView}>
                 <Text style={styles.buttonText}>{showCarList ? 'Show Map' : 'Show Car List'}</Text>

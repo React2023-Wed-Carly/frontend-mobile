@@ -67,7 +67,7 @@ export default function BookAFlatScreen({ navigation }) {
             flats!
           </Text>
           <TouchableOpacity style={styles.activeButton} onPress={() => setShowLogin(true)}>
-            <Text style={styles.buttonText}>Flatly login</Text>
+            <Text style={styles.buttonText}>Go to Flatly login</Text>
           </TouchableOpacity>
         </View>
       )}

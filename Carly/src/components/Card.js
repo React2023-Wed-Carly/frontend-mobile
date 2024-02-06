@@ -2,7 +2,7 @@ import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 
 export default function Card({ children }) {
-  const theme = useSelector(state=>state.theme);
+  const theme = useSelector((state) => state.theme);
   return (
     <View
       style={{
@@ -17,7 +17,7 @@ export default function Card({ children }) {
         elevation: 2,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        borderColor: '#eee',
+        borderColor: theme === 'light' ? '#eee' : '#666',
         borderWidth: 1,
       }}
     >

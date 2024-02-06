@@ -198,10 +198,13 @@ export default function FlatScreen({ route, navigation }) {
               marginBottom: -20,
             }}
           >
-            <TouchableOpacity onPress={closeModal} style={styles.button}>
+            <TouchableOpacity onPress={closeModal} style={{ ...styles.button, width: '40%' }}>
               <Text style={styles.buttonText}>Close</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleBookFlat} style={styles.activeButton}>
+            <TouchableOpacity
+              onPress={handleBookFlat}
+              style={{ ...styles.activeButton, width: '40%' }}
+            >
               <Text style={styles.buttonText}>Book</Text>
             </TouchableOpacity>
           </View>
@@ -374,7 +377,10 @@ export default function FlatScreen({ route, navigation }) {
         </View>
         {bookFlat && (
           <View style={{ width: '45%' }}>
-            <TouchableOpacity style={styles.activeButton} onPress={() => setShowReservationModal(true)}>
+            <TouchableOpacity
+              style={styles.activeButton}
+              onPress={() => setShowReservationModal(true)}
+            >
               <Text style={styles.buttonText}>Book</Text>
             </TouchableOpacity>
           </View>
