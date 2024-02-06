@@ -84,7 +84,7 @@ function SelectedCarScreen({ navigation, route }) {
           backgroundColor: 'rgba(0, 0, 0, 0.5)',
         }}
       >
-        <View style={{ backgroundColor: 'white', padding: 30, borderRadius: 20 }}>
+        <View style={{ backgroundColor: 'white', padding: 25, borderRadius: 20 }}>
           <Text style={{ fontWeight: 'bold', fontSize: 20, marginBottom: 10 }}>
             Reservation details
           </Text>
@@ -114,19 +114,21 @@ function SelectedCarScreen({ navigation, route }) {
             </View>
           </View>
 
-          {/* Book and Close buttons */}
           <View
             style={{
               flexDirection: 'row',
-              justifyContent: 'space-between',
+              justifyContent: 'space-around',
               marginTop: 20,
               marginBottom: -20,
             }}
           >
-            <TouchableOpacity onPress={closeModal} style={styles.button}>
+            <TouchableOpacity onPress={closeModal} style={{ ...styles.button, width: '40%' }}>
               <Text style={styles.buttonText}>Close</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleBookCar} style={styles.activeButton}>
+            <TouchableOpacity
+              onPress={handleBookCar}
+              style={{ ...styles.activeButton, width: '40%' }}
+            >
               <Text style={styles.buttonText}>Book</Text>
             </TouchableOpacity>
           </View>
@@ -147,9 +149,8 @@ function SelectedCarScreen({ navigation, route }) {
           integratedSystemId: 0,
         })
       );
-
-      // Show reservation details modal
-      setShowReservationModal(true);
+      closeModal();
+      navigation.pop();
     } catch (error) {
       // Use the Alert component to display the error message
       Alert.alert(
@@ -182,7 +183,7 @@ function SelectedCarScreen({ navigation, route }) {
             try {
               console.log('CANCEL');
             } catch (error) {
-              console.error('Error cancelling reservation:', error);
+              console.log('Error cancelling reservation:', error);
               // Handle error if the cancellation fails
             }
           },
@@ -301,7 +302,10 @@ function SelectedCarScreen({ navigation, route }) {
         </View>
         {bookCar && (
           <View style={{ width: '45%' }}>
-            <TouchableOpacity style={styles.activeButton} onPress={handleBookCar}>
+            <TouchableOpacity
+              style={styles.activeButton}
+              onPress={() => setShowReservationModal(true)}
+            >
               <Text style={styles.buttonText}>Book</Text>
             </TouchableOpacity>
           </View>

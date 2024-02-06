@@ -52,7 +52,7 @@ const initialState = {
   theme: 'light',
   filters: {
     minPrice: 0,
-    maxPrice: 10000,
+    maxPrice: 500,
     minSeat: 0,
     maxSeat: 10,
     trans: ['manual', 'automatic'],

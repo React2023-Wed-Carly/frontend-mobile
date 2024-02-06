@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useSelector, useDispatch } from 'react-redux';
-import { accountStyles } from '../styles';
-import { topUpAccount } from '../redux/api'; // Import the top-up action
+import { accountStyles as styles } from '../styles';
+import { topUpAccount } from '../redux/api';
 
 function AccountScreen() {
   const dispatch = useDispatch();
-  const [isModalVisible, setModalVisible] = useState(false);
+  const [isTopUpModalVisible, setTopUpModalVisible] = useState(false);
   const [topUpAmount, setTopUpAmount] = useState('');
+
+  const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
 
   const { firstName, lastName, email, balance, distanceTravelled } = useSelector(
     (state) => state.userInfo
@@ -23,8 +25,7 @@ function AccountScreen() {
   };
 
   const handleDeleteAccount = () => {
-    console.log('Delete account clicked');
-    // Add logic for deleting the account
+    setDeleteModalVisible(true);
   };
 
   const handleTopUp = () => {
@@ -33,32 +34,33 @@ function AccountScreen() {
       // Call your top-up action with the chosen amount
       dispatch(topUpAccount(amount * 100));
       console.log('Top-up successful');
-      setModalVisible(false);
+      setTopUpModalVisible(false);
     } else {
       // Handle invalid input (e.g., show an error message)
-      console.error('Invalid input for top-up amount');
+      console.log('Invalid input for top-up amount');
     }
   };
 
   return (
-    <View style={accountStyles.container}>
-      <View style={accountStyles.userInfoContainer}>
+    <View style={styles.container}>
+      <View style={styles.userInfoContainer}>
         <Icon name="person" size={50} color={theme === 'light' ? '#222' : '#fff'} />
-        <View style={accountStyles.nameBalanceContainer}>
+        <View style={styles.nameBalanceContainer}>
           <Text style={textStyles}>
             {firstName} {lastName}
           </Text>
-          <Text style={textStyles}>${balance}</Text>
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={textStyles}>${balance}</Text>
+            <TouchableOpacity onPress={() => setTopUpModalVisible(true)}>
+              <Icon name="add" size={25} color={theme === 'light' ? '#222' : '#fff'} />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
 
-      <TouchableOpacity onPress={() => setModalVisible(true)}>
-        <Text style={accountStyles.buttonText}>Top Up Account</Text>
-      </TouchableOpacity>
+      <View style={styles.divider} />
 
-      <View style={accountStyles.divider} />
-
-      <View style={accountStyles.userInfoContainer}>
+      <View style={styles.userInfoContainer}>
         <Icon name="email" size={30} color={theme === 'light' ? '#222' : '#fff'} />
         <Text style={textStyles}>{email}</Text>
       </View>
@@ -67,19 +69,17 @@ function AccountScreen() {
         Distance travelled: {'\n'}
         {distanceTravelled} km
       </Text>
-      <View style={accountStyles.divider} />
+      <View style={styles.divider} />
 
       <TouchableOpacity onPress={handleDeleteAccount}>
-        <Text style={accountStyles.actionText}>Delete account</Text>
+        <Text style={styles.actionText}>Delete account</Text>
       </TouchableOpacity>
-
-      {/* Custom Modal for choosing the top-up amount */}
 
       <Modal
         animationType="slide"
-        transparent={true}
-        visible={isModalVisible}
-        onRequestClose={() => setModalVisible(false)}
+        transparent
+        visible={isTopUpModalVisible}
+        onRequestClose={() => setTopUpModalVisible(false)}
       >
         <View
           style={{
@@ -100,11 +100,50 @@ function AccountScreen() {
               onChangeText={(text) => setTopUpAmount(text)}
             />
             <View style={styles.modalButtonsContainer}>
-              <TouchableOpacity style={styles.modalButton} onPress={handleTopUp}>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => setTopUpModalVisible(false)}
+              >
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ ...styles.modalButton, ...styles.activeModalButton }}
+                onPress={handleTopUp}
+              >
                 <Text style={styles.modalButtonText}>Top Up</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.modalButton} onPress={() => setModalVisible(false)}>
-                <Text style={styles.modalButtonText}>Cancel</Text>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        animationType="slide"
+        transparent
+        visible={isDeleteModalVisible}
+        onRequestClose={() => setDeleteModalVisible(false)}
+      >
+        {/* Delete Account Modal content */}
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          }}
+        >
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>Delete Account</Text>
+            <Text style={{ ...styles.modalMessage, marginTop: 10, padding: 10 }}>
+              If you want to delete your account, contact Carly under admin@carly.com{'\n\n'}
+              Carly administrator will assist you with the deletion. Remember, that when deleted,
+              account cannot be brought back.
+            </Text>
+            <View style={styles.modalButtonsContainer}>
+              <TouchableOpacity
+                style={{ ...styles.modalButton, ...styles.activeModalButton }}
+                onPress={() => setDeleteModalVisible(false)}
+              >
+                <Text style={styles.modalButtonText}>OK</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -113,60 +152,5 @@ function AccountScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  modalContainer: {
-    alignSelf: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignContent: 'center',
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 20,
-    width: '80%', // Set the width as a percentage of the screen width
-  },
-  modalTitle: {
-    fontSize: 20,
-    marginTop: 10,
-    fontWeight: 'bold',
-    color: '#333333',
-  },
-  modalMessage: {
-    fontSize: 16,
-    color: '#555555',
-    marginBottom: 10,
-  },
-  modalInput: {
-    height: 40,
-    borderColor: '#cccccc',
-    borderWidth: 1,
-    borderRadius: 5,
-    paddingLeft: 10,
-    marginTop: 10,
-    marginBottom: 10,
-    fontSize: 16,
-    color: '#333333',
-    width: '90%',
-  },
-  modalButtonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  modalButton: {
-    backgroundColor: '#3498db',
-    borderRadius: 5,
-    padding: 10,
-    alignItems: 'center',
-    marginTop: 10,
-    flex: 1,
-    margin: 10,
-  },
-  modalButtonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});
 
 export default AccountScreen;
