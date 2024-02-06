@@ -6,34 +6,26 @@ import { useSelector, useDispatch } from 'react-redux';
 import { changeTheme, changeUnit } from '../redux/actions';
 
 function SettingsScreen({ navigation, onLogout }) {
-  const theme = useSelector(state=>state.theme);
-  const unit = useSelector(state=>state.unit);
+  const theme = useSelector((state) => state.theme);
+  const unit = useSelector((state) => state.unit);
   const dispatch = useDispatch();
 
   const [rememberFilters, setRememberFilters] = useState(false);
   const [autoSetLocation, setAutoSetLocation] = useState(true);
 
-  const pickerStyles = { fontSize: 15, color:theme === 'light' ? '#222' : '#fff' };
+  const pickerStyles = { fontSize: 15, color: theme === 'light' ? '#222' : '#fff' };
 
   const handleResetData = async () => {
     try {
-      // Perform logout actions here (if any)
-
-      // Clear AsyncStorage
       await AsyncStorage.clear();
-
-      // Additional actions after data reset
-      // ...
-
-      // Navigate to the login screen or any other appropriate screen
     } catch (error) {
-      console.error('Error resetting data:', error);
+      console.log('Error resetting data:', error);
     }
   };
 
   const toggleTheme = (value) => {
     dispatch(changeTheme(value));
-  }
+  };
 
   const renderSettingRow = (label, element) => (
     <View
@@ -44,13 +36,13 @@ function SettingsScreen({ navigation, onLogout }) {
         marginBottom: 20,
       }}
     >
-      <Text style={{ fontSize: 15, color:theme === 'light' ? '#222' : '#fff' }}>{label}</Text>
+      <Text style={{ fontSize: 15, color: theme === 'light' ? '#222' : '#fff' }}>{label}</Text>
       <View>{element}</View>
     </View>
   );
 
   return (
-    <View style={{ padding: 20}}>
+    <View style={{ padding: 20 }}>
       {renderSettingRow(
         'Remember my filters',
         <Switch value={rememberFilters} onValueChange={(value) => setRememberFilters(value)} />
@@ -61,7 +53,7 @@ function SettingsScreen({ navigation, onLogout }) {
         <Picker
           selectedValue={theme}
           onValueChange={(value) => toggleTheme(value)}
-          style={{ width: 150, color:theme === 'light' ? '#222' : '#fff' }}
+          style={{ width: 150, color: theme === 'light' ? '#222' : '#fff' }}
         >
           <Picker.Item label="Light" value="light" />
           <Picker.Item label="Dark" value="dark" />
@@ -79,15 +71,22 @@ function SettingsScreen({ navigation, onLogout }) {
         <Picker
           selectedValue={unit}
           onValueChange={(value) => dispatch(changeUnit(value))}
-          style={{ width: 200, color:theme === 'light' ? '#222' : '#fff' }}
+          style={{ width: 200, color: theme === 'light' ? '#222' : '#fff' }}
         >
           <Picker.Item label="Kilometers" value="kilometers" />
-          <Picker.Item label="Miles" value="miles" />
+          <Picker.Item label="Metres" value="meters" />
         </Picker>
       )}
 
       <TouchableOpacity onPress={handleResetData}>
-        <Text style={{ color: theme === 'light' ? '#222' : '#fff', fontWeight: 'bold', fontSize: 15, marginBottom: 30 }}>
+        <Text
+          style={{
+            color: theme === 'light' ? '#222' : '#fff',
+            fontWeight: 'bold',
+            fontSize: 15,
+            marginBottom: 30,
+          }}
+        >
           Reset my data
         </Text>
       </TouchableOpacity>

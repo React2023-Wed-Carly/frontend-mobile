@@ -4,11 +4,10 @@ import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import MultiSelect from 'react-native-sectioned-multi-select';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useSelector, useDispatch } from 'react-redux';
+import { filterStyles as styles } from '../styles';
 import { setFilters } from '../redux/actions';
 import { fetchFilteredCars } from '../redux/api';
 
-const brands = ['Toyota', 'Honda', 'Ford', 'Chevrolet'];
-const fuelTypes = ['Gasoline', 'Electric', 'Hybrid'];
 const transmissionTypes = ['Automatic', 'Manual'];
 
 function FilterScreen({ applyFilters, setIsFilter }) {
@@ -112,46 +111,5 @@ function FilterScreen({ applyFilters, setIsFilter }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    padding: 20,
-  },
-  section: {
-    marginBottom: 30,
-  },
-  sliderSection: {
-    paddingHorizontal: 5,
-    maxWidth: 150,
-  },
-  sliderContainer: {
-    height: 30,
-  },
-  applyButton: {
-    backgroundColor: 'blue',
-    padding: 10,
-    borderRadius: 20,
-    alignItems: 'center',
-    marginBottom: -20,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  multiSelectDropdown: {
-    width: '90%',
-    borderColor: 'gray',
-    borderWidth: 1,
-    maxHeight: '50%',
-  },
-  multiSelectList: {
-    maxHeight: 200,
-  },
-});
 
 export default FilterScreen;

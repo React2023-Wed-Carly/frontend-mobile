@@ -1,6 +1,6 @@
 // PaymentsScreen.js
-import React, { useState, useEffect } from 'react';
-import { FlatList, View, Text, ActivityIndicator } from 'react-native'; // Import Text from react-native
+import React, { useEffect } from 'react';
+import { FlatList, View, ActivityIndicator } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import PaymentItem from '../components/PaymentItem';
 import { getPayments } from '../redux/api';
@@ -18,21 +18,16 @@ function PaymentsScreen() {
   );
 
   useEffect(() => {
-    // Fetch payments when the component mounts or when balance changes
     dispatch(getPayments(currentPage));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, balance]);
 
   const handleEndReached = () => {
-    // Fetch the next page when reaching the end of the list
     if (!pageEnd) dispatch(getPayments(currentPage));
   };
 
-  console.log(payments);
-
   return (
     <View style={{ padding: 10, backgroundColor: theme === 'light' ? '#fff' : '#222', flex: 1 }}>
-      {/* Display a message if there are no payments */}
       {!payments && <ActivityIndicator size="large" />}
 
       <FlatList

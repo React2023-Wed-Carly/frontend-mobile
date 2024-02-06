@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { FlatList, View, TouchableOpacity, Text, Pressable } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import jsonData from '../DummyData.json';
 import { styles } from '../styles';
-import BookCarItem from '../components/CarItem';
+import BookCarItem from '../components/BookCarItem';
 import FilterScreen from './FilterScreen';
 import MapScreen from './MapScreen';
 
 export default function BookACarScreen({ navigation }) {
   const filteredCars = useSelector((state) => state.filteredCars);
   const theme = useSelector((state) => state.theme);
-
+  const currentCarBooking = useSelector((state) => state.currentCarBooking);
   const [isFilter, setIsFilter] = useState(false);
   const [showCarList, setShowCarList] = useState(false);
+
+  const isCarBooked = !!currentCarBooking;
 
   const toggleCarListView = () => {
     setShowCarList((prev) => !prev);
@@ -35,7 +38,20 @@ export default function BookACarScreen({ navigation }) {
         flex: 1,
       }}
     >
-      {showCarList && (
+      {isCarBooked && (
+        <View style={{ justifyContent: 'center', flex: 1, alignContent: 'center', padding: 10 }}>
+          <Icon
+            name="confirmation-number"
+            color="#cccc"
+            size={50}
+            style={{ marginVertical: 10, alignSelf: 'center' }}
+          />
+          <Text style={{ textAlign: 'center' }}>
+            You have already booked a car. Cancel your reservation if you want to make another.
+          </Text>
+        </View>
+      )}
+      {!isCarBooked && showCarList && (
         <>
           {isFilter && <FilterScreen setIsFilter={setIsFilter} />}
           {!isFilter && (
@@ -60,8 +76,8 @@ export default function BookACarScreen({ navigation }) {
           )}
         </>
       )}
-      {!showCarList && <MapScreen />}
-      {!showCarList && (
+      {!isCarBooked && !showCarList && <MapScreen />}
+      {!isCarBooked && !showCarList && (
         <TouchableOpacity style={styles.activeButton} onPress={toggleCarListView}>
           <Text style={styles.buttonText}>{showCarList ? 'Show Map' : 'Show Car List'}</Text>
         </TouchableOpacity>
@@ -72,9 +88,9 @@ export default function BookACarScreen({ navigation }) {
 
 export const bookStyles = {
   filterButton: {
-    backgroundColor: '#dcdcdc', // Light grey color
+    backgroundColor: '#dcdcdc',
     padding: 10,
-    borderRadius: 20, // More rounded edges
+    borderRadius: 20,
     marginVertical: 10,
     marginTop: 0,
     alignItems: 'center',
@@ -94,5 +110,4 @@ export const bookStyles = {
     marginVertical: 10,
     borderRadius: 10,
   },
-  // Add other styles as needed
 };

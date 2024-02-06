@@ -106,8 +106,13 @@ function AuthenticatedApp({ handleLogout }) {
       drawerStyle={{
         backgroundColor: theme === 'light' ? '#fff' : '#222',
       }}
+      theme={{ colors: { primary: 'yellow' } }}
     >
-      <Drawer.Screen name="Home" component={HomeStack} />
+      <Drawer.Screen
+        name="Home"
+        component={HomeStack}
+        style={{ activeTintColor: 'yellow', activeBackgroundColor: 'transparent' }}
+      />
       <Drawer.Screen name="Book a car" component={AppStack} />
       <Drawer.Screen name="Book a flat" component={FlatlyStack} />
       <Drawer.Screen name="Account" component={AccountScreen} />
@@ -127,7 +132,10 @@ function App() {
   const dispatch = useDispatch();
   const theme = useSelector((state) => state.theme);
 
-  const MyTheme = theme === 'light' ? DefaultTheme : DarkTheme;
+  const MyTheme =
+    theme === 'light'
+      ? { ...DefaultTheme, colors: { ...DefaultTheme.colors, primary: '#fc9d03' } }
+      : { ...DarkTheme, colors: { ...DarkTheme.colors, primary: '#fc9d03' } };
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -135,21 +143,22 @@ function App() {
         const value = await AsyncStorage.getItem('isLoggedIn');
         if (value !== null && value === 'true') {
           setLoggedIn(true);
-          dispatch(fetchRentHistory());
-          // let currentFlatBooking = AsyncStorage.getItem('currentFlatBooking');
-          // currentFlatBooking = JSON.parse(currentFlatBooking);
-          // if (currentFlatBooking) {
-          //   dispatch(setFlatBooking(currentFlatBooking));
-          // }
 
-          // let currentCarBooking = AsyncStorage.getItem('currentCarBooking');
-          // currentCarBooking = JSON.parse(currentCarBooking);
-          // if (currentCarBooking) {
-          //   dispatch(setCarBooking(currentCarBooking));
-          // }
+          dispatch(fetchRentHistory());
+          let currentFlatBooking = AsyncStorage.getItem('currentFlatBooking');
+          currentFlatBooking = JSON.parse(currentFlatBooking);
+          if (currentFlatBooking) {
+            dispatch(setFlatBooking(currentFlatBooking));
+          }
+
+          let currentCarBooking = AsyncStorage.getItem('currentCarBooking');
+          currentCarBooking = JSON.parse(currentCarBooking);
+          if (currentCarBooking) {
+            dispatch(setCarBooking(currentCarBooking));
+          }
         }
       } catch (error) {
-        console.error('Error checking login status:', error);
+        console.log('Error checking login status:', error);
       }
     };
 
@@ -157,10 +166,10 @@ function App() {
       try {
         const value = await AsyncStorage.getItem('isLoggedInFlatly');
         if (value !== null && value === 'true') {
-          dispatch(flatlyLoginSuccess()); 
+          dispatch(flatlyLoginSuccess());
         }
       } catch (error) {
-        console.error('Error checking login status:', error);
+        console.log('Error checking login status:', error);
       }
     };
 
@@ -173,9 +182,11 @@ function App() {
           dispatch(loginSuccess(storedUserInfo));
         }
       } catch (error) {
-        console.error('Error checking stored user info:', error);
+        console.log('Error checking stored user info:', error);
       }
     };
+
+    const checkCurrentBookings = async () => {};
 
     const fetchData = async () => {
       // Use Promise.all to run both checks concurrently
@@ -195,7 +206,7 @@ function App() {
       dispatch(logUserOut());
       updateLoginStatus(false);
     } catch (error) {
-      console.error('Error logging out:', error);
+      console.log('Error logging out:', error);
     }
   };
   return (
