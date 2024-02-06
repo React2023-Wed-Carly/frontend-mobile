@@ -22,6 +22,8 @@ export default function HomeScreen({ navigation }) {
   const [isFlat, setIsFlat] = useState(flatBooking !== null);
   const [isCar, setIsCar] = useState(carBooking !== null);
 
+  console.log(flatBooking)
+
   useEffect(() => {
     if (carBooking) setIsCar(true);
     if (flatBooking) setIsFlat(true);
@@ -40,8 +42,8 @@ export default function HomeScreen({ navigation }) {
     navigation.push('Selected Car', { car: carBooking.car, bookCar: false });
   };
 
-  const navigateToFlatScreen = () => {
-    dispatch(fetchFlatDetails(flatBooking.booking.flatId));
+  const navigateToFlatScreen = async () => {
+    await dispatch(fetchFlatDetails(flatBooking.booking.flatId));
     navigation.push('Flat', {
       flatId: flatBooking.booking.flatId,
       title: flatBooking.flat.title,
@@ -76,7 +78,7 @@ export default function HomeScreen({ navigation }) {
         <View>
           <Text>Your current Flatly reservation is: </Text>
           <TouchableOpacity style={{ alignItems: 'center' }} onPress={navigateToFlatScreen}>
-            <FlatItem flat={flatBooking} />
+            <FlatItem flat={flatBooking.flat} />
           </TouchableOpacity>
         </View>
       )}

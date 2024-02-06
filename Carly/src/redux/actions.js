@@ -94,7 +94,7 @@ export const bookCar = (carBooking) => ({
 });
 
 export const bookFlat = (flatBooking) => ({
-  type: BOOK_CAR,
+  type: BOOK_FLAT,
   payload: flatBooking,
 });
 

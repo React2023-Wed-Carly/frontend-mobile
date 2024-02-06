@@ -9,7 +9,7 @@ import {
   getFlatDetails,
   cancelFlatBooking,
   getFlats,
-  getFlatBooking
+  getFlatBooking,
 } from './actions';
 
 const URL = 'https://pwflatlyreact.azurewebsites.net';
@@ -105,7 +105,7 @@ export const fetchFlatDetails = (flatId) => async (dispatch) => {
 };
 
 export const fetchFlatBooking = (id) => async (dispatch) => {
-  try {    
+  try {
     const jwtToken = await SecureStore.getItemAsync('flatlyToken');
 
     const response = await axios.get(
@@ -115,9 +115,9 @@ export const fetchFlatBooking = (id) => async (dispatch) => {
           Authorization: `Bearer ${jwtToken}`,
         },
       }
-    )
+    );
     console.log(response.data);
-    
+
     if (response.status === 200) {
       dispatch(getFlatBooking(response.data));
     } else {
@@ -144,12 +144,13 @@ export const sendFlatBooking = (flat, flatBooking, id) => async (dispatch) => {
     });
 
     if (response.status >= 200 && response.status < 300) {
-      await AsyncStorage.setItem(
-        'currentFlatBooking',
-        JSON.stringify({ booking: flatBooking, flat })
-      );
-      console.log('success');
-      dispatch(bookFlat({ booking: flatBooking, flat }));
+    await AsyncStorage.setItem(
+      'currentFlatBooking',
+      JSON.stringify({ booking: flatBooking, flat })
+    );
+    console.log('success');
+
+    dispatch(bookFlat({ booking: flatBooking, flat }));
     } else {
       console.error('Error during adding flat booking:', response.status);
       if (response.status === 422) {
