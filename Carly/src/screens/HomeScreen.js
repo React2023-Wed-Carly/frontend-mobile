@@ -23,7 +23,7 @@ export default function HomeScreen({ navigation }) {
   const [isFlat, setIsFlat] = useState(flatBooking !== null);
   const [isCar, setIsCar] = useState(carBooking !== null);
 
-  console.log(flatBooking)
+  console.log(flatBooking);
 
   useEffect(() => {
     if (carBooking) setIsCar(true);
@@ -31,7 +31,7 @@ export default function HomeScreen({ navigation }) {
     if (!carBooking) setIsCar(false);
     if (!flatBooking) setIsFlat(false);
 
-    if (!rentHistory||!rentHistoryCars) {
+    if (!rentHistory || !rentHistoryCars) {
       dispatch(fetchRentHistory(0));
       dispatch(fetchFlatBooking(id));
     }
@@ -54,21 +54,24 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={{ flex: 1, padding: 10 }}>
-
-      {(!rentHistory||!rentHistoryCars) && <ActivityIndicator size="large" />}
-      {(rentHistoryCars&&rentHistory) && (
+      {(!rentHistory || !rentHistoryCars) && <ActivityIndicator size="large" />}
+      {rentHistoryCars && rentHistory && (
         <>
           <View style={{ paddingVertical: 10, paddingTop: 0 }}>
             <Text
-          style={{ fontSize: 20, fontWeight: 'bold', color: theme === 'light' ? '#222' : '#fff' }}
-        >{`Hi, ${userInfo.firstname}!`}</Text>
+              style={{
+                fontSize: 20,
+                fontWeight: 'bold',
+                color: theme === 'light' ? '#222' : '#fff',
+              }}
+            >{`Hi, ${userInfo.firstname}!`}</Text>
           </View>
 
           {carBooking && carBooking.car && (
             <View>
               <Text style={{ color: theme === 'light' ? '#222' : '#fff' }}>
-            Your current Carly reservation is:{' '}
-          </Text>
+                Your current Carly reservation is:{' '}
+              </Text>
               <TouchableOpacity
                 style={{ alignItems: 'center' }}
                 onPress={navigateToReservationScreen}
@@ -78,7 +81,6 @@ export default function HomeScreen({ navigation }) {
             </View>
           )}
         </>
-
       )}
 
       {flatBooking && (
@@ -87,7 +89,13 @@ export default function HomeScreen({ navigation }) {
             Your current Flatly reservation is:{' '}
           </Text>
           <TouchableOpacity style={{ alignItems: 'center' }} onPress={navigateToFlatScreen}>
-            <FlatItem flat={flatBooking.flat} />
+            <FlatItem
+              flat={{
+                ...flatBooking.flat,
+                startDate: flatBooking.booking.startDate,
+                endDate: flatBooking.booking.endDate,
+              }}
+            />
           </TouchableOpacity>
         </View>
       )}

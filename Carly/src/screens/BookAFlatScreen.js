@@ -42,7 +42,7 @@ export default function BookAFlatScreen({ navigation }) {
   }, [isLoggedIn, flats, isFlatBooked, dispatch]);
 
   return (
-    <View style={{ backgroundColor: theme === 'dark' ? '#222' : '#fff', flex: 1 }}>
+    <View style={{ flex: 1 }}>
       {isFlatBooked && (
         <View style={{ justifyContent: 'center', flex: 1, alignContent: 'center', padding: 10 }}>
           <Icon

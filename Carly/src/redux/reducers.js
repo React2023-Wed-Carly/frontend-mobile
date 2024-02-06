@@ -28,7 +28,7 @@ import {
   GET_FLAT_IMAGE,
   GET_FLAT_BOOKING,
   CHANGE_AUTO_LOCATION,
-  REMEMBER_FILTERS
+  REMEMBER_FILTERS,
   RESET_CARS_LIST,
 } from './actions';
 
@@ -80,7 +80,7 @@ const initialState = {
   carsPageEnd: false,
 
   flatsDetails: [],
-  rememberFilters:false
+  rememberFilters: false,
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -110,7 +110,7 @@ const rootReducer = (state = initialState, action) => {
       const { payload: newAuto } = action;
       return {
         ...state,
-        autoLocation:newAuto,
+        autoLocation: newAuto,
       };
 
     case SET_LOCATION:
@@ -126,8 +126,8 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         carsPage: 0,
-        carsPageEnd: false
-      }
+        carsPageEnd: false,
+      };
 
     case LIKE_CAR:
       const { payload: likedId } = action;
@@ -182,7 +182,7 @@ const rootReducer = (state = initialState, action) => {
           ...favoriteCars.map((favoriteCar) => ({
             ...favoriteCar,
             dailyPrice: favoriteCar.dailyPrice / 100,
-            isFavorite:true
+            isFavorite: true,
           })),
         ],
       };
@@ -199,17 +199,15 @@ const rootReducer = (state = initialState, action) => {
         payload: { filteredCars },
       } = action;
       pageNumber = state.carsPageEnd
-      ? state.carsPage
-      : !state.carsPageEnd && filteredCars.length === 0
-        ? state.carsPage - 1
-        : state.carsPage + 1;
+        ? state.carsPage
+        : !state.carsPageEnd && filteredCars.length === 0
+          ? state.carsPage - 1
+          : state.carsPage + 1;
       return {
         ...state,
         paymentsPage: 0,
         paymentsPageEnd: false,
-        carsPageEnd: !state.carsPageEnd
-          ? filteredCars.length === 0
-          : state.carsPageEnd,
+        carsPageEnd: !state.carsPageEnd ? filteredCars.length === 0 : state.carsPageEnd,
         carsPage: pageNumber,
         filteredCars: filteredCars.map((filteredCar) => ({
           ...filteredCar,
@@ -390,12 +388,12 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         currentFlatBooking: newFlatBooking,
       };
-    case  REMEMBER_FILTERS: 
-    const {payload:remember} = action;
-    return{
-      ...state,
-      rememberFilters:remember
-    }
+    case REMEMBER_FILTERS:
+      const { payload: remember } = action;
+      return {
+        ...state,
+        rememberFilters: remember,
+      };
     default:
       return state;
   }

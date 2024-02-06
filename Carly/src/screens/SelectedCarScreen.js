@@ -91,7 +91,9 @@ function SelectedCarScreen({ navigation, route }) {
           {/* Render reservation details content here based on your UI structure */}
           <View style={textPairContainerStyle}>
             <Text style={labelStyle}>Start date:</Text>
-            <Text>{startDate.toLocaleDateString()}</Text>
+            <Text styles={{ color: theme === 'light' ? '#222' : '#fff' }}>
+              {startDate.toLocaleDateString()}
+            </Text>
           </View>
           <View style={textPairContainerStyle}>
             <Text style={labelStyle}>End date:</Text>
