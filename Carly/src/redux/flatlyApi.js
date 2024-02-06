@@ -9,7 +9,7 @@ import {
   getFlatDetails,
   cancelFlatBooking,
   getFlats,
-  getFlatBooking
+  getFlatBooking,
 } from './actions';
 
 const URL = 'https://pwflatlyreact.azurewebsites.net';
@@ -34,7 +34,7 @@ export const registerFlatly =
         throw new Error('Registration failed');
       }
     } catch (error) {
-      console.error('Error during registration:', error);
+      console.log('Error during registration:', error);
       throw error;
     }
   };
@@ -57,7 +57,7 @@ export const loginFlatly =
         throw new Error('Login to flatly failed');
       }
     } catch (error) {
-      console.error('Error during login to flatly:', error);
+      console.log('Error during login to flatly:', error);
       throw error;
     }
   };
@@ -78,7 +78,7 @@ export const fetchFlats = () => async (dispatch) => {
       throw new Error('Fetching flats failed.');
     }
   } catch (error) {
-    console.error('Error during fetching flats.', error);
+    console.log('Error during fetching flats.', error);
     throw error;
   }
 };
@@ -99,13 +99,13 @@ export const fetchFlatDetails = (flatId) => async (dispatch) => {
       throw new Error('Fetching flat details failed.');
     }
   } catch (error) {
-    console.error('Error during fetching flat details.', error);
+    console.log('Error during fetching flat details.', error);
     throw error;
   }
 };
 
 export const fetchFlatBooking = (id) => async (dispatch) => {
-  try {    
+  try {
     const jwtToken = await SecureStore.getItemAsync('flatlyToken');
 
     const response = await axios.get(
@@ -115,16 +115,16 @@ export const fetchFlatBooking = (id) => async (dispatch) => {
           Authorization: `Bearer ${jwtToken}`,
         },
       }
-    )
+    );
     console.log(response.data);
-    
+
     if (response.status === 200) {
       dispatch(getFlatBooking(response.data));
     } else {
-      console.error('Error during fetching flat booking:', response.status);
+      console.log('Error during fetching flat booking:', response.status);
     }
   } catch (error) {
-    console.error('Error during fetching flat booking:', error);
+    console.log('Error during fetching flat booking:', error);
     throw error;
   }
 };
@@ -151,7 +151,7 @@ export const sendFlatBooking = (flat, flatBooking, id) => async (dispatch) => {
       console.log('success');
       dispatch(bookFlat({ booking: flatBooking, flat }));
     } else {
-      console.error('Error during adding flat booking:', response.status);
+      console.log('Error during adding flat booking:', response.status);
       if (response.status === 422) {
         throw new Error('Dates are overlapping.');
       } else {
