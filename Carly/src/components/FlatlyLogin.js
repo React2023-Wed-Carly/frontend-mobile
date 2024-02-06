@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Modal,
-} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginFlatly, registerFlatly, fetchFlats } from '../redux/flatlyApi';
 import { fetchFlatBooking } from '../redux/flatlyApi';
@@ -21,15 +14,15 @@ function FlatlyLogin({ hideLogin }) {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const dispatch = useDispatch();
 
-  const id = useSelector(state=>state.userInfo.id);
+  const id = useSelector((state) => state.userInfo.id);
 
   const handlePress = async () => {
     // Your login logic here
 
-    if (isLoginMode) dispatch(loginFlatly({ email, password }))
+    if (isLoginMode) dispatch(loginFlatly({ email, password }));
     else dispatch(registerFlatly({ username, lastname, email, password })); // Pass username and lastname for registration
 
-    dispatch(fetchFlatBooking(id))
+    dispatch(fetchFlatBooking(id));
 
     await AsyncStorage.setItem('isLoggedInFlatly', 'true');
 
@@ -109,9 +102,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   loginButton: {
-    backgroundColor: '#3498db',
+    backgroundColor: '#ffbe30',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 15,
     width: '100%',
     alignItems: 'center',
   },
@@ -122,7 +115,7 @@ const styles = StyleSheet.create({
   },
   linkText: {
     marginTop: 16,
-    color: '#3498db',
+    color: '#ffbe30',
     fontSize: 16,
   },
   errorText: {

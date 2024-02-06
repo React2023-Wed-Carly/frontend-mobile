@@ -4,7 +4,7 @@ import MapView, { Marker, MapStyle } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { useDispatch, useSelector } from 'react-redux';
 import { GooglePlacesAutocomplete, darkMap } from 'react-native-google-places-autocomplete';
-import { setNewLocation, fetchFilteredCars } from '../redux/api';
+import { setNewLocation, fetchFilteredCars, resetCars } from '../redux/api';
 
 const defaultLocation = {
   latitude: 52.2297,
@@ -30,7 +30,8 @@ function MapScreen() {
     setSelectedLocation(defaultLocation);
     setAutocompleteLocation(defaultLocation);
     dispatch(setNewLocation(defaultLocation));
-    dispatch(fetchFilteredCars({ location: currentLocation, filters }));
+    dispatch(resetCars());
+    dispatch(fetchFilteredCars({ location: currentLocation, filters, page: 0 }));
   };
 
   useEffect(() => {
@@ -52,7 +53,8 @@ function MapScreen() {
         longitudeDelta: 0.005,
       });
       dispatch(setNewLocation(location.coords));
-      dispatch(fetchFilteredCars({ location: currentLocation, filters }));
+      dispatch(resetCars());
+      dispatch(fetchFilteredCars({ location: currentLocation, filters, page: 0 }));
     };
     getLocation();
   }, []);

@@ -294,7 +294,7 @@ export const filterStyles = StyleSheet.create({
     height: 30,
   },
   applyButton: {
-    backgroundColor: 'blue',
+    backgroundColor: '#ffbe30',
     padding: 10,
     borderRadius: 20,
     alignItems: 'center',

@@ -27,6 +27,7 @@ import {
   SET_FLAT_BOOKING,
   GET_FLAT_IMAGE,
   GET_FLAT_BOOKING,
+  RESET_CARS_LIST,
 } from './actions';
 
 const initialState = {
@@ -71,6 +72,10 @@ const initialState = {
   favoriteCarsPageEnd: false,
   rentHistoryPage: 0,
   rentHistoryPageEnd: false,
+
+  carsPage: 0,
+  carsPageEnd: false,
+
   flatsDetails: [],
 };
 
@@ -107,6 +112,12 @@ const rootReducer = (state = initialState, action) => {
           currentLocation: newLocation,
         },
       };
+    case RESET_CARS_LIST:
+      return {
+        ...state,
+        carsPage: 0,
+        carsPageEnd: false
+      }
 
     case LIKE_CAR:
       const { payload: likedId } = action;
@@ -151,7 +162,7 @@ const rootReducer = (state = initialState, action) => {
           : state.favoriteCarsPage + 1;
       return {
         ...state,
-        favoriteCarsPageEnd: !state.paymentsPageEnd
+        favoriteCarsPageEnd: !state.favoriteCarsPageEnd
           ? favoriteCars.length === 0
           : state.favoriteCarsPageEnd,
         favoriteCarsPage: pageNumber,
@@ -175,8 +186,19 @@ const rootReducer = (state = initialState, action) => {
       const {
         payload: { filteredCars },
       } = action;
+      pageNumber = state.carsPageEnd
+      ? state.carsPage
+      : !state.carsPageEnd && filteredCars.length === 0
+        ? state.carsPage - 1
+        : state.carsPage + 1;
       return {
         ...state,
+        paymentsPage: 0,
+        paymentsPageEnd: false,
+        carsPageEnd: !state.carsPageEnd
+          ? filteredCars.length === 0
+          : state.carsPageEnd,
+        carsPage: pageNumber,
         filteredCars: filteredCars.map((filteredCar) => ({
           ...filteredCar,
           info: {
