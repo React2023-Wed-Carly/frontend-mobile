@@ -108,7 +108,7 @@ export const fetchFlatBooking = (id) => async (dispatch) => {
   try {
     
     const jwtToken = await SecureStore.getItemAsync('flatlyToken');
-    
+
     console.log('book')
 
     const response = await axios.get(
@@ -116,12 +116,11 @@ export const fetchFlatBooking = (id) => async (dispatch) => {
       {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
-          'Content-Type': 'application/json',
         },
       }
-    );
-
+    )
     console.log(response.data);
+    
     if (response.status === 200) {
       dispatch(getFlatBooking(response.data));
     } else {

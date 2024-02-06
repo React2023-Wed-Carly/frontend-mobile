@@ -169,24 +169,11 @@ function SelectedCarScreen({ navigation, route }) {
     // Show confirmation modal
     Alert.alert(
       'Cancel Reservation',
-      'Are you sure you want to cancel this reservation? You will not receive a refund for your payment',
+      'Contact our admin to cancel the reservation.',
       [
         {
-          text: 'Back',
-          style: 'cancel',
-        },
-        {
-          text: 'Yes',
-          onPress: async () => {
-            // Logic to cancel reservation
-            try {
-              await dispatch(deleteCarBooking())
-              console.log('CANCEL');
-            } catch (error) {
-              console.log('Error cancelling reservation:', error);
-              // Handle error if the cancellation fails
-            }
-          },
+          text: 'Ok',
+          style: 'ok',
         },
       ],
       { cancelable: true }

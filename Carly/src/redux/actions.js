@@ -29,9 +29,6 @@ export const GET_FLAT_IMAGE = 'GET_FLAT_IMAGE';
 export const SET_FLAT_BOOKING = "SET_FLAT_BOOKING";
 export const SET_CAR_BOOKING = "SET_CAR_BOOKING";
 export const GET_FLAT_BOOKING = 'GET_FLAT_BOOKING';
-export const CANCEL_FLAT_BOOKING = 'CANCEL_FLAT_BOOKING';
-
-export const CANCEL_CAR_BOOKING = 'CANCAL_CAR_BOOKING';
 
 export const loginAgain = (userData) => ({
   type: LOGIN_AGAIN,
@@ -172,12 +169,4 @@ export const getFlatImage = ({flatId, image}) => ({
 export const getFlatBooking = ({flatBooking}) => ({
   type:GET_FLAT_BOOKING,
   payload:flatBooking
-})
-
-export const cancelFlatBooking = () => ({
-  type:CANCEL_FLAT_BOOKING,
-})
-
-export const cancelCarBooking = () => ({
-  type:CANCEL_FLAT_BOOKING,
 })

@@ -27,8 +27,6 @@ import {
   SET_FLAT_BOOKING,
   GET_FLAT_IMAGE,
   GET_FLAT_BOOKING,
-  CANCEL_CAR_BOOKING,
-  CANCEL_FLAT_BOOKING,
 } from './actions';
 
 const initialState = {
@@ -192,22 +190,9 @@ const rootReducer = (state = initialState, action) => {
     case GET_RENT_HISTORY:
       const { payload: rentHistory } = action;
 
-      const today = new Date();
-
-      var current = rentHistory.find((rent) => {
-        const endDate = new Date(rent.endDate);
-        return endDate > today;
-      });
-
-      if (current) {
-        const currentCar = state.rentHistoryCars.find((item) => item.info.id === current.carId);
-        current = { booking: current, car: currentCar };
-      }
-
       return {
         ...state,
         rentHistory: [...(state.rentHistory ?? []), ...rentHistory],
-        currentCarBooking: current || null,
       };
 
     case GET_RENT_HISTORY_CARS:
@@ -242,6 +227,14 @@ const rootReducer = (state = initialState, action) => {
           ? state.rentHistoryPage - 1
           : state.rentHistoryPage + 1;
 
+      var current = updatedRentHistory.find((rent) => {
+        const today = new Date();
+        const todayISOString = today.toISOString();
+        console.log(todayISOString<rent.endDate)
+        console.log("rent history")
+        return todayISOString < rent.endDate && todayISOString > rent.startDate
+      });
+
       return {
         ...state,
         rentHistoryCars: [...(state.rentHistoryCars ?? []), ...updatedCarsDetails],
@@ -250,6 +243,9 @@ const rootReducer = (state = initialState, action) => {
         rentHistoryPageEnd: !state.rentHistoryPageEnd
           ? carsDetails.length === 0
           : state.rentHistoryPageEnd,
+        currentCarBooking: current
+          ? { booking: { ...current}, car: current.car }
+          : null,
       };
     case LOGOUT:
       return initialState;
@@ -358,22 +354,11 @@ const rootReducer = (state = initialState, action) => {
       };
     case GET_FLAT_BOOKING:
       const { payload: newFlatBooking } = action;
-      console.log(newFlatBooking)
+      console.log(newFlatBooking);
       return {
         ...state,
         currentFlatBooking: newFlatBooking,
       };
-    case CANCEL_CAR_BOOKING:
-      return {
-        ...state,
-        currentCarBooking: null,
-      };
-    case CANCEL_FLAT_BOOKING:
-      return {
-        ...state,
-        currentFlatBooking: null,
-      };
-
     default:
       return state;
   }
