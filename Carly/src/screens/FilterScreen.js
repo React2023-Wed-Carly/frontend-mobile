@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import MultiSelect from 'react-native-sectioned-multi-select';
@@ -14,6 +14,7 @@ function FilterScreen({ applyFilters, setIsFilter }) {
   const filters = useSelector((state) => state.filters);
   const currentLocation = useSelector((state) => state.currentLocation);
   const theme = useSelector((state) => state.theme);
+  const rememberFilters = useSelector((state) => state.rememberFilters);
 
   const dispatch = useDispatch();
 
@@ -22,6 +23,18 @@ function FilterScreen({ applyFilters, setIsFilter }) {
   const [selectedTransmissionTypes, setSelectedTransmissionTypes] = useState(filters.trans);
 
   const handleApplyFilters = () => {
+    if (rememberFilters)
+      AsyncStorage.setItem(
+        'filters',
+        JSON.stringify({
+          minPrice: priceRange[0],
+          maxPrice: priceRange[1],
+          minSeat: seatRange[0],
+          maxSeat: seatRange[1],
+          trans: selectedTransmissionTypes,
+        })
+      );
+
     setFilters({
       minPrice: priceRange[0],
       maxPrice: priceRange[1],

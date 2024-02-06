@@ -13,6 +13,7 @@ export const BOOK_FLAT = 'BOOK_FLAT';
 export const CHANGE_THEME = 'CHANGE_THEME';
 export const CHANGE_UNIT = 'CHANGE_UNIT';
 export const SET_LOCATION = 'SET_LOCATION';
+export const CHANGE_AUTO_LOCATION = 'CHANGE_AUTO_LOCATION';
 
 export const LOGIN_AGAIN = 'LOGIN_AGAIN';
 export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
@@ -21,6 +22,8 @@ export const LOGIN_FAILURE = 'LOGIN_FAILURE';
 
 export const TOP_UP_SUCCESS = 'TOP_UP_SUCCESS';
 export const GET_PAYMENTS_SUCCESS = 'GET_PAYMENTS_SUCCESS';
+
+export const REMEMBER_FILTERS = 'REMEMBER_FILTERS'
 
 export const FLATLY_LOGIN_SUCCESS = 'FLATLY_LOGIN_SUCCESS';
 export const GET_FLATS = 'GET_FLATS';
@@ -67,6 +70,11 @@ export const changeTheme = (theme) => ({
 export const changeUnit = (unit) => ({
   type: CHANGE_UNIT,
   payload: unit,
+});
+
+export const changeAutoLocation = (autoLocation) => ({
+  type: CHANGE_AUTO_LOCATION,
+  payload: autoLocation,
 });
 
 export const setLocation = (currentLocation) => ({
@@ -174,13 +182,12 @@ export const getFlatBooking = ({ flatBooking }) => ({
   payload: flatBooking,
 });
 
-export const cancelFlatBooking = () => ({
-  type: CANCEL_FLAT_BOOKING,
-});
 
-export const cancelCarBooking = () => ({
-  type: CANCEL_FLAT_BOOKING,
-});
+export const rememberFilters = ({remember}) => ({
+  type:REMEMBER_FILTERS,
+  payload:remember
+})
+
 
 export const resetCarsList = () => ({
   type: RESET_CARS_LIST,

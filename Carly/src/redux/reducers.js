@@ -27,6 +27,8 @@ import {
   SET_FLAT_BOOKING,
   GET_FLAT_IMAGE,
   GET_FLAT_BOOKING,
+  CHANGE_AUTO_LOCATION,
+  REMEMBER_FILTERS
   RESET_CARS_LIST,
 } from './actions';
 
@@ -49,6 +51,7 @@ const initialState = {
     longitude: -74.006,
   },
   unit: 'kilometers',
+  autoLocation: 'false',
   theme: 'light',
   filters: {
     minPrice: 0,
@@ -77,6 +80,7 @@ const initialState = {
   carsPageEnd: false,
 
   flatsDetails: [],
+  rememberFilters:false
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -101,6 +105,12 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         unit: newUnit,
+      };
+    case CHANGE_AUTO_LOCATION:
+      const { payload: newAuto } = action;
+      return {
+        ...state,
+        autoLocation:newAuto,
       };
 
     case SET_LOCATION:
@@ -171,6 +181,7 @@ const rootReducer = (state = initialState, action) => {
           ...favoriteCars.map((favoriteCar) => ({
             ...favoriteCar,
             dailyPrice: favoriteCar.dailyPrice / 100,
+            isFavorite:true
           })),
         ],
       };
@@ -252,9 +263,8 @@ const rootReducer = (state = initialState, action) => {
       var current = updatedRentHistory.find((rent) => {
         const today = new Date();
         const todayISOString = today.toISOString();
-        console.log(todayISOString<rent.endDate)
-        console.log("rent history")
-        return todayISOString < rent.endDate && todayISOString > rent.startDate
+        console.log(todayISOString < rent.endDate);
+        return todayISOString < rent.endDate && todayISOString > rent.startDate;
       });
 
       return {
@@ -265,9 +275,7 @@ const rootReducer = (state = initialState, action) => {
         rentHistoryPageEnd: !state.rentHistoryPageEnd
           ? carsDetails.length === 0
           : state.rentHistoryPageEnd,
-        currentCarBooking: current
-          ? { booking: { ...current}, car: current.car }
-          : null,
+        currentCarBooking: current ? { booking: { ...current }, car: current.car } : null,
       };
     case LOGOUT:
       return initialState;
@@ -381,6 +389,12 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         currentFlatBooking: newFlatBooking,
       };
+    case  REMEMBER_FILTERS: 
+    const {payload:remember} = action;
+    return{
+      ...state,
+      rememberFilters:remember
+    }
     default:
       return state;
   }

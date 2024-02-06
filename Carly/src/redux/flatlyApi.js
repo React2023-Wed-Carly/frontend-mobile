@@ -105,11 +105,8 @@ export const fetchFlatDetails = (flatId) => async (dispatch) => {
 };
 
 export const fetchFlatBooking = (id) => async (dispatch) => {
-  try {
-    
+  try {    
     const jwtToken = await SecureStore.getItemAsync('flatlyToken');
-
-    console.log('book')
 
     const response = await axios.get(
       `${URL}/reservations?page=0&pageSize=10&externalUserId=${id}`,
