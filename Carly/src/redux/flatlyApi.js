@@ -144,12 +144,13 @@ export const sendFlatBooking = (flat, flatBooking, id) => async (dispatch) => {
     });
 
     if (response.status >= 200 && response.status < 300) {
-      await AsyncStorage.setItem(
-        'currentFlatBooking',
-        JSON.stringify({ booking: flatBooking, flat })
-      );
-      console.log('success');
-      dispatch(bookFlat({ booking: flatBooking, flat }));
+    await AsyncStorage.setItem(
+      'currentFlatBooking',
+      JSON.stringify({ booking: flatBooking, flat })
+    );
+    console.log('success');
+
+    dispatch(bookFlat({ booking: flatBooking, flat }));
     } else {
       console.log('Error during adding flat booking:', response.status);
       if (response.status === 422) {

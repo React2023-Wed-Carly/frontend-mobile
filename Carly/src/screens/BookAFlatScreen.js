@@ -33,7 +33,7 @@ export default function BookAFlatScreen({ navigation }) {
 
   useEffect(() => {
     dispatch(fetchFlats());
-    dispatch(fetchFlatBooking(id));
+    //dispatch(fetchFlatBooking(id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, showLogin]);
 

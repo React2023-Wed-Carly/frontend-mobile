@@ -55,7 +55,7 @@ export default function FlatItem({ flat }) {
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              {flat.title}, {flat.city}
+              {flat.title}
             </Text>
             <View
               style={{
