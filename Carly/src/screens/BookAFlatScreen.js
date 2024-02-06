@@ -12,7 +12,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useState, useEffect } from 'react';
 import { styles } from '../styles';
 import FlatlyLogin from '../components/FlatlyLogin';
-import { fetchFlats, fetchFlatDetails, getFlatBooking } from '../redux/flatlyApi';
+import { fetchFlats, fetchFlatDetails, fetchFlatBooking } from '../redux/flatlyApi';
 import FlatItem from '../components/FlatItem';
 
 export default function BookAFlatScreen({ navigation }) {
@@ -33,7 +33,7 @@ export default function BookAFlatScreen({ navigation }) {
 
   useEffect(() => {
     dispatch(fetchFlats());
-    dispatch(getFlatBooking(id));
+    dispatch(fetchFlatBooking(id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, showLogin]);
 

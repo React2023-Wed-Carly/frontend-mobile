@@ -6,11 +6,11 @@ import {
   TouchableOpacity,
   StyleSheet,
   Modal,
-  AsyncStorage,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginFlatly, registerFlatly, fetchFlats } from '../redux/flatlyApi';
-import { getFlatBooking } from '../redux/actions';
+import { fetchFlatBooking } from '../redux/flatlyApi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function FlatlyLogin({ hideLogin }) {
   const [email, setEmail] = useState('');
@@ -28,8 +28,11 @@ function FlatlyLogin({ hideLogin }) {
 
     if (isLoginMode) dispatch(loginFlatly({ email, password }))
     else dispatch(registerFlatly({ username, lastname, email, password })); // Pass username and lastname for registration
-    dispatch(getFlatBooking(id));
+
+    dispatch(fetchFlatBooking(id))
+
     await AsyncStorage.setItem('isLoggedInFlatly', 'true');
+
     hideLogin();
   };
 

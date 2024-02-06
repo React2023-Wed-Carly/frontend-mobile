@@ -9,6 +9,7 @@ import {
   getFlatDetails,
   cancelFlatBooking,
   getFlats,
+  getFlatBooking
 } from './actions';
 
 const URL = 'https://pwflatlyreact.azurewebsites.net';
@@ -64,7 +65,6 @@ export const loginFlatly =
 export const fetchFlats = () => async (dispatch) => {
   try {
     const jwtToken = await SecureStore.getItemAsync('flatlyToken');
-
     const response = await axios.get(`${URL}/flats?page=0&pageSize=10`, {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
@@ -104,24 +104,25 @@ export const fetchFlatDetails = (flatId) => async (dispatch) => {
   }
 };
 
-export const getFlatBooking = (id) => async (dispatch) => {
+export const fetchFlatBooking = (id) => async (dispatch) => {
   try {
+    
     const jwtToken = await SecureStore.getItemAsync('flatlyToken');
-
-    if (!jwtToken) {
-      throw new Error('JWT token not found. User must be logged in.');
-    }
+    
+    console.log('book')
 
     const response = await axios.get(
-      `${URL}/reservations?page=0&pageSize=10&filter=active&externalUserId=${id}`,
+      `${URL}/reservations?page=0&pageSize=10&externalUserId=${id}`,
       {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
+          'Content-Type': 'application/json',
         },
       }
     );
+
     console.log(response.data);
-    if (response.status >= 200 && response.status < 300) {
+    if (response.status === 200) {
       dispatch(getFlatBooking(response.data));
     } else {
       console.error('Error during fetching flat booking:', response.status);
@@ -170,7 +171,7 @@ export const sendFlatBooking = (flat, flatBooking, id) => async (dispatch) => {
   }
 };
 
-export const deleteFlatBooking = () => {
+export const deleteFlatBooking = () => async (dispatch) => {
   AsyncStorage.removeItem('currentFlatBooking');
   dispatch(cancelFlatBooking());
 };

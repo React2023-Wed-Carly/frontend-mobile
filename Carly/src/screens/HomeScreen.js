@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import data from '../DummyData.json';
 import CarItem from '../components/CarItem';
 
-import { fetchFlatDetails, getFlatBooking } from '../redux/flatlyApi';
+import { fetchFlatDetails, fetchFlatBooking } from '../redux/flatlyApi';
 
 import FlatItem from '../components/FlatItem';
 
@@ -21,7 +21,6 @@ export default function HomeScreen({ navigation }) {
   const [isCar, setIsCar] = useState(carBooking !== null);
 
   useEffect(() => {
-    dispatch(getFlatBooking(id));
     if (carBooking) setIsCar(true);
     if (flatBooking) setIsFlat(true);
     if (!carBooking) setIsCar(false);
