@@ -13,6 +13,7 @@ import FlatItem from '../components/FlatItem';
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
   const id = useSelector((state) => state.userInfo.id);
+  const theme = useSelector((state) => state.theme);
 
   const carBooking = useSelector((state) => state.currentCarBooking);
   const flatBooking = useSelector((state) => state.currentFlatBooking);
@@ -51,16 +52,21 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={{ flex: 1, padding: 10 }}>
+
       {(!rentHistory||!rentHistoryCars) && <ActivityIndicator size="large" />}
       {(rentHistoryCars&&rentHistory) && (
         <>
           <View style={{ paddingVertical: 10, paddingTop: 0 }}>
-            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{`Hi, ${userInfo.firstname}!`}</Text>
+            <Text
+          style={{ fontSize: 20, fontWeight: 'bold', color: theme === 'light' ? '#222' : '#fff' }}
+        >{`Hi, ${userInfo.firstname}!`}</Text>
           </View>
 
           {carBooking && carBooking.car && (
             <View>
-              <Text>Your current Carly reservation is: </Text>
+              <Text style={{ color: theme === 'light' ? '#222' : '#fff' }}>
+            Your current Carly reservation is:{' '}
+          </Text>
               <TouchableOpacity
                 style={{ alignItems: 'center' }}
                 onPress={navigateToReservationScreen}
@@ -70,11 +76,14 @@ export default function HomeScreen({ navigation }) {
             </View>
           )}
         </>
+
       )}
 
       {flatBooking && (
         <View>
-          <Text>Your current Flatly reservation is: </Text>
+          <Text style={{ color: theme === 'light' ? '#222' : '#fff' }}>
+            Your current Flatly reservation is:{' '}
+          </Text>
           <TouchableOpacity style={{ alignItems: 'center' }} onPress={navigateToFlatScreen}>
             <FlatItem flat={flatBooking} />
           </TouchableOpacity>
@@ -89,7 +98,7 @@ export default function HomeScreen({ navigation }) {
             size={50}
             style={{ marginVertical: 10, alignSelf: 'center' }}
           />
-          <Text style={{ textAlign: 'center' }}>
+          <Text style={{ textAlign: 'center', color: theme === 'light' ? '#222' : '#fff' }}>
             It seems like you do not currently have any bookings. Check out our cars and flats!
           </Text>
         </View>
