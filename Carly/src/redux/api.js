@@ -19,7 +19,6 @@ import {
   bookCar,
   bookFlat,
   logout,
-  cancelCarBooking,
   resetCarsList,
 } from './actions';
 
@@ -435,9 +434,9 @@ export const fetchRentHistoryCars = async (dispatch, rentHistory) => {
           null,
           null
         );
-
         carDetails.isFavorite = isFavoriteResponse;
         fetchedDetails.push(carDetails);
+        
       } catch (error) {
         console.log(`Error during fetching details for carId ${carId}:`, error);
         // Omit failed entry and continue with the next one
@@ -486,11 +485,6 @@ export const sendCarBooking = (car, carBooking) => async (dispatch) => {
       throw new Error('Dates are overlapping.');
     }
   }
-};
-
-export const deleteCarBooking = () => {
-  AsyncStorage.removeItem('currentCarBooking');
-  dispatch(cancelCarBooking());
 };
 
 export const logUserOut = () => async (dispatch) => {

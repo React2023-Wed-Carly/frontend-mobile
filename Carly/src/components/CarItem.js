@@ -12,6 +12,8 @@ export default function CarItem({ car, date, distance }) {
   const theme = useSelector((state) => state.theme);
   const [isFavorite, setIsFavorite] = useState(car.isFavorite);
 
+  const formattedDate = date ? date.split('T')[0] : null;
+
   const toggleFavorite = async () => {
     if (isFavorite) {
       dispatch(sendUnlikedCar(car.info.id));
@@ -93,9 +95,7 @@ export default function CarItem({ car, date, distance }) {
                 }}
               >
                 <Icon name="calendar-today" color="gray" size={12} style={{ marginTop: 2 }} />
-                <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>
-                  {(new Date(date)).toLocaleDateString()}
-                </Text>
+                <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>{formattedDate}</Text>
               </View>
             )}
 

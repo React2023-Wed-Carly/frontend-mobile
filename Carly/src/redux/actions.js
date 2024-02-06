@@ -30,9 +30,9 @@ export const SET_FLAT_BOOKING = 'SET_FLAT_BOOKING';
 export const SET_CAR_BOOKING = 'SET_CAR_BOOKING';
 export const GET_FLAT_BOOKING = 'GET_FLAT_BOOKING';
 export const CANCEL_FLAT_BOOKING = 'CANCEL_FLAT_BOOKING';
-
 export const CANCEL_CAR_BOOKING = 'CANCAL_CAR_BOOKING';
 export const RESET_CARS_LIST = 'RESET_CARS_LIST';
+
 
 export const loginAgain = (userData) => ({
   type: LOGIN_AGAIN,
@@ -185,3 +185,4 @@ export const cancelCarBooking = () => ({
 export const resetCarsList = () => ({
   type: RESET_CARS_LIST,
 });
+
