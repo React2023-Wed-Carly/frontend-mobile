@@ -8,8 +8,9 @@ import {
   Modal,
   AsyncStorage,
 } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { loginFlatly, registerFlatly, fetchFlats } from '../redux/flatlyApi';
+import { getFlatBooking } from '../redux/actions';
 
 function FlatlyLogin({ hideLogin }) {
   const [email, setEmail] = useState('');
@@ -20,11 +21,14 @@ function FlatlyLogin({ hideLogin }) {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const dispatch = useDispatch();
 
+  const id = useSelector(state=>state.userInfo.id);
+
   const handlePress = async () => {
     // Your login logic here
 
-    if (isLoginMode) dispatch(loginFlatly({ email, password }));
+    if (isLoginMode) dispatch(loginFlatly({ email, password }))
     else dispatch(registerFlatly({ username, lastname, email, password })); // Pass username and lastname for registration
+    dispatch(getFlatBooking(id));
     await AsyncStorage.setItem('isLoggedInFlatly', 'true');
     hideLogin();
   };

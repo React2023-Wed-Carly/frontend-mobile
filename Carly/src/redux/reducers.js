@@ -24,6 +24,8 @@ import {
   GET_FLAT_DETAILS,
   SET_CAR_BOOKING,
   SET_FLAT_BOOKING,
+  GET_FLAT_IMAGE,
+  GET_FLAT_BOOKING,
 } from './actions';
 
 const initialState = {
@@ -107,7 +109,7 @@ const rootReducer = (state = initialState, action) => {
 
     case LIKE_CAR:
       const { payload: likedId } = action;
-      const car = state.carsDetails.find((item) => item.info.id === likedId);
+      const car = state.rentHistoryCars.find((item) => item.info.id === likedId);
       let newFavoriteCars = [...state.favoriteCars, car];
       return {
         ...state,
@@ -134,7 +136,6 @@ const rootReducer = (state = initialState, action) => {
 
     case BOOK_FLAT:
       const { payload: flatBooking } = action;
-      console.log(flatBooking);
       return {
         ...state,
         currentFlatBooking: flatBooking,
@@ -188,10 +189,24 @@ const rootReducer = (state = initialState, action) => {
     case GET_RENT_HISTORY:
       const { payload: rentHistory } = action;
 
+      const today = new Date();
+
+      var current = rentHistory.find((rent) => {
+        const endDate = new Date(rent.endDate);
+        return endDate > today;
+      });
+
+      if (current) {
+        const currentCar = state.rentHistoryCars.find((item) => item.info.id === current.carId);
+        current = { booking: current, car: currentCar };
+      }
+
       return {
         ...state,
         rentHistory: [...(state.rentHistory ?? []), ...rentHistory],
+        currentCarBooking: current || null,
       };
+
     case GET_RENT_HISTORY_CARS:
       const { payload: carsDetails } = action;
 
@@ -320,6 +335,29 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         currentCarBooking,
+      };
+    case GET_FLAT_IMAGE:
+      const { payload: image } = action;
+
+      const updatedFlats = state.flats.map((flat) => {
+        if (flat.id === image.flatId) {
+          return {
+            ...flat,
+            image: image.image,
+          };
+        }
+        return flat; // Jeśli to nie jest mieszkanie do zaktualizowania, zwróć oryginalny obiekt
+      });
+
+      return {
+        ...state,
+        flats: updatedFlats,
+      };
+    case GET_FLAT_BOOKING:
+      const { payload: newFlatBooking } = action;
+      return {
+        ...state,
+        currentFlatBooking: newFlatBooking,
       };
     default:
       return state;

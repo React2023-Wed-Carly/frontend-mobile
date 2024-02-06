@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { login } from '../redux/api';
+import { login, fetchRentHistory } from '../redux/api';
 
 function LoginScreen({ navigation, updateLoginStatus }) {
   const dispatch = useDispatch();
@@ -14,6 +14,7 @@ function LoginScreen({ navigation, updateLoginStatus }) {
     try {
       await dispatch(login({ username, password }));
       await AsyncStorage.setItem('isLoggedIn', 'true');
+      await dispatch(fetchRentHistory());
       updateLoginStatus(true);
     } catch (err) {
       if (err.response && err.response.status === 401) {

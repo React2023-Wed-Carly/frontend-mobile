@@ -1,31 +1,38 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import data from '../DummyData.json';
 import CarItem from '../components/CarItem';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect } from 'react';
+import { fetchFlatDetails } from '../redux/flatlyApi';
 
 import FlatItem from '../components/FlatItem';
 
 export default function HomeScreen({ navigation }) {
+  const dispatch = useDispatch();
 
-  //const [carBooking, setCarBooking] = useState(null);
-  //const [flatBooking, setFlatBooking] = useState(null);
   const carBooking = useSelector(state=>state.carBooking);
   const flatBooking = useSelector(state=>state.flatBooking);
 
-  useEffect(() => {
+  // var carBooking = AsyncStorage.getItem('currentCarReservation');
+  
+  // carBooking = JSON.parse(carBooking);
+  // console.log(carBooking)
 
-  })
+  // var flatBooking = AsyncStorage.getItem('currentFlatReservation');
+  // flatBooking = JSON.parse(carBooking);
+
 
   const userInfo = useSelector((state) => state.userInfo);
+
 
   const navigateToReservationScreen = () => {
     navigation.push('Selected Car', { car: carBooking.car, bookCar: false });
   };
 
   const navigateToFlatScreen = () => {
-    navigation.push('Flat', { flat: flatBooking.flat, reservation: flatBooking.booking, bookFlat:false });
+    dispatch(fetchFlatDetails( flatBooking.booking.flatId));
+    navigation.push('Flat', { flatId: flatBooking.booking.flatId, title:flatBooking.flat.title, bookFlat:false });
   };
 
   return (
@@ -42,11 +49,11 @@ export default function HomeScreen({ navigation }) {
         </View>
       )}
 
-      {flatBooking && flatBooking.flat && (
+      {flatBooking && (
         <View>
           <Text>Your current Flatly reservation is: </Text>
           <TouchableOpacity style={{ alignItems: 'center' }} onPress={navigateToFlatScreen}>
-            <FlatItem flat={flatBooking.flat} />
+            <FlatItem flat={flatBooking} />
           </TouchableOpacity>
         </View>
       )}

@@ -26,8 +26,9 @@ import {
   loginSuccess,
   setFlatBooking,
   setCarBooking,
+  getFlatBooking,
 } from './redux/actions';
-import { logUserOut } from './redux/api';
+import { logUserOut, fetchRentHistory } from './redux/api';
 import FlatScreen from './screens/FlatScreen';
 
 const Drawer = createDrawerNavigator();
@@ -134,18 +135,18 @@ function App() {
         const value = await AsyncStorage.getItem('isLoggedIn');
         if (value !== null && value === 'true') {
           setLoggedIn(true);
+          dispatch(fetchRentHistory());
+          // let currentFlatBooking = AsyncStorage.getItem('currentFlatBooking');
+          // currentFlatBooking = JSON.parse(currentFlatBooking);
+          // if (currentFlatBooking) {
+          //   dispatch(setFlatBooking(currentFlatBooking));
+          // }
 
-          let currentFlatBooking = AsyncStorage.getItem('currentFlatBooking');
-          currentFlatBooking = JSON.parse(currentFlatBooking);
-          if (currentFlatBooking) {
-            dispatch(setFlatBooking(currentFlatBooking));
-          }
-
-          let currentCarBooking = AsyncStorage.getItem('currentCarBooking');
-          currentCarBooking = JSON.parse(currentCarBooking);
-          if (currentCarBooking) {
-            dispatch(setCarBooking(currentCarBooking));
-          }
+          // let currentCarBooking = AsyncStorage.getItem('currentCarBooking');
+          // currentCarBooking = JSON.parse(currentCarBooking);
+          // if (currentCarBooking) {
+          //   dispatch(setCarBooking(currentCarBooking));
+          // }
         }
       } catch (error) {
         console.error('Error checking login status:', error);
@@ -156,7 +157,7 @@ function App() {
       try {
         const value = await AsyncStorage.getItem('isLoggedInFlatly');
         if (value !== null && value === 'true') {
-          dispatch(flatlyLoginSuccess());
+          dispatch(flatlyLoginSuccess()); 
         }
       } catch (error) {
         console.error('Error checking login status:', error);

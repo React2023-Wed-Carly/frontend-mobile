@@ -14,10 +14,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { sendFlatBooking } from '../redux/flatlyApi';
 import { useState } from 'react';
 import { formatPrice } from '../utils/textFormatting';
+import { getFlatBooking } from '../redux/actions';
 
 export default function FlatScreen({ route, navigation }) {
   const { flatId, flatTitle, bookFlat } = route.params;
 
+  const id = useSelector((state) => state.userInfo.id);
   const theme = useSelector((state) => state.theme);
   const flatsDetails = useSelector((state) => state.flatsDetails);
   const flat = flatsDetails.find((item) => item.title === flatTitle);
@@ -57,6 +59,14 @@ export default function FlatScreen({ route, navigation }) {
     const newEndDate = new Date(startDate);
     newEndDate.setDate(startDate.getDate() + selectedDuration);
     return newEndDate;
+  };
+
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
   };
 
   const handleIncreaseDuration = () => {
@@ -204,15 +214,19 @@ export default function FlatScreen({ route, navigation }) {
   const handleBookFlat = async () => {
     try {
       dispatch(
-        sendFlatBooking(flat, {
-          flatId,
-          startDate: today,
-          endDate: calculateEndDate(),
-          adults,
-          children,
-          pets,
-          specialRequests: '',
-        })
+        sendFlatBooking(
+          flat,
+          {
+            flatId,
+            startDate: formatDate(today),
+            endDate: formatDate(calculateEndDate()),
+            adults,
+            children,
+            pets,
+            specialRequests: '',
+          },
+          id
+        )
       );
       setShowReservationModal(true);
     } catch (error) {
@@ -262,7 +276,7 @@ export default function FlatScreen({ route, navigation }) {
           <View style={{ flex: 1 }}>
             <View style={{ flexDirection: 'column', alignItems: 'center', flex: 1 }}>
               <Image
-                source={require('../../assets/apartment.png')}
+                source={{uri: flat.thumbnail}}
                 style={selectedCarStyles.carImage}
               />
             </View>
@@ -283,6 +297,18 @@ export default function FlatScreen({ route, navigation }) {
             </View>
 
             <View style={{ width: '85%' }}>
+              <View style={textPairContainerStyle}>
+                <Text style={labelStyle}>Address: </Text>
+                <Text style={valueStyle}>{flat.address.street}</Text>
+              </View>
+
+              <View style={textPairContainerStyle}>
+                <Text style={labelStyle}></Text>
+                <Text style={valueStyle}>
+                  {flat.address.city}, {flat.address.country}
+                </Text>
+              </View>
+
               <View style={textPairContainerStyle}>
                 <Text style={labelStyle}>Owner: </Text>
                 <Text style={valueStyle}>
