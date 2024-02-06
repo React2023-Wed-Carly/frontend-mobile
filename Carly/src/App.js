@@ -186,6 +186,8 @@ function App() {
       }
     };
 
+    const checkCurrentBookings = async () => {};
+
     const fetchData = async () => {
       // Use Promise.all to run both checks concurrently
       await Promise.all([checkLoginStatus(), checkStoredUserInfo(), checkFlatlyLoginStatus()]);

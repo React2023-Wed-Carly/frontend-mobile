@@ -44,11 +44,12 @@ export default function BookCarItem({ car, navigation }) {
           alignItems: 'center',
           flex: 1,
           marginVertical: -3,
+          marginLeft: 10,
         }}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Image
-            source={require(`../../assets/dummy_cars/car.png`)} // Assuming photo is a URL or local image path
+            source={{ uri: `data:image/png;base64,${car.img}` }} // Assuming photo is a URL or local image path
             style={{
               width: 80,
               height: 80,

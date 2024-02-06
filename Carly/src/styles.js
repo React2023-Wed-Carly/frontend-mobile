@@ -141,10 +141,9 @@ export const selectedCarStyles = StyleSheet.create({
     alignItems: 'center',
   },
   carImage: {
-    width: 230,
     height: 230,
-    resizeMode: 'cover',
-    borderRadius: 10,
+    width: 300,
+    resizeMode: 'contain',
   },
   carName: {
     fontSize: 18,
