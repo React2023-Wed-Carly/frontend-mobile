@@ -26,6 +26,8 @@ import {
   SET_FLAT_BOOKING,
   GET_FLAT_IMAGE,
   GET_FLAT_BOOKING,
+  CANCEL_CAR_BOOKING,
+  CANCEL_FLAT_BOOKING,
 } from './actions';
 
 const initialState = {
@@ -359,6 +361,17 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         currentFlatBooking: newFlatBooking,
       };
+    case CANCEL_CAR_BOOKING:
+      return {
+        ...state,
+        currentcARBooking: null,
+      };
+    case CANCEL_FLAT_BOOKING:
+      return {
+        ...state,
+        currentFlatBooking: null,
+      };
+
     default:
       return state;
   }

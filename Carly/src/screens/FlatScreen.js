@@ -11,7 +11,7 @@ import {
 import Card from '../components/Card';
 import { styles, selectedCarStyles } from '../styles';
 import { useSelector, useDispatch } from 'react-redux';
-import { sendFlatBooking } from '../redux/flatlyApi';
+import { deleteFlatBooking, sendFlatBooking } from '../redux/flatlyApi';
 import { useState } from 'react';
 import { formatPrice } from '../utils/textFormatting';
 import { getFlatBooking } from '../redux/actions';
@@ -211,7 +211,7 @@ export default function FlatScreen({ route, navigation }) {
     </Modal>
   );
 
-  const handleBookFlat = async () => {
+  const handleConfirm = async () => {
     try {
       dispatch(
         sendFlatBooking(
@@ -228,7 +228,7 @@ export default function FlatScreen({ route, navigation }) {
           id
         )
       );
-      setShowReservationModal(true);
+      setShowReservationModal(false);
     } catch (error) {
       // Use the Alert component to display the error message
       Alert.alert(
@@ -243,7 +243,12 @@ export default function FlatScreen({ route, navigation }) {
     }
   };
 
+  const handleBookFlat = async () => {
+      setShowReservationModal(true);
+  };
+
   const handleCancelReservation = () => {
+    dispatch(deleteFlatBooking({}))
     Alert.alert(
       'Cancel Reservation',
       'Are you sure you want to cancel this reservation? You will not receive a refund for your payment',
@@ -389,7 +394,7 @@ export default function FlatScreen({ route, navigation }) {
         </View>
         {bookFlat && (
           <View style={{ width: '45%' }}>
-            <TouchableOpacity style={styles.activeButton} onPress={handleBookFlat}>
+            <TouchableOpacity style={styles.activeButton} onPress={handleBook}>
               <Text style={styles.buttonText}>Book</Text>
             </TouchableOpacity>
           </View>

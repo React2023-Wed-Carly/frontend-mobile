@@ -3,7 +3,7 @@ import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { bookFlat, flatlyLoginSuccess, getFlatDetails, getFlatImage, getFlats } from './actions';
+import { bookFlat, flatlyLoginSuccess, getFlatDetails, cancelFlatBooking, getFlats } from './actions';
 
 const URL = 'https://pwflatlyreact.azurewebsites.net';
 
@@ -161,3 +161,8 @@ export const sendFlatBooking = (flat, flatBooking, id) => async (dispatch) => {
     }
   }
 };
+
+export const deleteFlatBooking = (flatBooking) => {
+  AsyncStorage.removeItem('currentFlatBooking');
+  dispatch(cancelFlatBooking(flatBooking));
+}

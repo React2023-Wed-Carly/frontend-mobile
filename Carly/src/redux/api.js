@@ -19,6 +19,7 @@ import {
   bookCar,
   bookFlat,
   logout,
+  cancelCarBooking
 } from './actions';
 
 const URL = 'https://wedcarly.azurewebsites.net';
@@ -486,6 +487,11 @@ export const sendCarBooking = (car, carBooking) => async (dispatch) => {
     }
   }
 };
+
+export const deleteCarBooking = (carBooking) => {
+  AsyncStorage.removeItem('currentCarBooking');
+  dispatch(cancelCarBooking(carBooking));
+}
 
 export const sendFlatBooking = (flatBooking) => async (dispatch) => {};
 

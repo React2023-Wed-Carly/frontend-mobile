@@ -12,7 +12,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { styles, selectedCarStyles } from '../styles';
 import Card from '../components/Card';
-import { sendCarBooking } from '../redux/api';
+import { deleteCarBooking, sendCarBooking } from '../redux/api';
 import { formatPrice } from '../utils/textFormatting';
 
 function SelectedCarScreen({ navigation, route }) {
@@ -166,6 +166,7 @@ function SelectedCarScreen({ navigation, route }) {
 
   const handleCancelReservation = () => {
     // Show confirmation modal
+    dispatch(deleteCarBooking({}))
     Alert.alert(
       'Cancel Reservation',
       'Are you sure you want to cancel this reservation? You will not receive a refund for your payment',
