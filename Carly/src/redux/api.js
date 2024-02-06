@@ -46,6 +46,7 @@ export const register =
 
         await AsyncStorage.setItem('userInfo', JSON.stringify({ ...userData }));
         await SecureStore.setItemAsync('carlyToken', jwtToken);
+        await SecureStore.setItemAsync('userLogin', JSON.stringify({ username, password }));
       } else {
         throw new Error('Registration failed');
       }
@@ -436,7 +437,6 @@ export const fetchRentHistoryCars = async (dispatch, rentHistory) => {
         );
         carDetails.isFavorite = isFavoriteResponse;
         fetchedDetails.push(carDetails);
-        
       } catch (error) {
         console.log(`Error during fetching details for carId ${carId}:`, error);
         // Omit failed entry and continue with the next one
