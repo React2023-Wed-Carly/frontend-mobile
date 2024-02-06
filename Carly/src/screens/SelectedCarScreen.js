@@ -180,7 +180,7 @@ function SelectedCarScreen({ navigation, route }) {
           onPress: async () => {
             // Logic to cancel reservation
             try {
-              await dispatch(deleteCarBooking())
+              await dispatch(deleteCarBooking());
               console.log('CANCEL');
             } catch (error) {
               console.log('Error cancelling reservation:', error);
@@ -208,46 +208,68 @@ function SelectedCarScreen({ navigation, route }) {
 
             <View style={{ alignItems: 'center' }}>
               <View style={{ padding: 20, alignItems: 'center' }}>
-                <Text style={{ fontWeight: 'bold', fontSize: 20 }}>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: 20,
+                    color: theme === 'light' ? '#222' : '#fff',
+                  }}
+                >
                   {`${car.info.brand} ${car.info.model} ${car.info.year}`}
                 </Text>
-                <Text>{car.info.description}</Text>
+                <Text style={{ color: theme === 'light' ? '#222' : '#fff' }}>
+                  {car.info.description}
+                </Text>
               </View>
 
               <View style={{ width: '85%' }}>
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>Owner</Text>
-                  <Text>{car.info.owner}</Text>
+                  <Text style={{ color: theme === 'light' ? '#222' : '#fff' }}>
+                    {car.info.owner}
+                  </Text>
                 </View>
 
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>Daily Price</Text>
-                  <Text>{`$${car.info.dailyPrice}`}</Text>
+                  <Text
+                    style={{ color: theme === 'light' ? '#222' : '#fff' }}
+                  >{`$${car.info.dailyPrice}`}</Text>
                 </View>
 
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>Seating Capacity</Text>
-                  <Text>{car.info.seatingCapacity}</Text>
+                  <Text style={{ color: theme === 'light' ? '#222' : '#fff' }}>
+                    {car.info.seatingCapacity}
+                  </Text>
                 </View>
 
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>Fuel Type</Text>
-                  <Text>{car.info.fuelType}</Text>
+                  <Text style={{ color: theme === 'light' ? '#222' : '#fff' }}>
+                    {car.info.fuelType}
+                  </Text>
                 </View>
 
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>Transmission</Text>
-                  <Text>{car.info.transmission}</Text>
+                  <Text style={{ color: theme === 'light' ? '#222' : '#fff' }}>
+                    {car.info.transmission}
+                  </Text>
                 </View>
 
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>Mileage</Text>
-                  <Text>{`${car.info.mileage} miles`}</Text>
+                  <Text
+                    style={{ color: theme === 'light' ? '#222' : '#fff' }}
+                  >{`${car.info.mileage} miles`}</Text>
                 </View>
 
                 <View style={textPairContainerStyle}>
                   <Text style={labelStyle}>License Plate</Text>
-                  <Text>{car.info.licensePlateNumber}</Text>
+                  <Text style={{ color: theme === 'light' ? '#222' : '#fff' }}>
+                    {car.info.licensePlateNumber}
+                  </Text>
                 </View>
 
                 {featuresLength > 0 && (
@@ -296,8 +318,11 @@ function SelectedCarScreen({ navigation, route }) {
         }}
       >
         <View style={{ width: '45%' }}>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.pop()}>
-            <Text style={styles.buttonText}>Back</Text>
+          <TouchableOpacity
+            style={{ ...styles.button, backgroundColor: theme === 'light' ? '#bbb' : '#666' }}
+            onPress={() => navigation.pop()}
+          >
+            <Text style={{ ...styles.buttonText }}>Back</Text>
           </TouchableOpacity>
         </View>
         {bookCar && (

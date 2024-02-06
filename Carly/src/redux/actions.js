@@ -24,14 +24,15 @@ export const GET_PAYMENTS_SUCCESS = 'GET_PAYMENTS_SUCCESS';
 
 export const FLATLY_LOGIN_SUCCESS = 'FLATLY_LOGIN_SUCCESS';
 export const GET_FLATS = 'GET_FLATS';
-export const GET_FLAT_DETAILS = 'GET_FLAT_DETAILS'
+export const GET_FLAT_DETAILS = 'GET_FLAT_DETAILS';
 export const GET_FLAT_IMAGE = 'GET_FLAT_IMAGE';
-export const SET_FLAT_BOOKING = "SET_FLAT_BOOKING";
-export const SET_CAR_BOOKING = "SET_CAR_BOOKING";
+export const SET_FLAT_BOOKING = 'SET_FLAT_BOOKING';
+export const SET_CAR_BOOKING = 'SET_CAR_BOOKING';
 export const GET_FLAT_BOOKING = 'GET_FLAT_BOOKING';
 export const CANCEL_FLAT_BOOKING = 'CANCEL_FLAT_BOOKING';
 
 export const CANCEL_CAR_BOOKING = 'CANCAL_CAR_BOOKING';
+export const RESET_CARS_LIST = 'RESET_CARS_LIST';
 
 export const loginAgain = (userData) => ({
   type: LOGIN_AGAIN,
@@ -52,7 +53,6 @@ export const registerSuccess = (userData) => ({
   type: REGISTER_SUCCESS,
   payload: userData,
 });
-
 
 export const getUserData = (username) => ({
   type: GET_USER_DATA,
@@ -145,39 +145,43 @@ export const flatlyLoginSuccess = (flatlyData) => ({
 });
 
 export const getFlats = (flats) => ({
-  type:GET_FLATS,
-  payload: flats
-})
+  type: GET_FLATS,
+  payload: flats,
+});
 
 export const getFlatDetails = (flatDetails) => ({
-  type:GET_FLAT_DETAILS,
-  payload:flatDetails
-})
+  type: GET_FLAT_DETAILS,
+  payload: flatDetails,
+});
 
 export const setFlatBooking = (flatBooking) => ({
-  type:SET_FLAT_BOOKING,
-  payload:flatBooking
-})
+  type: SET_FLAT_BOOKING,
+  payload: flatBooking,
+});
 
 export const setCarBooking = (carBooking) => ({
-  type:SET_CAR_BOOKING,
-  payload:carBooking
-})
+  type: SET_CAR_BOOKING,
+  payload: carBooking,
+});
 
-export const getFlatImage = ({flatId, image}) => ({
-  type:GET_FLAT_IMAGE,
-  payload: {flatId, image}
-})
+export const getFlatImage = ({ flatId, image }) => ({
+  type: GET_FLAT_IMAGE,
+  payload: { flatId, image },
+});
 
-export const getFlatBooking = ({flatBooking}) => ({
-  type:GET_FLAT_BOOKING,
-  payload:flatBooking
-})
+export const getFlatBooking = ({ flatBooking }) => ({
+  type: GET_FLAT_BOOKING,
+  payload: flatBooking,
+});
 
 export const cancelFlatBooking = () => ({
-  type:CANCEL_FLAT_BOOKING,
-})
+  type: CANCEL_FLAT_BOOKING,
+});
 
 export const cancelCarBooking = () => ({
-  type:CANCEL_FLAT_BOOKING,
-})
+  type: CANCEL_FLAT_BOOKING,
+});
+
+export const resetCarsList = () => ({
+  type: RESET_CARS_LIST,
+});

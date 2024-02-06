@@ -19,7 +19,8 @@ import {
   bookCar,
   bookFlat,
   logout,
-  cancelCarBooking
+  cancelCarBooking,
+  resetCarsList,
 } from './actions';
 
 const URL = 'https://wedcarly.azurewebsites.net';
@@ -315,7 +316,7 @@ export const setNewLocation = (location) => async (dispatch) => {
 };
 
 export const fetchFilteredCars =
-  ({ location, filters }) =>
+  ({ location, filters, page }) =>
   async (dispatch) => {
     const jwtToken = await SecureStore.getItemAsync('carlyToken');
 
@@ -324,7 +325,7 @@ export const fetchFilteredCars =
     }
 
     const params = {
-      page: 0,
+      page,
       lat: location.latitude,
       lon: location.longitude,
       minPrice: filters.minPrice * 100,
@@ -458,7 +459,7 @@ export const sendCarBooking = (car, carBooking) => async (dispatch) => {
     if (!jwtToken) {
       throw new Error('JWT token not found. User must be logged in.');
     }
-    const response = await axios.post(`${URL}/cars/${car.info.id}/bookings`, carBooking,{
+    const response = await axios.post(`${URL}/cars/${car.info.id}/bookings`, carBooking, {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
       },
@@ -466,7 +467,10 @@ export const sendCarBooking = (car, carBooking) => async (dispatch) => {
 
     if (response.status >= 200 && response.status < 300) {
       console.log('success');
-      await AsyncStorage.setItem('currentCarBooking', JSON.stringify({ booking: carBooking, car:{...car,features:null} }));
+      await AsyncStorage.setItem(
+        'currentCarBooking',
+        JSON.stringify({ booking: carBooking, car: { ...car, features: null } })
+      );
 
       dispatch(bookCar({ booking: carBooking, car }));
     } else {
@@ -487,7 +491,7 @@ export const sendCarBooking = (car, carBooking) => async (dispatch) => {
 export const deleteCarBooking = () => {
   AsyncStorage.removeItem('currentCarBooking');
   dispatch(cancelCarBooking());
-}
+};
 
 export const logUserOut = () => async (dispatch) => {
   await AsyncStorage.clear();
@@ -497,4 +501,8 @@ export const logUserOut = () => async (dispatch) => {
 export const deleteAccount = () => async (dispatch) => {
   await AsyncStorage.clear();
   dispatch(logout());
+};
+
+export const resetCars = () => (dispatch) => {
+  dispatch(resetCarsList());
 };
