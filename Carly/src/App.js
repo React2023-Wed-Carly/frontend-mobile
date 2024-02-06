@@ -26,6 +26,8 @@ import {
   loginSuccess,
   setFlatBooking,
   setCarBooking,
+  setFilters,
+  rememberFilters,
 } from './redux/actions';
 import { logUserOut, fetchRentHistory } from './redux/api';
 import FlatScreen from './screens/FlatScreen';
@@ -144,24 +146,17 @@ function App() {
           setLoggedIn(true);
 
           const theme = await AsyncStorage.getItem('theme');
-          if(theme){
-            dispatch(changeTheme(theme))
+          if (theme) {
+            dispatch(changeTheme(theme));
           }
-          // let currentFlatBooking = AsyncStorage.getItem('currentFlatBooking');
-          // console.log("currentc")
-          // currentFlatBooking = JSON.parse(currentFlatBooking);
-          // if (currentFlatBooking) {
-          //   dispatch(setFlatBooking(currentFlatBooking));
-          // }
 
-          // let currentCarBooking = AsyncStorage.getItem('currentCarBooking');
-          // currentCarBooking = JSON.parse(currentCarBooking);
-          // console.log('currentf');
-          // console.log(currentCarBooking);
-          // console.log("xd");
-          // if (currentCarBooking) {
-          //   dispatch(setCarBooking(currentCarBooking));
-          // }
+          const filters = await AsyncStorage.getItem('filters');
+          const parsedFilters = JSON.stringify(filters);
+          if (filters) {
+            dispatch(setFilters(parsedFilters));
+            dispatch(rememberFilters(true));
+          }
+          
         }
       } catch (error) {
         console.log('Error checking login status:', error);

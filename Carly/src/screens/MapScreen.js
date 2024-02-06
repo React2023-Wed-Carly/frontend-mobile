@@ -3,8 +3,9 @@ import { StyleSheet, View, TextInput, Button } from 'react-native';
 import MapView, { Marker, MapStyle } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { useDispatch, useSelector } from 'react-redux';
-import { GooglePlacesAutocomplete, darkMap } from 'react-native-google-places-autocomplete';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { setNewLocation, fetchFilteredCars } from '../redux/api';
+import {darkMap} from '../../assets/dark_map'
 
 const defaultLocation = {
   latitude: 52.2297,
@@ -16,6 +17,7 @@ function MapScreen() {
   const theme = useSelector((state) => state.theme);
   const dispatch = useDispatch();
   const currentLocation = useSelector((state) => state.currentLocation);
+  const autoLocation = useSelector(state=>state.autoLocation);
 
   const [initialRegion, setInitialRegion] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);

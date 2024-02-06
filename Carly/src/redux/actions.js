@@ -13,6 +13,7 @@ export const BOOK_FLAT = 'BOOK_FLAT';
 export const CHANGE_THEME = 'CHANGE_THEME';
 export const CHANGE_UNIT = 'CHANGE_UNIT';
 export const SET_LOCATION = 'SET_LOCATION';
+export const CHANGE_AUTO_LOCATION = 'CHANGE_AUTO_LOCATION';
 
 export const LOGIN_AGAIN = 'LOGIN_AGAIN';
 export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
@@ -22,12 +23,14 @@ export const LOGIN_FAILURE = 'LOGIN_FAILURE';
 export const TOP_UP_SUCCESS = 'TOP_UP_SUCCESS';
 export const GET_PAYMENTS_SUCCESS = 'GET_PAYMENTS_SUCCESS';
 
+export const REMEMBER_FILTERS = 'REMEMBER_FILTERS'
+
 export const FLATLY_LOGIN_SUCCESS = 'FLATLY_LOGIN_SUCCESS';
 export const GET_FLATS = 'GET_FLATS';
-export const GET_FLAT_DETAILS = 'GET_FLAT_DETAILS'
+export const GET_FLAT_DETAILS = 'GET_FLAT_DETAILS';
 export const GET_FLAT_IMAGE = 'GET_FLAT_IMAGE';
-export const SET_FLAT_BOOKING = "SET_FLAT_BOOKING";
-export const SET_CAR_BOOKING = "SET_CAR_BOOKING";
+export const SET_FLAT_BOOKING = 'SET_FLAT_BOOKING';
+export const SET_CAR_BOOKING = 'SET_CAR_BOOKING';
 export const GET_FLAT_BOOKING = 'GET_FLAT_BOOKING';
 
 export const loginAgain = (userData) => ({
@@ -50,7 +53,6 @@ export const registerSuccess = (userData) => ({
   payload: userData,
 });
 
-
 export const getUserData = (username) => ({
   type: GET_USER_DATA,
   payload: username,
@@ -64,6 +66,11 @@ export const changeTheme = (theme) => ({
 export const changeUnit = (unit) => ({
   type: CHANGE_UNIT,
   payload: unit,
+});
+
+export const changeAutoLocation = (autoLocation) => ({
+  type: CHANGE_AUTO_LOCATION,
+  payload: autoLocation,
 });
 
 export const setLocation = (currentLocation) => ({
@@ -142,31 +149,36 @@ export const flatlyLoginSuccess = (flatlyData) => ({
 });
 
 export const getFlats = (flats) => ({
-  type:GET_FLATS,
-  payload: flats
-})
+  type: GET_FLATS,
+  payload: flats,
+});
 
 export const getFlatDetails = (flatDetails) => ({
-  type:GET_FLAT_DETAILS,
-  payload:flatDetails
-})
+  type: GET_FLAT_DETAILS,
+  payload: flatDetails,
+});
 
 export const setFlatBooking = (flatBooking) => ({
-  type:SET_FLAT_BOOKING,
-  payload:flatBooking
-})
+  type: SET_FLAT_BOOKING,
+  payload: flatBooking,
+});
 
 export const setCarBooking = (carBooking) => ({
-  type:SET_CAR_BOOKING,
-  payload:carBooking
-})
+  type: SET_CAR_BOOKING,
+  payload: carBooking,
+});
 
-export const getFlatImage = ({flatId, image}) => ({
-  type:GET_FLAT_IMAGE,
-  payload: {flatId, image}
-})
+export const getFlatImage = ({ flatId, image }) => ({
+  type: GET_FLAT_IMAGE,
+  payload: { flatId, image },
+});
 
-export const getFlatBooking = ({flatBooking}) => ({
-  type:GET_FLAT_BOOKING,
-  payload:flatBooking
+export const getFlatBooking = ({ flatBooking }) => ({
+  type: GET_FLAT_BOOKING,
+  payload: flatBooking,
+});
+
+export const rememberFilters = ({remember}) => ({
+  type:REMEMBER_FILTERS,
+  payload:remember
 })

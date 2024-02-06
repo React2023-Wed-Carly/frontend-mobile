@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Switch, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector, useDispatch } from 'react-redux';
 import { changeTheme, changeUnit } from '../redux/actions';
+import { changeAutoLocation } from '../redux/actions';
+import { rememberFilters } from '../redux/actions';
 
 function SettingsScreen({ navigation, onLogout }) {
   const theme = useSelector((state) => state.theme);
   const unit = useSelector((state) => state.unit);
+  const autoLocation = useSelector(state=>state.autoLocation)
   const dispatch = useDispatch();
+  const remember = useSelector(state=>state.rememberFilters);
 
-  const [rememberFilters, setRememberFilters] = useState(false);
-  const [autoSetLocation, setAutoSetLocation] = useState(true);
+  const [rFilters, setRFilters] = useState(remember);
+  const [autoSetLocation, setAutoSetLocation] = useState(autoLocation);
 
   const handleResetData = async () => {
     try {
@@ -20,6 +24,14 @@ function SettingsScreen({ navigation, onLogout }) {
       console.log('Error resetting data:', error);
     }
   };
+
+  useEffect(()=>{
+    dispatch(changeAutoLocation(autoLocation))
+  }, [dispatch, autoSetLocation])
+
+  useEffect(()=>{
+    dispatch(rememberFilters(rFilters))
+  }, [dispatch, rFilters])
 
   const toggleTheme = (value) => {
     AsyncStorage.setItem('theme', JSON.stringify(value));
@@ -44,7 +56,7 @@ function SettingsScreen({ navigation, onLogout }) {
     <View style={{ padding: 20 }}>
       {renderSettingRow(
         'Remember my filters',
-        <Switch value={rememberFilters} onValueChange={(value) => setRememberFilters(value)} />
+        <Switch value={rFilters} onValueChange={(value) => setRFilters(value)} />
       )}
 
       {renderSettingRow(
@@ -62,7 +74,7 @@ function SettingsScreen({ navigation, onLogout }) {
 
       {renderSettingRow(
         'Set my location automatically',
-        <Switch value={autoSetLocation} onValueChange={(value) => setAutoSetLocation(value)} />
+        <Switch value={autoLocation} onValueChange={(value) => setAutoSetLocation(value)} />
       )}
 
       {renderSettingRow(
