@@ -30,7 +30,6 @@ export default function BookCarItem({ car, navigation }) {
     return distance;
   };
 
-  //console.log({ latitude: car.info.latitude, longitude: car.info.longitude },);
   const distance = haversineDistance(
     { latitude: car.info.latitude, longitude: car.info.longitude },
     currentLocation
@@ -80,7 +79,7 @@ export default function BookCarItem({ car, navigation }) {
               }}
             >
               <View style={{ flexDirection: 'row' }}>
-                <Icon name="payments" color="gray" size={12} />
+                <Icon name="payments" color="gray" size={12} style={{ paddingTop: 3 }} />
                 <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>
                   {`${formatPrice(car.info.dailyPrice)}`}
                   /day
@@ -88,7 +87,12 @@ export default function BookCarItem({ car, navigation }) {
               </View>
 
               <View style={{ flexDirection: 'row' }}>
-                <Icon name="airline-seat-recline-extra" color="gray" size={12} />
+                <Icon
+                  name="airline-seat-recline-extra"
+                  color="gray"
+                  size={12}
+                  style={{ paddingTop: 3 }}
+                />
                 <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>
                   {`${car.info.seatingCapacity}`}
                 </Text>
@@ -102,7 +106,7 @@ export default function BookCarItem({ car, navigation }) {
                 padding: 2,
               }}
             >
-              <Icon name="location-pin" color="gray" size={12} />
+              <Icon name="location-pin" color="gray" size={12} style={{ paddingTop: 3 }} />
               <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>
                 {unit === 'meters' && `${(distance * 1000).toFixed(0)} m`}
                 {unit === 'kilometers' && `${distance.toFixed(2)} km`}

@@ -8,38 +8,38 @@ import {
   Button,
   Alert,
 } from 'react-native';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Card from '../components/Card';
 import { styles, selectedCarStyles } from '../styles';
-import { useSelector, useDispatch } from 'react-redux';
+
 import { sendFlatBooking } from '../redux/flatlyApi';
-import { useState } from 'react';
 import { formatPrice } from '../utils/textFormatting';
 import { getFlatBooking } from '../redux/actions';
 
 export default function FlatScreen({ route, navigation }) {
   const { flatId, flatTitle, bookFlat } = route.params;
-
+  const dispatch = useDispatch();
   const id = useSelector((state) => state.userInfo.id);
   const theme = useSelector((state) => state.theme);
   const flatsDetails = useSelector((state) => state.flatsDetails);
   const flat = flatsDetails.find((item) => item.title === flatTitle);
 
-  if (!flat) {
-    return <Text>Could not fetch flat details. try again later.</Text>;
-  }
-
-  const dispatch = useDispatch();
+  const [selectedDuration, setSelectedDuration] = useState(1);
+  const [pets, setPets] = useState(0);
+  const [adults, setAdults] = useState(0);
+  const [children, setChildren] = useState(0);
+  const [showReservationModal, setShowReservationModal] = useState(false);
 
   const today = new Date();
   const tommorrow = new Date(today);
   tommorrow.setDate(today.getDate() + 1);
 
   const [startDate, setStartDate] = useState(today);
-  const [selectedDuration, setSelectedDuration] = useState(1);
-  const [pets, setPets] = useState(0);
-  const [adults, setAdults] = useState(0);
-  const [children, setChildren] = useState(0);
-  const [showReservationModal, setShowReservationModal] = useState(false);
+
+  if (!flat) {
+    return <Text>Could not fetch flat details. try again later.</Text>;
+  }
 
   const labelStyle = {
     fontWeight: 'bold',
@@ -229,6 +229,7 @@ export default function FlatScreen({ route, navigation }) {
         )
       );
       setShowReservationModal(true);
+      closeModal();
     } catch (error) {
       // Use the Alert component to display the error message
       Alert.alert(
@@ -259,7 +260,7 @@ export default function FlatScreen({ route, navigation }) {
             try {
               console.log('CANCEL');
             } catch (error) {
-              console.error('Error cancelling reservation:', error);
+              console.log('Error cancelling reservation:', error);
               // Handle error if the cancellation fails
             }
           },
@@ -275,10 +276,7 @@ export default function FlatScreen({ route, navigation }) {
         <Card>
           <View style={{ flex: 1 }}>
             <View style={{ flexDirection: 'column', alignItems: 'center', flex: 1 }}>
-              <Image
-                source={{uri: flat.thumbnail}}
-                style={selectedCarStyles.carImage}
-              />
+              <Image source={{ uri: flat.thumbnail }} style={selectedCarStyles.carImage} />
             </View>
 
             <View style={{ alignItems: 'center' }}>
@@ -296,14 +294,14 @@ export default function FlatScreen({ route, navigation }) {
               </View>
             </View>
 
-            <View style={{ width: '85%' }}>
+            <View style={{ width: '85%', alignSelf: 'center' }}>
               <View style={textPairContainerStyle}>
                 <Text style={labelStyle}>Address: </Text>
                 <Text style={valueStyle}>{flat.address.street}</Text>
               </View>
 
               <View style={textPairContainerStyle}>
-                <Text style={labelStyle}></Text>
+                <Text style={labelStyle} />
                 <Text style={valueStyle}>
                   {flat.address.city}, {flat.address.country}
                 </Text>

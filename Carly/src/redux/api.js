@@ -326,8 +326,8 @@ export const fetchFilteredCars =
       page: 0,
       lat: location.latitude,
       lon: location.longitude,
-      minPrice: filters.minPrice,
-      maxPrice: filters.maxPrice,
+      minPrice: filters.minPrice * 100,
+      maxPrice: filters.maxPrice * 100,
       minSeat: filters.minSeat,
       maxSeat: filters.maxSeat,
       trans: filters.trans.join(';'),
@@ -457,20 +457,17 @@ export const sendCarBooking = (car, carBooking) => async (dispatch) => {
     if (!jwtToken) {
       throw new Error('JWT token not found. User must be logged in.');
     }
-    const response = await axios.post(
-      `${URL}/cars/${car.info.id}/bookings`,
-      {
-        params: carBooking,
-        headers: {
-          Authorization: `Bearer ${jwtToken}`,
-        },
-      }
-    );
+    const response = await axios.post(`${URL}/cars/${car.info.id}/bookings`, {
+      params: carBooking,
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    });
 
     if (response.status >= 200 && response.status < 300) {
       console.log('success');
       await AsyncStorage.setItem('currentCarBooking', JSON.stringify({ booking: carBooking, car }));
-      
+
       dispatch(bookCar({ booking: carBooking, car }));
     } else {
       console.error('Error during adding car booking:', response.status);
@@ -491,10 +488,10 @@ export const sendFlatBooking = (flatBooking) => async (dispatch) => {};
 
 export const logUserOut = () => async (dispatch) => {
   await AsyncStorage.clear();
-  await SecureStore.clear();
   dispatch(logout());
 };
 
-export const deleteAccount = (username) => {
-  // Implement account deletion logic if needed
+export const deleteAccount = () => async (dispatch) => {
+  await AsyncStorage.clear();
+  dispatch(logout());
 };
