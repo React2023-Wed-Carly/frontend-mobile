@@ -167,7 +167,6 @@ function SelectedCarScreen({ navigation, route }) {
 
   const handleCancelReservation = () => {
     // Show confirmation modal
-    dispatch(deleteCarBooking({}))
     Alert.alert(
       'Cancel Reservation',
       'Are you sure you want to cancel this reservation? You will not receive a refund for your payment',
@@ -181,6 +180,7 @@ function SelectedCarScreen({ navigation, route }) {
           onPress: async () => {
             // Logic to cancel reservation
             try {
+              await dispatch(deleteCarBooking())
               console.log('CANCEL');
             } catch (error) {
               console.log('Error cancelling reservation:', error);

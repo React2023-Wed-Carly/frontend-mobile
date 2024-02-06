@@ -144,15 +144,23 @@ function App() {
         if (value !== null && value === 'true') {
           setLoggedIn(true);
 
-          dispatch(fetchRentHistory());
-          let currentFlatBooking = AsyncStorage.getItem('currentFlatBooking');
-          currentFlatBooking = JSON.parse(currentFlatBooking);
-          if (currentFlatBooking) {
-            dispatch(setFlatBooking(currentFlatBooking));
+          const theme = await AsyncStorage.getItem('theme');
+          if(theme){
+            dispatch(changeTheme(theme))
           }
+          // let currentFlatBooking = AsyncStorage.getItem('currentFlatBooking');
+          // console.log("currentc")
+          // currentFlatBooking = JSON.parse(currentFlatBooking);
+          // if (currentFlatBooking) {
+          //   dispatch(setFlatBooking(currentFlatBooking));
+          // }
 
           let currentCarBooking = AsyncStorage.getItem('currentCarBooking');
+
           currentCarBooking = JSON.parse(currentCarBooking);
+          console.log('currentf');
+          console.log(currentCarBooking);
+          console.log("xd");
           if (currentCarBooking) {
             dispatch(setCarBooking(currentCarBooking));
           }

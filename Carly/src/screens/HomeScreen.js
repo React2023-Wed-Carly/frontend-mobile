@@ -6,23 +6,27 @@ import { useState, useEffect } from 'react';
 import data from '../DummyData.json';
 import CarItem from '../components/CarItem';
 
-import { fetchFlatDetails } from '../redux/flatlyApi';
+import { fetchFlatDetails, getFlatBooking } from '../redux/flatlyApi';
 
 import FlatItem from '../components/FlatItem';
 
 export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
+  const id = useSelector(state=>state.userInfo.id)
 
-  const carBooking = useSelector((state) => state.carBooking);
-  const flatBooking = useSelector((state) => state.flatBooking);
+  const carBooking = useSelector((state) => state.currentCarBooking);
+  const flatBooking = useSelector((state) => state.currentFlatBooking);
 
-  // var carBooking = AsyncStorage.getItem('currentCarReservation');
+  const [isFlat, setIsFlat] = useState(flatBooking !== null);
+  const [isCar, setIsCar] = useState(carBooking !== null);
 
-  // carBooking = JSON.parse(carBooking);
-  // console.log(carBooking)
-
-  // var flatBooking = AsyncStorage.getItem('currentFlatReservation');
-  // flatBooking = JSON.parse(carBooking);
+  useEffect(() => {
+    dispatch(getFlatBooking(id));
+    if (carBooking) setIsCar(true);
+    if (flatBooking) setIsFlat(true);
+    if (!carBooking) setIsCar(false);
+    if (!flatBooking) setIsFlat(false);
+  }, [carBooking, flatBooking, dispatch]);
 
   const userInfo = useSelector((state) => state.userInfo);
 
@@ -48,7 +52,7 @@ export default function HomeScreen({ navigation }) {
         <View>
           <Text>Your current Carly reservation is: </Text>
           <TouchableOpacity style={{ alignItems: 'center' }} onPress={navigateToReservationScreen}>
-            <CarItem car={carBooking.car} date={new Date()} />
+            <CarItem car={carBooking.car} date={carBooking.booking.startDate} />
           </TouchableOpacity>
         </View>
       )}

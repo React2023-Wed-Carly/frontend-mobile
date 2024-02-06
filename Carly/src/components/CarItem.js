@@ -94,7 +94,7 @@ export default function CarItem({ car, date, distance }) {
               >
                 <Icon name="calendar-today" color="gray" size={12} style={{ marginTop: 2 }} />
                 <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>
-                  {new Date(date.split('.')[0]).toLocaleDateString()}
+                  {(new Date(date)).toLocaleDateString()}
                 </Text>
               </View>
             )}

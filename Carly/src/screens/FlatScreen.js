@@ -12,7 +12,6 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Card from '../components/Card';
 import { styles, selectedCarStyles } from '../styles';
-import { useSelector, useDispatch } from 'react-redux';
 import { deleteFlatBooking, sendFlatBooking } from '../redux/flatlyApi';
 import { formatPrice } from '../utils/textFormatting';
 import { getFlatBooking } from '../redux/actions';
@@ -211,9 +210,9 @@ export default function FlatScreen({ route, navigation }) {
     </Modal>
   );
 
-  const handleConfirm = async () => {
+  const handleBookFlat = async () => {
     try {
-      dispatch(
+      await dispatch(
         sendFlatBooking(
           flat,
           {
@@ -228,8 +227,8 @@ export default function FlatScreen({ route, navigation }) {
           id
         )
       );
-      setShowReservationModal(true);
       closeModal();
+      navigation.pop();
     } catch (error) {
       // Use the Alert component to display the error message
       Alert.alert(
@@ -244,12 +243,7 @@ export default function FlatScreen({ route, navigation }) {
     }
   };
 
-  const handleBookFlat = async () => {
-      setShowReservationModal(true);
-  };
-
   const handleCancelReservation = () => {
-    dispatch(deleteFlatBooking({}))
     Alert.alert(
       'Cancel Reservation',
       'Are you sure you want to cancel this reservation? You will not receive a refund for your payment',
@@ -263,6 +257,7 @@ export default function FlatScreen({ route, navigation }) {
           onPress: async () => {
             // Logic to cancel reservation
             try {
+              await dispatch(deleteFlatBooking())
               console.log('CANCEL');
             } catch (error) {
               console.log('Error cancelling reservation:', error);
@@ -392,7 +387,7 @@ export default function FlatScreen({ route, navigation }) {
         </View>
         {bookFlat && (
           <View style={{ width: '45%' }}>
-            <TouchableOpacity style={styles.activeButton} onPress={handleBook}>
+            <TouchableOpacity style={styles.activeButton} onPress={() => setShowReservationModal(true)}>
               <Text style={styles.buttonText}>Book</Text>
             </TouchableOpacity>
           </View>

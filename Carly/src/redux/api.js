@@ -458,8 +458,7 @@ export const sendCarBooking = (car, carBooking) => async (dispatch) => {
     if (!jwtToken) {
       throw new Error('JWT token not found. User must be logged in.');
     }
-    const response = await axios.post(`${URL}/cars/${car.info.id}/bookings`, {
-      params: carBooking,
+    const response = await axios.post(`${URL}/cars/${car.info.id}/bookings`, carBooking,{
       headers: {
         Authorization: `Bearer ${jwtToken}`,
       },
@@ -467,7 +466,7 @@ export const sendCarBooking = (car, carBooking) => async (dispatch) => {
 
     if (response.status >= 200 && response.status < 300) {
       console.log('success');
-      await AsyncStorage.setItem('currentCarBooking', JSON.stringify({ booking: carBooking, car }));
+      await AsyncStorage.setItem('currentCarBooking', JSON.stringify({ booking: carBooking, car:{...car,features:null} }));
 
       dispatch(bookCar({ booking: carBooking, car }));
     } else {
@@ -485,12 +484,10 @@ export const sendCarBooking = (car, carBooking) => async (dispatch) => {
   }
 };
 
-export const deleteCarBooking = (carBooking) => {
+export const deleteCarBooking = () => {
   AsyncStorage.removeItem('currentCarBooking');
-  dispatch(cancelCarBooking(carBooking));
+  dispatch(cancelCarBooking());
 }
-
-export const sendFlatBooking = (flatBooking) => async (dispatch) => {};
 
 export const logUserOut = () => async (dispatch) => {
   await AsyncStorage.clear();

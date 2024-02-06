@@ -3,7 +3,13 @@ import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { bookFlat, flatlyLoginSuccess, getFlatDetails, cancelFlatBooking, getFlats } from './actions';
+import {
+  bookFlat,
+  flatlyLoginSuccess,
+  getFlatDetails,
+  cancelFlatBooking,
+  getFlats,
+} from './actions';
 
 const URL = 'https://pwflatlyreact.azurewebsites.net';
 
@@ -114,6 +120,7 @@ export const getFlatBooking = (id) => async (dispatch) => {
         },
       }
     );
+    console.log(response.data);
     if (response.status >= 200 && response.status < 300) {
       dispatch(getFlatBooking(response.data));
     } else {
@@ -132,8 +139,7 @@ export const sendFlatBooking = (flat, flatBooking, id) => async (dispatch) => {
     if (!jwtToken) {
       throw new Error('JWT token not found. User must be logged in.');
     }
-
-    const response = await axios.post(`${URL}/reservation?externalUserId=${id}`, flatBooking,{  
+    const response = await axios.post(`${URL}/reservation?externalUserId=${id}`, flatBooking, {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
         'Content-Type': 'application/json',
@@ -149,20 +155,22 @@ export const sendFlatBooking = (flat, flatBooking, id) => async (dispatch) => {
       dispatch(bookFlat({ booking: flatBooking, flat }));
     } else {
       console.error('Error during adding flat booking:', response.status);
-      if (response.status === 404) {
+      if (response.status === 422) {
         throw new Error('Dates are overlapping.');
       } else {
         throw new Error('Unexpected error during flat booking.');
       }
     }
   } catch (error) {
-    if (axios.isAxiosError(error) && error.status === 404) {
+    if (axios.isAxiosError(error) && error.status === 422) {
       throw new Error('Dates are overlapping.');
+    } else {
+      throw new Error('Unexpected error during flat booking.');
     }
   }
 };
 
-export const deleteFlatBooking = (flatBooking) => {
+export const deleteFlatBooking = () => {
   AsyncStorage.removeItem('currentFlatBooking');
-  dispatch(cancelFlatBooking(flatBooking));
-}
+  dispatch(cancelFlatBooking());
+};

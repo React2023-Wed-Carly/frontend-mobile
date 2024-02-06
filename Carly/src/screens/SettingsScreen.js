@@ -13,8 +13,6 @@ function SettingsScreen({ navigation, onLogout }) {
   const [rememberFilters, setRememberFilters] = useState(false);
   const [autoSetLocation, setAutoSetLocation] = useState(true);
 
-  const pickerStyles = { fontSize: 15, color: theme === 'light' ? '#222' : '#fff' };
-
   const handleResetData = async () => {
     try {
       await AsyncStorage.clear();
@@ -24,6 +22,7 @@ function SettingsScreen({ navigation, onLogout }) {
   };
 
   const toggleTheme = (value) => {
+    AsyncStorage.setItem('theme', JSON.stringify(value));
     dispatch(changeTheme(value));
   };
 

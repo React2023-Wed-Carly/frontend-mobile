@@ -174,12 +174,10 @@ export const getFlatBooking = ({flatBooking}) => ({
   payload:flatBooking
 })
 
-export const cancelFlatBooking = (flatBooking) => ({
+export const cancelFlatBooking = () => ({
   type:CANCEL_FLAT_BOOKING,
-  payload:flatBooking
 })
 
-export const cancelCarBooking = (carBooking) => ({
+export const cancelCarBooking = () => ({
   type:CANCEL_FLAT_BOOKING,
-  payload:carBooking
 })

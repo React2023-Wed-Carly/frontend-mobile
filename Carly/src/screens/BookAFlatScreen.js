@@ -81,7 +81,7 @@ export default function BookAFlatScreen({ navigation }) {
             renderItem={({ item }) => (
               <Pressable
                 key={item.id}
-                onPress={() => handleFlatPress({ id: item.id, title: item.title })}
+                onPress={() => handleFlatPress({ flatId: item.id, title: item.title })}
               >
                 <FlatItem flat={item} navigation={navigation} />
               </Pressable>

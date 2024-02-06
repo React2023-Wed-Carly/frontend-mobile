@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   UNLIKE_CAR,
   LIKE_CAR,
@@ -364,7 +365,7 @@ const rootReducer = (state = initialState, action) => {
     case CANCEL_CAR_BOOKING:
       return {
         ...state,
-        currentcARBooking: null,
+        currentCarBooking: null,
       };
     case CANCEL_FLAT_BOOKING:
       return {
