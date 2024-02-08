@@ -4,7 +4,7 @@ import MapView, { Marker, MapStyle } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { useDispatch, useSelector } from 'react-redux';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import {darkMap} from '../../assets/dark_map'
+import { darkMap } from '../../assets/dark_map';
 import { setNewLocation, fetchFilteredCars, resetCars } from '../redux/api';
 
 const defaultLocation = {
@@ -17,7 +17,7 @@ function MapScreen() {
   const theme = useSelector((state) => state.theme);
   const dispatch = useDispatch();
   const currentLocation = useSelector((state) => state.currentLocation);
-  const autoLocation = useSelector(state=>state.autoLocation);
+  const autoLocation = useSelector((state) => state.autoLocation);
 
   const [initialRegion, setInitialRegion] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -59,6 +59,7 @@ function MapScreen() {
       dispatch(fetchFilteredCars({ location: currentLocation, filters, page: 0 }));
     };
     getLocation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -100,7 +101,7 @@ function MapScreen() {
       <GooglePlacesAutocomplete
         placeholder="Search"
         autoFocus={false}
-        fetchDetails={true}
+        fetchDetails
         onPress={handleAddressSelect}
         query={{
           key: 'AIzaSyASp262HP3AQD96RZEWL8nMdbfcZ-YHoV4',

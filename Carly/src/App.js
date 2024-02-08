@@ -129,7 +129,7 @@ function AuthenticatedApp({ handleLogout }) {
 
 function App() {
   const [isLoggedIn, setLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(true); // New loading state
+  const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const theme = useSelector((state) => state.theme);
 
@@ -145,18 +145,12 @@ function App() {
         if (value !== null && value === 'true') {
           setLoggedIn(true);
 
-          const theme = await AsyncStorage.getItem('theme');
-          if (theme) {
-            dispatch(changeTheme(theme));
-          }
-
           const filters = await AsyncStorage.getItem('filters');
           const parsedFilters = JSON.stringify(filters);
           if (filters) {
             dispatch(setFilters(parsedFilters));
             dispatch(rememberFilters(true));
           }
-          
         }
       } catch (error) {
         console.log('Error checking login status:', error);
@@ -174,6 +168,12 @@ function App() {
       }
     };
 
+    const checkTheme = async () => {
+      const storedTheme = await AsyncStorage.getItem('theme');
+      if (storedTheme) {
+        dispatch(changeTheme(storedTheme));
+      }
+    };
     const checkStoredUserInfo = async () => {
       try {
         const storedUserInfoString = await AsyncStorage.getItem('userInfo');
@@ -187,12 +187,14 @@ function App() {
       }
     };
 
-    const checkCurrentBookings = async () => {};
-
     const fetchData = async () => {
-      // Use Promise.all to run both checks concurrently
-      await Promise.all([checkLoginStatus(), checkStoredUserInfo(), checkFlatlyLoginStatus()]);
-      setLoading(false); // Set loading to false once both checks are completed
+      await Promise.all([
+        checkLoginStatus(),
+        checkStoredUserInfo(),
+        checkFlatlyLoginStatus(),
+        checkTheme(),
+      ]);
+      setLoading(false);
     };
 
     fetchData();
@@ -213,7 +215,6 @@ function App() {
   return (
     <NavigationContainer theme={MyTheme}>
       {loading ? (
-        // Show a loading indicator here
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#0000ff" />
         </View>

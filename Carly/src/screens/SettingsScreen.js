@@ -3,16 +3,14 @@ import { View, Text, Switch, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector, useDispatch } from 'react-redux';
-import { changeTheme, changeUnit } from '../redux/actions';
-import { changeAutoLocation } from '../redux/actions';
-import { rememberFilters } from '../redux/actions';
+import { changeTheme, changeUnit, changeAutoLocation, rememberFilters } from '../redux/actions';
 
 function SettingsScreen({ navigation, onLogout }) {
   const theme = useSelector((state) => state.theme);
   const unit = useSelector((state) => state.unit);
-  const autoLocation = useSelector(state=>state.autoLocation)
+  const autoLocation = useSelector((state) => state.autoLocation);
   const dispatch = useDispatch();
-  const remember = useSelector(state=>state.rememberFilters);
+  const remember = useSelector((state) => state.rememberFilters);
 
   const [rFilters, setRFilters] = useState(remember);
   const [autoSetLocation, setAutoSetLocation] = useState(autoLocation);
@@ -25,13 +23,14 @@ function SettingsScreen({ navigation, onLogout }) {
     }
   };
 
-  useEffect(()=>{
-    dispatch(changeAutoLocation(autoLocation))
-  }, [dispatch, autoSetLocation])
+  useEffect(() => {
+    dispatch(changeAutoLocation(autoLocation));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, autoSetLocation]);
 
-  useEffect(()=>{
-    dispatch(rememberFilters(rFilters))
-  }, [dispatch, rFilters])
+  useEffect(() => {
+    dispatch(rememberFilters(rFilters));
+  }, [dispatch, rFilters]);
 
   const toggleTheme = (value) => {
     AsyncStorage.setItem('theme', JSON.stringify(value));

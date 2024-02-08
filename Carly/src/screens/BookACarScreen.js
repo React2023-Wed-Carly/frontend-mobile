@@ -10,16 +10,16 @@ import MapScreen from './MapScreen';
 import { fetchFilteredCars } from '../redux/api';
 
 export default function BookACarScreen({ navigation }) {
+  const dispatch = useDispatch();
   const filteredCars = useSelector((state) => state.filteredCars);
   const theme = useSelector((state) => state.theme);
   const currentCarBooking = useSelector((state) => state.currentCarBooking);
-  
+
   const currentPage = useSelector((state) => state.carsPage);
   const pageEnd = useSelector((state) => state.carsPageEnd);
 
   const filters = useSelector((state) => state.filters);
   const currentLocation = useSelector((state) => state.currentLocation);
-
 
   const [isFilter, setIsFilter] = useState(false);
   const [showCarList, setShowCarList] = useState(false);
@@ -28,7 +28,8 @@ export default function BookACarScreen({ navigation }) {
 
   const handleEndReached = () => {
     // Fetch the next page when reaching the end of the list
-    if (!pageEnd) dispatch(fetchFilteredCars({location: currentLocation, filters, page: currentPage}));
+    if (!pageEnd)
+      dispatch(fetchFilteredCars({ location: currentLocation, filters, page: currentPage }));
   };
 
   const toggleCarListView = () => {

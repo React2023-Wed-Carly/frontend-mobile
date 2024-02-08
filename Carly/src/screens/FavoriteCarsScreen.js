@@ -35,7 +35,6 @@ export default function FavoriteCarsScreen() {
         flex: 1,
       }}
     >
-      {/* Display a loading indicator if data is not yet loaded */}
       {!favoriteCars && <ActivityIndicator size="large" />}
 
       <FlatList

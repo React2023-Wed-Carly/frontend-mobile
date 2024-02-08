@@ -1,4 +1,3 @@
-// PaymentsScreen.js
 import React, { useEffect } from 'react';
 import { FlatList, View, ActivityIndicator } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,7 +13,6 @@ function RentHistoryScreen() {
   const pageEnd = useSelector((state) => state.rentHistoryPageEnd);
 
   useEffect(() => {
-    // Fetch favorite cars when the component mounts or when currentPage changes
     if (!rentHistory) {
       dispatch(fetchRentHistory(currentPage));
     }
@@ -29,7 +27,6 @@ function RentHistoryScreen() {
   };
 
   const handleEndReached = () => {
-    // Fetch the next page when reaching the end of the list
     if (!pageEnd) dispatch(fetchRentHistory(currentPage));
   };
 

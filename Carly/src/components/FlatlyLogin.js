@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { loginFlatly, registerFlatly, fetchFlats } from '../redux/flatlyApi';
-import { fetchFlatBooking } from '../redux/flatlyApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginFlatly, registerFlatly, fetchFlatBooking } from '../redux/flatlyApi';
 
 function FlatlyLogin({ hideLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [username, setUsername] = useState(''); // Add username state
-  const [lastname, setLastname] = useState(''); // Add lastname state
+  const [username, setUsername] = useState('');
+  const [lastname, setLastname] = useState('');
   const [error, setError] = useState('');
   const [isLoginMode, setIsLoginMode] = useState(true);
   const dispatch = useDispatch();
@@ -20,7 +19,7 @@ function FlatlyLogin({ hideLogin }) {
     // Your login logic here
 
     if (isLoginMode) dispatch(loginFlatly({ email, password }));
-    else dispatch(registerFlatly({ username, lastname, email, password })); // Pass username and lastname for registration
+    else dispatch(registerFlatly({ username, lastname, email, password }));
 
     dispatch(fetchFlatBooking(id));
 
@@ -50,7 +49,7 @@ function FlatlyLogin({ hideLogin }) {
         onChangeText={(text) => setPassword(text)}
         secureTextEntry
       />
-      {isLoginMode ? null : ( // Display username and lastname fields only in registration mode
+      {isLoginMode ? null : (
         <>
           <TextInput
             style={styles.input}

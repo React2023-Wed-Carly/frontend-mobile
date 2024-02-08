@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Image, Text, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useDispatch, useSelector } from 'react-redux';
-import Card from './Card'; // Assuming that Card component is in the same directory
+import Card from './Card';
 import { formatPrice } from '../utils/textFormatting';
 
 import { fetchFavoriteCars, sendLikedCar, sendUnlikedCar } from '../redux/api';
@@ -36,7 +36,7 @@ export default function CarItem({ car, date, distance }) {
       >
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Image
-            source={{ uri: `data:image/png;base64,${car.img}` }} // Assuming photo is a URL or local image path
+            source={{ uri: `data:image/png;base64,${car.img}` }}
             style={{
               width: 80,
               height: 80,

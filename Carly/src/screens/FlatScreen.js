@@ -233,12 +233,6 @@ export default function FlatScreen({ route, navigation }) {
       closeModal();
       navigation.pop();
     } catch (error) {
-      // Use the Alert component to display the error message
-      Alert.alert(
-        'Error',
-        'The date you have selected overlaps with an existing reservation. Someone must have booked the flat faster than you - please choose another flat.'
-      );
-      // Use the Alert component to display the error message
       Alert.alert(
         'Error',
         'The date you have selected overlaps with an existing reservation. Someone must have booked the flat faster than you - please choose another flat.'

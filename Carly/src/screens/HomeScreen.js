@@ -35,6 +35,7 @@ export default function HomeScreen({ navigation }) {
       dispatch(fetchRentHistory(0));
       dispatch(fetchFlatBooking(id));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [carBooking, flatBooking, dispatch, rentHistory, rentHistoryCars]);
 
   const userInfo = useSelector((state) => state.userInfo);

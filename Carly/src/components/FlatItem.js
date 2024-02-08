@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { View, Image, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useSelector } from 'react-redux';
 import Card from './Card';
 import { formatPrice } from '../utils/textFormatting';
-import { useSelector } from 'react-redux';
 
 export default function FlatItem({ flat }) {
   const theme = useSelector((state) => state.theme);
@@ -21,7 +21,7 @@ export default function FlatItem({ flat }) {
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           {flat.thumbnail && (
             <Image
-              source={{ uri: flat.thumbnail }} // Assuming photo is a URL or local image path
+              source={{ uri: flat.thumbnail }}
               style={{
                 width: 80,
                 height: 80,
@@ -34,7 +34,7 @@ export default function FlatItem({ flat }) {
           )}
           {flat.thumbnailUrl && (
             <Image
-              source={{ uri: flat.thumbnailUrl }} // Assuming photo is a URL or local image path
+              source={{ uri: flat.thumbnailUrl }}
               style={{
                 width: 80,
                 height: 80,
@@ -87,7 +87,9 @@ export default function FlatItem({ flat }) {
                 }}
               >
                 <Icon name="calendar-today" color="gray" size={12} />
-                <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>{flat.startDate} - {flat.endDate}</Text>
+                <Text style={{ fontSize: 12, color: 'gray', marginLeft: 5 }}>
+                  {flat.startDate} - {flat.endDate}
+                </Text>
               </View>
             )}
           </View>

@@ -1,4 +1,3 @@
-// RegisterScreen.js
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';

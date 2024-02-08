@@ -259,7 +259,7 @@ const rootReducer = (state = initialState, action) => {
           ? state.rentHistoryPage - 1
           : state.rentHistoryPage + 1;
 
-      var current = updatedRentHistory.find((rent) => {
+      const current = updatedRentHistory.find((rent) => {
         const today = new Date();
         const todayISOString = today.toISOString();
         console.log(todayISOString < rent.endDate);

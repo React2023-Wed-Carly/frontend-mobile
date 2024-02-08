@@ -12,7 +12,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { styles, selectedCarStyles } from '../styles';
 import Card from '../components/Card';
-import { deleteCarBooking, sendCarBooking } from '../redux/api';
+import { sendCarBooking } from '../redux/api';
 import { formatPrice } from '../utils/textFormatting';
 
 function SelectedCarScreen({ navigation, route }) {
@@ -88,7 +88,6 @@ function SelectedCarScreen({ navigation, route }) {
           <Text style={{ fontWeight: 'bold', fontSize: 20, marginBottom: 10 }}>
             Reservation details
           </Text>
-          {/* Render reservation details content here based on your UI structure */}
           <View style={textPairContainerStyle}>
             <Text style={labelStyle}>Start date:</Text>
             <Text styles={{ color: theme === 'light' ? '#222' : '#fff' }}>
@@ -154,11 +153,6 @@ function SelectedCarScreen({ navigation, route }) {
       closeModal();
       navigation.pop();
     } catch (error) {
-      // Use the Alert component to display the error message
-      Alert.alert(
-        'Error',
-        'The date you have selected overlaps with an existing reservation. Someone must have booked the car faster than you - please choose another car.'
-      );
       // Use the Alert component to display the error message
       Alert.alert(
         'Error',

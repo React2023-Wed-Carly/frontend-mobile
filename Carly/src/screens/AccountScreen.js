@@ -123,7 +123,6 @@ function AccountScreen() {
         visible={isDeleteModalVisible}
         onRequestClose={() => setDeleteModalVisible(false)}
       >
-        {/* Delete Account Modal content */}
         <View
           style={{
             flex: 1,

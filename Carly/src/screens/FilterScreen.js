@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import MultiSelect from 'react-native-sectioned-multi-select';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useSelector, useDispatch } from 'react-redux';
 import { filterStyles as styles } from '../styles';
@@ -84,20 +85,6 @@ function FilterScreen({ applyFilters, setIsFilter }) {
             />
           </View>
         </View>
-
-        {/* <View style={styles.section}>
-          <Text style={styles.label}>Fuel Type</Text>
-          <MultiSelect
-            items={fuelTypes.map((fuelType) => ({ name: fuelType }))}
-            uniqueKey="name"
-            selectText="Select Fuel Types"
-            searchInputPlaceholderText="Search Fuel Types..."
-            displayKey="name"
-            styleDropdownMenu={styles.multiSelectDropdown}
-            styleListContainer={styles.multiSelectList}
-            IconRenderer={Icon}
-          />
-        </View> */}
 
         <View style={styles.section}>
           <Text style={labelStyle}>Transmission Type</Text>

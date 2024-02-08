@@ -15,11 +15,10 @@ function LoginScreen({ navigation, updateLoginStatus }) {
     try {
       await dispatch(login({ username, password }));
       await AsyncStorage.setItem('isLoggedIn', 'true');
-      //await dispatch(fetchRentHistory());
+
       updateLoginStatus(true);
     } catch (err) {
       if (err.response && err.response.status === 401) {
-        // Handle incorrect password error
         setError('Incorrect username or password. Please try again.');
       } else {
         console.log('Error during login:', error);

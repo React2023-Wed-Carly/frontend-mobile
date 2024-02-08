@@ -1,4 +1,3 @@
-// PaymentsScreen.js
 import React, { useEffect } from 'react';
 import { FlatList, View, ActivityIndicator } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
